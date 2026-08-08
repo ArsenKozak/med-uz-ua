@@ -1,12 +1,14 @@
 ---
+import type { ServiceDetail } from "../../lib/cms";
+
 interface Props {
+  service: ServiceDetail;
   number: string;
-  title: string;
-  description: string;
   class?: string;
 }
 
-const { number, title, description, class: className } = Astro.props;
+const { service, number, class: className } = Astro.props;
+const serviceUrl = `/services/${service.slug}#appointment-form`;
 ---
 
 <article
@@ -24,14 +26,14 @@ const { number, title, description, class: className } = Astro.props;
 
   <div class="mt-auto pt-16">
     <h3 class="max-w-lg text-3xl font-medium leading-tight tracking-tight text-card-foreground sm:text-4xl">
-      {title}
+      {service.title}
     </h3>
     <p class="mt-5 max-w-xl text-sm leading-7 text-muted-foreground sm:text-base">
-      {description}
+      {service.description}
     </p>
     <a
       class="mt-8 inline-flex min-h-11 items-center gap-3 text-sm font-semibold text-primary underline-offset-4 hover:underline"
-      href="/#appointment-form"
+      href={serviceUrl}
     >
       Request a consultation
       <span class="transition-transform duration-200 motion-safe:group-hover:translate-x-1" aria-hidden="true">→</span>

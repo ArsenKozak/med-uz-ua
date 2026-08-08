@@ -4,8 +4,23 @@ import GoogleMap from "../components/clinic/GoogleMap.astro";
 import ServiceCard from "../components/clinic/ServiceCard.astro";
 import Container from "../components/ui/Container.astro";
 import BaseLayout from "../layouts/BaseLayout.astro";
+import { getAllActiveServices } from "../lib/cms";
 
 export const prerender = true;
+
+const services = await getAllActiveServices();
+
+function getServiceItemClass(index: number): string {
+  if (services.length === 1) return "md:col-span-2 lg:col-span-12";
+  if (index === 0) return "md:col-span-2 lg:col-span-7 lg:row-span-2";
+  return "lg:col-span-5";
+}
+
+function getServiceCardClass(index: number): string {
+  if (services.length === 1) return "min-h-[24rem] lg:min-h-[30rem]";
+  if (index === 0) return "min-h-[24rem] lg:min-h-[34rem]";
+  return "min-h-[20rem]";
+}
 ---
 
 <BaseLayout
@@ -83,30 +98,17 @@ export const prerender = true;
       </div>
 
       <ul class="mt-14 grid gap-px overflow-hidden border border-border bg-border md:grid-cols-2 lg:mt-20 lg:grid-cols-12">
-        <li class="md:col-span-2 lg:col-span-7 lg:row-span-2">
-          <ServiceCard
-            number="01"
-            title="Adult Ophthalmology"
-            description="Consultations for adult vision concerns; final service details are pending clinic approval."
-            class="min-h-[24rem] lg:min-h-[34rem]"
-          />
-        </li>
-        <li class="lg:col-span-5">
-          <ServiceCard
-            number="02"
-            title="Pediatric Ophthalmology"
-            description="Consultations focused on children’s vision; age ranges and service details are pending clinic approval."
-            class="min-h-[20rem]"
-          />
-        </li>
-        <li class="lg:col-span-5">
-          <ServiceCard
-            number="03"
-            title="Optical Shop"
-            description="Optical-shop information, including fitting services and availability, is pending clinic confirmation."
-            class="min-h-[20rem]"
-          />
-        </li>
+        {
+          services.map((service, index) => (
+            <li class={getServiceItemClass(index)}>
+              <ServiceCard
+                service={service}
+                number={String(index + 1).padStart(2, "0")}
+                class={getServiceCardClass(index)}
+              />
+            </li>
+          ))
+        }
       </ul>
     </Container>
   </section>

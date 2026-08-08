@@ -1,5 +1,6 @@
 <section
-  class="rounded-2xl border border-border bg-card p-6 text-card-foreground shadow-concierge sm:p-8 lg:p-10"
+  id="appointment-form"
+  class="scroll-mt-6 rounded-2xl border border-border bg-card p-6 text-card-foreground shadow-concierge sm:p-8 lg:p-10"
   aria-labelledby="appointment-panel-title"
 >
   <header class="border-b border-border pb-7">
@@ -15,8 +16,8 @@
   </header>
 
   <form
-    id="appointment-form"
-    class="mt-8 scroll-mt-64"
+    id="appointment-request-form"
+    class="mt-8"
     method="post"
     action="/api/appointments"
   >
@@ -89,7 +90,9 @@
     ok: true;
   };
 
-  const form = document.querySelector<HTMLFormElement>("#appointment-form");
+  const form = document.querySelector<HTMLFormElement>(
+    "#appointment-request-form",
+  );
   const statusElement =
     document.querySelector<HTMLElement>("[data-form-status]");
   const submitButton = form?.querySelector<HTMLButtonElement>(
