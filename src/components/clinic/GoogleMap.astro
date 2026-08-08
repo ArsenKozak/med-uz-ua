@@ -1,0 +1,24 @@
+---
+interface Props {
+  title?: string;
+  src?: string;
+}
+
+const {
+  title = "Розташування клініки Med.uz.ua",
+  src = "https://www.google.com/maps?q=Uzhhorod%2C%20Ukraine&output=embed",
+} = Astro.props;
+---
+
+<div class="overflow-hidden rounded-control border border-border bg-surface shadow-card">
+  <iframe
+    class="aspect-video w-full"
+    src={src}
+    title={title}
+    width="800"
+    height="450"
+    loading="lazy"
+    referrerpolicy="no-referrer-when-downgrade"
+    allowfullscreen
+  ></iframe>
+</div>

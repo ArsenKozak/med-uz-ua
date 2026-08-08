@@ -1,0 +1,149 @@
+<form
+  id="appointment-form"
+  class="rounded-control border border-border bg-surface p-6 shadow-card sm:p-8"
+  method="post"
+  action="/api/appointments"
+>
+  <div class="grid gap-5">
+    <div class="grid gap-2">
+      <label class="font-medium" for="appointment-name">Імʼя</label>
+      <input
+        class="rounded-control border border-border bg-surface px-4 py-3 text-text"
+        id="appointment-name"
+        name="name"
+        type="text"
+        minlength="2"
+        maxlength="80"
+        autocomplete="name"
+        required
+      />
+    </div>
+
+    <div class="grid gap-2">
+      <label class="font-medium" for="appointment-phone">Телефон</label>
+      <input
+        class="rounded-control border border-border bg-surface px-4 py-3 text-text"
+        id="appointment-phone"
+        name="phone"
+        type="tel"
+        minlength="10"
+        maxlength="20"
+        autocomplete="tel"
+        inputmode="tel"
+        required
+      />
+    </div>
+
+    <button
+      class="rounded-control bg-primary px-5 py-3 font-semibold text-white transition-colors hover:bg-primary-hover disabled:cursor-wait disabled:opacity-70"
+      type="submit"
+    >
+      Записатися
+    </button>
+  </div>
+
+  <p
+    class="mt-4 text-sm text-text-muted"
+    data-form-status
+    data-state="idle"
+    role="status"
+    aria-live="polite"
+    hidden
+  ></p>
+</form>
+
+<script>
+  import { trackAppointmentSuccess } from "../../lib/analytics";
+
+  type SuccessResponse = {
+    ok: true;
+  };
+
+  const form = document.querySelector<HTMLFormElement>("#appointment-form");
+  const statusElement =
+    document.querySelector<HTMLElement>("[data-form-status]");
+  const submitButton = form?.querySelector<HTMLButtonElement>(
+    'button[type="submit"]',
+  );
+
+  function isSuccessResponse(value: unknown): value is SuccessResponse {
+    return (
+      typeof value === "object" &&
+      value !== null &&
+      "ok" in value &&
+      value.ok === true
+    );
+  }
+
+  function showStatus(
+    message: string,
+    state: "pending" | "success" | "error",
+  ): void {
+    if (!statusElement) {
+      return;
+    }
+
+    statusElement.textContent = message;
+    statusElement.dataset.state = state;
+    statusElement.hidden = false;
+  }
+
+  if (form && submitButton) {
+    const defaultButtonText = submitButton.textContent;
+
+    form.addEventListener("submit", async (event) => {
+      event.preventDefault();
+
+      const formData = new FormData(form);
+      const name = formData.get("name");
+      const phone = formData.get("phone");
+
+      if (typeof name !== "string" || typeof phone !== "string") {
+        showStatus("Перевірте введені дані та спробуйте ще раз.", "error");
+        return;
+      }
+
+      submitButton.disabled = true;
+      submitButton.textContent = "Надсилання…";
+      showStatus("Надсилаємо заявку…", "pending");
+
+      try {
+        const response = await fetch(form.action, {
+          method: "POST",
+          headers: {
+            accept: "application/json",
+            "content-type": "application/json",
+          },
+          body: JSON.stringify({ name, phone }),
+        });
+        const responseBody: unknown = await response.json();
+
+        if (response.status !== 200 || !isSuccessResponse(responseBody)) {
+          throw new Error("APPOINTMENT_REQUEST_FAILED");
+        }
+
+        form.reset();
+        showStatus("Дякуємо! Заявку успішно надіслано.", "success");
+        trackAppointmentSuccess();
+      } catch {
+        showStatus(
+          "Не вдалося надіслати заявку. Спробуйте ще раз пізніше.",
+          "error",
+        );
+      } finally {
+        submitButton.disabled = false;
+        submitButton.textContent = defaultButtonText;
+      }
+    });
+  }
+</script>
+
+<style>
+  [data-form-status][data-state="success"] {
+    @apply text-success;
+  }
+
+  [data-form-status][data-state="error"] {
+    @apply text-danger;
+  }
+</style>
