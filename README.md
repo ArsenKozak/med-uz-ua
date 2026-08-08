@@ -22,9 +22,10 @@ route rendered on demand and is emitted by `@astrojs/cloudflare` as a
 Cloudflare Pages Function. Use `pnpm build` and deploy the `dist/` directory in
 Cloudflare Pages.
 
-Astro 5, the Cloudflare adapter 12, and Tailwind 3 are pinned intentionally.
-Newer Astro Cloudflare adapters target Workers instead of Pages, while the
-requested `@astrojs/tailwind` integration is the legacy Tailwind 3 integration.
+Astro 5 and the Cloudflare adapter 12 are pinned intentionally because newer
+Astro Cloudflare adapters target Workers instead of Pages. Styling uses
+Tailwind CSS 4 through its official Vite plugin, with design tokens defined in
+`src/styles/global.css`.
 
 The Stage 1 lead dispatcher is an awaited, deterministic Telegram-style fetch
 mock. Replace the implementation behind `src/lib/leads/dispatcher.ts` with the

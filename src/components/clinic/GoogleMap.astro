@@ -5,14 +5,14 @@ interface Props {
 }
 
 const {
-  title = "Розташування клініки Med.uz.ua",
+  title = "Provisional Med.uz.ua clinic location in Uzhhorod",
   src = "https://www.google.com/maps?q=Uzhhorod%2C%20Ukraine&output=embed",
 } = Astro.props;
 ---
 
-<div class="overflow-hidden rounded-control border border-border bg-surface shadow-card">
+<div class="overflow-hidden rounded-2xl border border-border bg-card">
   <iframe
-    class="aspect-video w-full"
+    class="block aspect-video w-full border-0"
     src={src}
     title={title}
     width="800"

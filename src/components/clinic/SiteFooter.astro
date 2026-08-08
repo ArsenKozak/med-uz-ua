@@ -1,0 +1,51 @@
+---
+import Container from "../ui/Container.astro";
+
+const currentYear = new Date().getFullYear();
+---
+
+<footer class="bg-primary text-primary-foreground">
+  <Container class="py-16 sm:py-20 lg:py-24">
+    <div class="grid gap-12 border-b border-primary-foreground/15 pb-14 md:grid-cols-12">
+      <div class="md:col-span-5 lg:col-span-6">
+        <a
+          class="inline-flex min-h-11 items-center font-serif text-3xl font-medium tracking-tight"
+          href="/"
+          aria-label="Med.uz.ua home"
+        >
+          Med.uz.ua
+        </a>
+        <p class="mt-5 max-w-sm text-sm leading-7 text-primary-foreground/65">
+          A calm digital starting point for private ophthalmology care in
+          Uzhhorod.
+        </p>
+      </div>
+
+      <div class="md:col-span-4 lg:col-span-3">
+        <h2 class="font-sans text-xs font-semibold uppercase tracking-[0.18em] text-primary-foreground/50">
+          Clinic location
+        </h2>
+        <address class="mt-5 text-sm not-italic leading-7 text-primary-foreground/75">
+          <span class="block">Uzhhorod, Ukraine</span>
+          <span class="block">Street address pending clinic confirmation</span>
+        </address>
+      </div>
+
+      <nav class="md:col-span-3" aria-label="Footer navigation">
+        <h2 class="font-sans text-xs font-semibold uppercase tracking-[0.18em] text-primary-foreground/50">
+          Explore
+        </h2>
+        <ul class="mt-5 space-y-3 text-sm text-primary-foreground/75">
+          <li><a class="inline-flex min-h-11 items-center transition-colors hover:text-primary-foreground" href="/#services">Services</a></li>
+          <li><a class="inline-flex min-h-11 items-center transition-colors hover:text-primary-foreground" href="/#doctors">Doctors</a></li>
+          <li><a class="inline-flex min-h-11 items-center transition-colors hover:text-primary-foreground" href="/#contacts">Contacts</a></li>
+        </ul>
+      </nav>
+    </div>
+
+    <div class="flex flex-col gap-3 pt-7 text-xs text-primary-foreground/50 sm:flex-row sm:items-center sm:justify-between">
+      <p>&copy; {currentYear} Med.uz.ua. All rights reserved.</p>
+      <p>Designed for clarity, privacy, and calm.</p>
+    </div>
+  </Container>
+</footer>

@@ -1,13 +1,16 @@
 ---
 import "../styles/global.css";
+import SiteFooter from "../components/clinic/SiteFooter.astro";
+import SiteHeader from "../components/clinic/SiteHeader.astro";
 
 interface Props {
   title: string;
   description: string;
   canonical?: string | URL;
+  lang?: string;
 }
 
-const { title, description, canonical } = Astro.props;
+const { title, description, canonical, lang = "en" } = Astro.props;
 const canonicalUrl = new URL(
   canonical ?? Astro.url.pathname,
   Astro.site ?? Astro.url,
@@ -15,7 +18,7 @@ const canonicalUrl = new URL(
 ---
 
 <!doctype html>
-<html lang="uk">
+<html lang={lang}>
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -39,7 +42,17 @@ const canonicalUrl = new URL(
 
     <slot name="head" />
   </head>
-  <body>
-    <slot />
+  <body class="min-h-screen">
+    <a
+      class="fixed left-5 top-4 z-50 -translate-y-24 rounded-md bg-card px-4 py-3 text-sm font-semibold text-primary shadow-concierge transition-transform focus:translate-y-0"
+      href="#main-content"
+    >
+      Skip to content
+    </a>
+    <SiteHeader />
+    <main id="main-content">
+      <slot />
+    </main>
+    <SiteFooter />
   </body>
 </html>

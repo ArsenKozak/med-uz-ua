@@ -1,6 +1,7 @@
 ---
 import AppointmentForm from "../components/clinic/AppointmentForm.astro";
 import GoogleMap from "../components/clinic/GoogleMap.astro";
+import ServiceCard from "../components/clinic/ServiceCard.astro";
 import Container from "../components/ui/Container.astro";
 import BaseLayout from "../layouts/BaseLayout.astro";
 
@@ -8,39 +9,164 @@ export const prerender = true;
 ---
 
 <BaseLayout
-  title="Med.uz.ua — офтальмологічна клініка в Ужгороді"
-  description="Запишіться на консультацію до офтальмологічної клініки Med.uz.ua."
+  title="Med.uz.ua — Private Ophthalmology in Uzhhorod"
+  description="Reserve a private ophthalmology consultation with Med.uz.ua in Uzhhorod."
 >
-  <main>
-    <section class="bg-surface-muted py-16 sm:py-24">
-      <Container class="grid items-start gap-10 lg:grid-cols-2">
-        <div class="pt-4">
-          <p class="font-semibold uppercase tracking-wide text-primary">
-            Med.uz.ua 2.0
-          </p>
-          <h1 class="mt-3 text-4xl font-bold tracking-tight sm:text-5xl">
-            Турбота про ваш зір починається тут
-          </h1>
-          <p class="mt-5 max-w-xl text-lg leading-8 text-text-muted">
-            Залиште контактні дані, і команда клініки звʼяжеться з вами для
-            узгодження часу прийому.
-          </p>
-        </div>
-
-        <AppointmentForm />
-      </Container>
-    </section>
-
-    <section class="py-16 sm:py-24" aria-labelledby="location-heading">
-      <Container>
-        <h2 id="location-heading" class="text-3xl font-bold tracking-tight">
-          Як нас знайти
-        </h2>
-        <p class="mb-8 mt-3 text-text-muted">
-          Карта завантажується лише тоді, коли наближається до області перегляду.
+  <section
+    id="appointment"
+    class="scroll-mt-20 bg-primary text-primary-foreground"
+    aria-labelledby="hero-heading"
+  >
+    <Container class="grid grid-cols-1 items-center gap-12 py-16 sm:py-20 lg:grid-cols-12 lg:gap-14 lg:py-24 xl:gap-20 xl:py-28">
+      <div class="lg:col-span-7">
+        <p class="text-xs font-semibold uppercase tracking-[0.24em] text-accent">
+          Private ophthalmology
         </p>
+        <h1
+          id="hero-heading"
+          class="mt-6 max-w-[12ch] text-balance font-serif text-[clamp(3rem,6vw,6rem)] font-medium leading-[0.95] tracking-[-0.04em]"
+        >
+          Reserve your <em class="font-normal italic text-accent">private</em>
+          consultation.
+        </h1>
+        <p class="mt-7 max-w-xl text-lg font-light leading-8 text-primary-foreground/70 sm:text-xl">
+          Personal ophthalmic care, coordinated around you.
+        </p>
+
+        <div class="mt-12 border-y border-primary-foreground/20 py-6">
+          <p class="sr-only">Care principles, not clinic statistics</p>
+          <dl class="grid grid-cols-3 divide-x divide-primary-foreground/20">
+            <div class="pr-3 sm:pr-6">
+              <dt class="font-serif text-xl sm:text-2xl">Private</dt>
+              <dd class="mt-1 text-[0.65rem] uppercase tracking-[0.14em] text-primary-foreground/55 sm:text-xs">
+                Consultation
+              </dd>
+            </div>
+            <div class="px-3 sm:px-6">
+              <dt class="font-serif text-xl sm:text-2xl">Direct</dt>
+              <dd class="mt-1 text-[0.65rem] uppercase tracking-[0.14em] text-primary-foreground/55 sm:text-xs">
+                Coordination
+              </dd>
+            </div>
+            <div class="pl-3 sm:pl-6">
+              <dt class="font-serif text-xl sm:text-2xl">Focused</dt>
+              <dd class="mt-1 text-[0.65rem] uppercase tracking-[0.14em] text-primary-foreground/55 sm:text-xs">
+                Vision care
+              </dd>
+            </div>
+          </dl>
+        </div>
+      </div>
+
+      <div class="lg:col-span-5 xl:pl-4">
+        <AppointmentForm />
+      </div>
+    </Container>
+  </section>
+
+  <section
+    id="services"
+    class="scroll-mt-20 bg-background py-20 sm:py-24 lg:py-32"
+    aria-labelledby="services-heading"
+  >
+    <Container>
+      <div class="max-w-3xl">
+        <p class="text-xs font-semibold uppercase tracking-[0.22em] text-primary">
+          Our expertise
+        </p>
+        <h2
+          id="services-heading"
+          class="mt-5 text-balance text-4xl font-medium leading-tight tracking-tight text-foreground sm:text-5xl lg:text-6xl"
+        >
+          Focused care for every stage of vision.
+        </h2>
+      </div>
+
+      <ul class="mt-14 grid gap-px overflow-hidden border border-border bg-border md:grid-cols-2 lg:mt-20 lg:grid-cols-12">
+        <li class="md:col-span-2 lg:col-span-7 lg:row-span-2">
+          <ServiceCard
+            number="01"
+            title="Adult Ophthalmology"
+            description="Consultations for adult vision concerns; final service details are pending clinic approval."
+            class="min-h-[24rem] lg:min-h-[34rem]"
+          />
+        </li>
+        <li class="lg:col-span-5">
+          <ServiceCard
+            number="02"
+            title="Pediatric Ophthalmology"
+            description="Consultations focused on children’s vision; age ranges and service details are pending clinic approval."
+            class="min-h-[20rem]"
+          />
+        </li>
+        <li class="lg:col-span-5">
+          <ServiceCard
+            number="03"
+            title="Optical Shop"
+            description="Optical-shop information, including fitting services and availability, is pending clinic confirmation."
+            class="min-h-[20rem]"
+          />
+        </li>
+      </ul>
+    </Container>
+  </section>
+
+  <section
+    id="doctors"
+    class="scroll-mt-20 bg-muted py-20 sm:py-24 lg:py-28"
+    aria-labelledby="doctors-heading"
+  >
+    <Container class="grid gap-10 lg:grid-cols-12 lg:items-end">
+      <div class="lg:col-span-7">
+        <p class="text-xs font-semibold uppercase tracking-[0.22em] text-primary">
+          Our doctors
+        </p>
+        <h2 id="doctors-heading" class="mt-5 max-w-3xl text-4xl font-medium leading-tight tracking-tight sm:text-5xl">
+          Care begins with the right specialist.
+        </h2>
+      </div>
+      <div class="lg:col-span-4 lg:col-start-9">
+        <p class="text-sm leading-7 text-muted-foreground sm:text-base">
+          Doctor profiles will appear here after clinic-approved biographies and
+          credentials have been supplied and verified.
+        </p>
+        <a
+          class="mt-7 inline-flex min-h-11 items-center text-sm font-semibold text-primary underline underline-offset-4"
+          href="/#appointment-form"
+        >
+          Request a private consultation
+        </a>
+      </div>
+    </Container>
+  </section>
+
+  <section
+    id="contacts"
+    class="scroll-mt-20 bg-background py-20 sm:py-24 lg:py-32"
+    aria-labelledby="location-heading"
+  >
+    <Container class="grid gap-12 lg:grid-cols-12 lg:items-center lg:gap-16">
+      <div class="lg:col-span-4">
+        <p class="text-xs font-semibold uppercase tracking-[0.22em] text-primary">
+          Visit
+        </p>
+        <h2 id="location-heading" class="mt-5 text-4xl font-medium leading-tight tracking-tight sm:text-5xl">
+          A considered place to begin.
+        </h2>
+        <p class="mt-6 text-base leading-7 text-muted-foreground">
+          Med.uz.ua is based in Uzhhorod. The exact clinic address will be added
+          after confirmation by the clinic team.
+        </p>
+        <a
+          class="focus-ring-primary mt-8 inline-flex min-h-11 items-center rounded-lg bg-primary px-5 text-sm font-semibold text-primary-foreground transition-colors hover:bg-primary/90"
+          href="/#appointment-form"
+        >
+          Book consultation
+        </a>
+      </div>
+      <div class="lg:col-span-8">
         <GoogleMap />
-      </Container>
-    </section>
-  </main>
+      </div>
+    </Container>
+  </section>
 </BaseLayout>

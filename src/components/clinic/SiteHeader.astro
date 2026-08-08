@@ -1,0 +1,47 @@
+---
+import Container from "../ui/Container.astro";
+
+const navigation = [
+  { label: "Services", href: "/#services" },
+  { label: "Doctors", href: "/#doctors" },
+  { label: "Contacts", href: "/#contacts" },
+];
+---
+
+<header class="border-b border-border bg-background">
+  <Container class="flex h-20 items-center justify-between gap-4">
+    <a
+      class="inline-flex min-h-11 shrink-0 items-center font-serif text-2xl font-medium tracking-tight text-primary"
+      href="/"
+      aria-label="Med.uz.ua home"
+    >
+      Med.uz.ua
+    </a>
+
+    <div class="flex items-center gap-5 lg:gap-9">
+      <nav class="hidden md:block" aria-label="Primary navigation">
+        <ul class="flex items-center gap-6 lg:gap-9">
+          {
+            navigation.map(({ label, href }) => (
+              <li>
+                <a
+                  class="inline-flex min-h-11 items-center text-sm font-medium text-foreground/70 transition-colors duration-200 hover:text-primary"
+                  href={href}
+                >
+                  {label}
+                </a>
+              </li>
+            ))
+          }
+        </ul>
+      </nav>
+
+      <a
+        class="focus-ring-primary inline-flex min-h-11 items-center justify-center rounded-lg bg-primary px-4 text-center text-sm font-semibold text-primary-foreground transition-colors duration-200 hover:bg-primary/90 sm:px-5"
+        href="/#appointment-form"
+      >
+        Book consultation
+      </a>
+    </div>
+  </Container>
+</header>
