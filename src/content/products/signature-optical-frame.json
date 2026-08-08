@@ -1,0 +1,9 @@
+{
+  "title": "Optical Frame Selection",
+  "description": "An editorial placeholder for an optical frame. Materials, sizing, pricing, and availability are pending clinic confirmation.",
+  "category": "glasses",
+  "priceMinor": 0,
+  "currency": "UAH",
+  "status": "active",
+  "verificationStatus": "pending-clinic-confirmation"
+}

@@ -1,5 +1,6 @@
 ---
 import "../styles/global.css";
+import CartDrawer from "../components/commerce/CartDrawer.astro";
 import SiteFooter from "../components/clinic/SiteFooter.astro";
 import SiteHeader from "../components/clinic/SiteHeader.astro";
 
@@ -54,5 +55,6 @@ const canonicalUrl = new URL(
       <slot />
     </main>
     <SiteFooter />
+    <CartDrawer />
   </body>
 </html>

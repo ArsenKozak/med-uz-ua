@@ -5,6 +5,7 @@ const navigation = [
   { label: "Services", href: "/#services" },
   { label: "Doctors", href: "/#doctors" },
   { label: "Contacts", href: "/#contacts" },
+  { label: "Shop", href: "/shop" },
 ];
 ---
 
@@ -18,9 +19,9 @@ const navigation = [
       Med.uz.ua
     </a>
 
-    <div class="flex items-center gap-5 lg:gap-9">
+    <div class="flex items-center gap-2 sm:gap-4 lg:gap-9">
       <nav class="hidden md:block" aria-label="Primary navigation">
-        <ul class="flex items-center gap-6 lg:gap-9">
+        <ul class="flex items-center gap-4 lg:gap-9">
           {
             navigation.map(({ label, href }) => (
               <li>
@@ -36,12 +37,69 @@ const navigation = [
         </ul>
       </nav>
 
-      <a
-        class="focus-ring-primary inline-flex min-h-11 items-center justify-center rounded-lg bg-primary px-4 text-center text-sm font-semibold text-primary-foreground transition-colors duration-200 hover:bg-primary/90 sm:px-5"
-        href="/#appointment-form"
-      >
-        Book consultation
-      </a>
+      <div class="flex items-center gap-2 sm:gap-3">
+        <a
+          class="focus-ring-primary inline-flex min-h-11 items-center justify-center rounded-lg bg-primary px-3 text-center text-sm font-semibold text-primary-foreground transition-colors duration-200 hover:bg-primary/90 sm:px-5"
+          href="/#appointment-form"
+          aria-label="Book consultation"
+        >
+          <span class="sm:hidden" aria-hidden="true">Book</span>
+          <span class="hidden sm:inline" aria-hidden="true">Book consultation</span>
+        </a>
+
+        <button
+          class="focus-ring-primary relative inline-flex size-11 items-center justify-center rounded-lg border border-border bg-card text-primary transition-colors duration-200 hover:bg-muted"
+          type="button"
+          aria-label="Open cart, 0 items"
+          aria-haspopup="dialog"
+          aria-controls="cart-dialog"
+          data-cart-trigger
+        >
+          <svg
+            class="size-5"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="1.5"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            aria-hidden="true"
+            focusable="false"
+          >
+            <path d="M6.75 8.25h10.5l-.75 10.5h-9l-.75-10.5Z"></path>
+            <path d="M9 8.25V6a3 3 0 0 1 6 0v2.25"></path>
+          </svg>
+          <span
+            class="absolute -right-1.5 -top-1.5 inline-flex min-h-5 min-w-5 items-center justify-center rounded-full bg-accent px-1 text-[0.65rem] font-bold leading-none text-primary"
+            data-cart-count
+            aria-hidden="true"
+          >0</span>
+        </button>
+      </div>
     </div>
   </Container>
 </header>
+
+<script>
+  import { $cartCount } from "../../store/cart";
+
+  const countElements = document.querySelectorAll<HTMLElement>(
+    "[data-cart-count]",
+  );
+  const cartTriggers = document.querySelectorAll<HTMLButtonElement>(
+    "button[data-cart-trigger]",
+  );
+
+  $cartCount.subscribe((count) => {
+    for (const element of countElements) {
+      element.textContent = String(count);
+    }
+
+    for (const trigger of cartTriggers) {
+      trigger.setAttribute(
+        "aria-label",
+        `Open cart, ${count} ${count === 1 ? "item" : "items"}`,
+      );
+    }
+  });
+</script>

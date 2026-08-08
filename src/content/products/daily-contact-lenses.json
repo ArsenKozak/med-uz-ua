@@ -1,0 +1,9 @@
+{
+  "title": "Daily Contact Lens Option",
+  "description": "A neutral catalog placeholder for daily contact lenses. Specifications, pricing, and availability are pending clinic confirmation.",
+  "category": "contacts",
+  "priceMinor": 0,
+  "currency": "UAH",
+  "status": "active",
+  "verificationStatus": "pending-clinic-confirmation"
+}

@@ -23,4 +23,25 @@ const services = defineCollection({
     .strict(),
 });
 
-export const collections = { services };
+const products = defineCollection({
+  loader: glob({
+    base: "./src/content/products",
+    pattern: "**/*.json",
+  }),
+  schema: z
+    .object({
+      title: requiredEditorialText,
+      description: requiredEditorialText,
+      category: z.enum(["contacts", "glasses", "care"]),
+      priceMinor: z.number().int().nonnegative(),
+      currency: z.string().regex(/^[A-Z]{3}$/),
+      status: z.enum(["active", "draft"]),
+      verificationStatus: z.enum([
+        "verified",
+        "pending-clinic-confirmation",
+      ]),
+    })
+    .strict(),
+});
+
+export const collections = { services, products };

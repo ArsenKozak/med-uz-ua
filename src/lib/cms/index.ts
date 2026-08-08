@@ -5,6 +5,10 @@ import {
 } from "astro:content";
 
 export type ServiceCategory = "adult" | "pediatric" | "optical";
+export type ProductCategory = "contacts" | "glasses" | "care";
+export type ProductVerificationStatus =
+  | "verified"
+  | "pending-clinic-confirmation";
 
 export interface ServiceDetail {
   readonly slug: string;
@@ -17,7 +21,18 @@ export interface ServiceDetail {
   readonly metaDescription: string;
 }
 
+export interface ProductSummary {
+  readonly id: string;
+  readonly title: string;
+  readonly description: string;
+  readonly category: ProductCategory;
+  readonly priceMinor: number;
+  readonly currency: string;
+  readonly verificationStatus: ProductVerificationStatus;
+}
+
 type ServiceEntry = CollectionEntry<"services">;
+type ProductEntry = CollectionEntry<"products">;
 
 function mapServiceEntry(entry: ServiceEntry): ServiceDetail {
   return {
@@ -32,12 +47,33 @@ function mapServiceEntry(entry: ServiceEntry): ServiceDetail {
   };
 }
 
+function mapProductEntry(entry: ProductEntry): ProductSummary {
+  return {
+    id: entry.id,
+    title: entry.data.title,
+    description: entry.data.description,
+    category: entry.data.category,
+    priceMinor: entry.data.priceMinor,
+    currency: entry.data.currency,
+    verificationStatus: entry.data.verificationStatus,
+  };
+}
+
 function compareServicesBySlug(
   left: ServiceDetail,
   right: ServiceDetail,
 ): number {
   if (left.slug < right.slug) return -1;
   if (left.slug > right.slug) return 1;
+  return 0;
+}
+
+function compareProductsById(
+  left: ProductSummary,
+  right: ProductSummary,
+): number {
+  if (left.id < right.id) return -1;
+  if (left.id > right.id) return 1;
   return 0;
 }
 
@@ -48,6 +84,17 @@ export async function getAllActiveServices(): Promise<ServiceDetail[]> {
   );
 
   return entries.map(mapServiceEntry).sort(compareServicesBySlug);
+}
+
+export async function getAllActiveProducts(): Promise<
+  readonly ProductSummary[]
+> {
+  const entries = await getCollection(
+    "products",
+    ({ data }) => data.status === "active",
+  );
+
+  return entries.map(mapProductEntry).sort(compareProductsById);
 }
 
 export async function getServiceBySlug(

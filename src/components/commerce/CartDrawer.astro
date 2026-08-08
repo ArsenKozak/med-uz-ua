@@ -1,0 +1,615 @@
+<cart-drawer>
+  <dialog
+    id="cart-dialog"
+    class="cart-dialog bg-card text-card-foreground"
+    aria-labelledby="cart-dialog-title"
+    aria-modal="true"
+    data-cart-dialog
+  >
+    <div class="flex min-h-full flex-col">
+      <header class="flex items-center justify-between gap-4 border-b border-border px-5 py-5 sm:px-7">
+        <div>
+          <p class="text-[0.65rem] font-semibold uppercase tracking-[0.2em] text-primary">
+            Optical collection
+          </p>
+          <h2 id="cart-dialog-title" class="mt-1 text-3xl font-medium tracking-tight">
+            Your cart
+          </h2>
+        </div>
+        <button
+          class="focus-ring-primary inline-flex size-11 items-center justify-center border border-border text-xl text-primary transition-colors hover:bg-muted"
+          type="button"
+          aria-label="Close cart"
+          data-cart-close
+        >
+          <span aria-hidden="true">×</span>
+        </button>
+      </header>
+
+      <div class="flex-1 overflow-y-auto px-5 py-6 sm:px-7">
+        <div class="py-16 text-center" data-cart-empty>
+          <svg
+            class="mx-auto h-16 w-16 text-primary/45"
+            viewBox="0 0 64 64"
+            fill="none"
+            aria-hidden="true"
+            focusable="false"
+          >
+            <path d="M15 21h34l-3 29H18l-3-29Z" stroke="currentColor" stroke-width="1.5" />
+            <path d="M23 25v-5a9 9 0 0 1 18 0v5" stroke="currentColor" stroke-width="1.5" />
+          </svg>
+          <p class="mt-6 font-serif text-2xl">Your cart is empty.</p>
+          <p class="mt-2 text-sm text-muted-foreground">
+            Explore the optical collection.
+          </p>
+          <button
+            class="focus-ring-primary mt-7 min-h-11 text-sm font-semibold text-primary underline underline-offset-4"
+            type="button"
+            data-cart-close
+          >
+            Continue browsing
+          </button>
+        </div>
+
+        <ul class="divide-y divide-border" data-cart-items aria-label="Cart items"></ul>
+      </div>
+
+      <footer class="border-t border-border bg-background px-5 py-5 sm:px-7" data-cart-summary hidden>
+        <div class="flex items-end justify-between gap-5">
+          <div>
+            <p class="text-xs uppercase tracking-[0.16em] text-muted-foreground">
+              Subtotal · <span data-cart-summary-count>0 items</span>
+            </p>
+            <p class="mt-2 font-serif text-2xl font-medium" data-cart-subtotal></p>
+          </div>
+          <button
+            class="focus-ring-primary min-h-11 text-xs font-semibold text-muted-foreground underline underline-offset-4 hover:text-primary"
+            type="button"
+            data-cart-clear
+          >
+            Clear cart
+          </button>
+        </div>
+
+        <p class="mt-3 text-xs leading-5 text-muted-foreground" data-cart-pricing-note hidden>
+          Pricing is pending clinic confirmation and is not a checkout value.
+        </p>
+
+        <button
+          class="focus-ring-primary mt-5 inline-flex min-h-12 w-full items-center justify-center border border-primary bg-primary px-5 text-sm font-semibold text-primary-foreground transition-colors hover:bg-primary/90"
+          type="button"
+          data-cart-checkout
+        >
+          Checkout integration pending
+        </button>
+        <p
+          class="mt-3 min-h-5 text-xs font-medium text-primary"
+          role="status"
+          aria-live="polite"
+          data-checkout-status
+        ></p>
+      </footer>
+    </div>
+  </dialog>
+</cart-drawer>
+
+<style>
+  .cart-dialog {
+    position: fixed;
+    inset: 0 0 0 auto;
+    width: min(100%, 32rem);
+    max-width: 100vw;
+    height: 100dvh;
+    max-height: 100dvh;
+    margin: 0 0 0 auto;
+    padding: 0;
+    border: 0;
+    box-shadow: -20px 0 60px rgb(0 0 0 / 0.12);
+  }
+
+  .cart-dialog[open] {
+    animation: cart-drawer-enter 220ms ease-out;
+  }
+
+  .cart-dialog::backdrop {
+    background: rgb(6 44 48 / 0.46);
+  }
+
+  @keyframes cart-drawer-enter {
+    from {
+      opacity: 0;
+      transform: translateX(2rem);
+    }
+    to {
+      opacity: 1;
+      transform: translateX(0);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .cart-dialog[open] {
+      animation: none;
+    }
+  }
+</style>
+
+<script>
+  import {
+    $cart,
+    $cartCount,
+    $cartCurrency,
+    $cartHasPendingPricing,
+    $cartSubtotalMinor,
+    clearCart,
+    removeFromCart,
+    setCartItemQuantity,
+    type CartItem,
+  } from "../../store/cart";
+  import { formatMoneyMinor } from "../../lib/commerce/money";
+
+  const ITEM_BUTTON_CLASS =
+    "focus-ring-primary inline-flex size-9 items-center justify-center border border-border text-sm font-semibold text-primary transition-colors hover:bg-muted";
+
+  function createTextElement<K extends keyof HTMLElementTagNameMap>(
+    tagName: K,
+    text: string,
+    className: string,
+  ): HTMLElementTagNameMap[K] {
+    const element = document.createElement(tagName);
+    element.textContent = text;
+    element.className = className;
+    return element;
+  }
+
+  type CartLineAction = "decrement" | "increment" | "remove";
+
+  interface PendingCartLineFocus {
+    readonly productId: string;
+    readonly action: CartLineAction;
+  }
+
+  function isCartLineAction(
+    value: string | undefined,
+  ): value is CartLineAction {
+    return value === "decrement" || value === "increment" || value === "remove";
+  }
+
+  class CartDrawerElement extends HTMLElement {
+    #dialog: HTMLDialogElement | null = null;
+    #itemsElement: HTMLUListElement | null = null;
+    #emptyElement: HTMLElement | null = null;
+    #summaryElement: HTMLElement | null = null;
+    #countElement: HTMLElement | null = null;
+    #subtotalElement: HTMLElement | null = null;
+    #pricingNoteElement: HTMLElement | null = null;
+    #checkoutStatusElement: HTMLElement | null = null;
+    #items: readonly CartItem[] = [];
+    #count = 0;
+    #subtotalMinor = 0;
+    #currency: string | null = null;
+    #hasPendingPricing = false;
+    #unsubscribers: Array<() => void> = [];
+    #openingTrigger: HTMLButtonElement | null = null;
+    #previousBodyOverflow: string | null = null;
+    #pendingLineFocus: PendingCartLineFocus | null = null;
+    #lineFocusRestoreScheduled = false;
+    #isConnected = false;
+
+    connectedCallback(): void {
+      if (this.#isConnected) {
+        return;
+      }
+
+      const dialog = this.querySelector("[data-cart-dialog]");
+      const itemsElement = this.querySelector("[data-cart-items]");
+      const emptyElement = this.querySelector("[data-cart-empty]");
+      const summaryElement = this.querySelector("[data-cart-summary]");
+      const countElement = this.querySelector("[data-cart-summary-count]");
+      const subtotalElement = this.querySelector("[data-cart-subtotal]");
+      const pricingNoteElement = this.querySelector("[data-cart-pricing-note]");
+      const checkoutStatusElement = this.querySelector("[data-checkout-status]");
+
+      if (
+        !(dialog instanceof HTMLDialogElement) ||
+        !(itemsElement instanceof HTMLUListElement) ||
+        !(emptyElement instanceof HTMLElement) ||
+        !(summaryElement instanceof HTMLElement) ||
+        !(countElement instanceof HTMLElement) ||
+        !(subtotalElement instanceof HTMLElement) ||
+        !(pricingNoteElement instanceof HTMLElement) ||
+        !(checkoutStatusElement instanceof HTMLElement)
+      ) {
+        return;
+      }
+
+      this.#dialog = dialog;
+      this.#itemsElement = itemsElement;
+      this.#emptyElement = emptyElement;
+      this.#summaryElement = summaryElement;
+      this.#countElement = countElement;
+      this.#subtotalElement = subtotalElement;
+      this.#pricingNoteElement = pricingNoteElement;
+      this.#checkoutStatusElement = checkoutStatusElement;
+      this.#isConnected = true;
+
+      document.addEventListener("click", this.#handleDocumentClick);
+      document.addEventListener("keydown", this.#handleDocumentKeydown);
+      dialog.addEventListener("click", this.#handleDialogClick);
+      dialog.addEventListener("cancel", this.#handleDialogCancel);
+      dialog.addEventListener("close", this.#handleDialogClose);
+
+      this.#unsubscribers = [
+        $cart.subscribe((items) => {
+          this.#items = items;
+          this.#render();
+        }),
+        $cartCount.subscribe((count) => {
+          this.#count = count;
+          this.#render();
+        }),
+        $cartSubtotalMinor.subscribe((subtotalMinor) => {
+          this.#subtotalMinor = subtotalMinor;
+          this.#render();
+        }),
+        $cartCurrency.subscribe((currency) => {
+          this.#currency = currency;
+          this.#render();
+        }),
+        $cartHasPendingPricing.subscribe((hasPendingPricing) => {
+          this.#hasPendingPricing = hasPendingPricing;
+          this.#render();
+        }),
+      ];
+    }
+
+    disconnectedCallback(): void {
+      document.removeEventListener("click", this.#handleDocumentClick);
+      document.removeEventListener("keydown", this.#handleDocumentKeydown);
+      this.#dialog?.removeEventListener("click", this.#handleDialogClick);
+      this.#dialog?.removeEventListener("cancel", this.#handleDialogCancel);
+      this.#dialog?.removeEventListener("close", this.#handleDialogClose);
+      this.#unsubscribers.forEach((unsubscribe) => unsubscribe());
+      this.#unsubscribers = [];
+      this.#unlockBodyScroll();
+      this.#pendingLineFocus = null;
+      this.#isConnected = false;
+    }
+
+    #handleDocumentClick = (event: MouseEvent): void => {
+      const target = event.target;
+
+      if (!(target instanceof Element)) {
+        return;
+      }
+
+      const trigger = target.closest("[data-cart-trigger]");
+
+      if (trigger instanceof HTMLButtonElement) {
+        this.#open(trigger);
+      }
+    };
+
+    #handleDialogClick = (event: MouseEvent): void => {
+      const target = event.target;
+
+      if (!(target instanceof Element)) {
+        return;
+      }
+
+      if (target === this.#dialog || target.closest("[data-cart-close]")) {
+        this.#close();
+        return;
+      }
+
+      if (target.closest("[data-cart-clear]")) {
+        clearCart();
+        queueMicrotask(() => {
+          if (!this.#dialog?.open) {
+            return;
+          }
+
+          const closeButton = this.#dialog.querySelector("[data-cart-close]");
+          if (closeButton instanceof HTMLButtonElement) {
+            closeButton.focus();
+          }
+        });
+        return;
+      }
+
+      if (target.closest("[data-cart-checkout]")) {
+        if (this.#checkoutStatusElement !== null) {
+          this.#checkoutStatusElement.textContent =
+            "Checkout flow pending integration. Your cart remains unchanged.";
+        }
+      }
+    };
+
+    #handleDocumentKeydown = (event: KeyboardEvent): void => {
+      if (event.key === "Escape" && this.#dialog?.open) {
+        event.preventDefault();
+        this.#close();
+      }
+    };
+
+    #handleDialogCancel = (event: Event): void => {
+      event.preventDefault();
+      this.#close();
+    };
+
+    #handleDialogClose = (): void => {
+      this.#unlockBodyScroll();
+      this.#pendingLineFocus = null;
+
+      if (this.#openingTrigger?.isConnected) {
+        this.#openingTrigger.focus();
+      }
+
+      this.#openingTrigger = null;
+    };
+
+    #open(trigger: HTMLButtonElement): void {
+      if (this.#dialog === null || this.#dialog.open) {
+        return;
+      }
+
+      this.#openingTrigger = trigger;
+      if (this.#checkoutStatusElement !== null) {
+        this.#checkoutStatusElement.textContent = "";
+      }
+      this.#lockBodyScroll();
+      this.#dialog.showModal();
+
+      const closeButton = this.#dialog.querySelector("[data-cart-close]");
+      if (closeButton instanceof HTMLButtonElement) {
+        queueMicrotask(() => closeButton.focus());
+      }
+    }
+
+    #close(): void {
+      if (this.#dialog?.open) {
+        this.#dialog.close();
+      }
+    }
+
+    #lockBodyScroll(): void {
+      if (this.#previousBodyOverflow !== null) {
+        return;
+      }
+
+      this.#previousBodyOverflow = document.body.style.overflow;
+      document.body.style.overflow = "hidden";
+    }
+
+    #unlockBodyScroll(): void {
+      if (this.#previousBodyOverflow === null) {
+        return;
+      }
+
+      document.body.style.overflow = this.#previousBodyOverflow;
+      this.#previousBodyOverflow = null;
+    }
+
+    #render(): void {
+      if (
+        this.#itemsElement === null ||
+        this.#emptyElement === null ||
+        this.#summaryElement === null ||
+        this.#countElement === null ||
+        this.#subtotalElement === null ||
+        this.#pricingNoteElement === null
+      ) {
+        return;
+      }
+
+      const activeElement = document.activeElement;
+      if (
+        activeElement instanceof HTMLButtonElement &&
+        this.#itemsElement.contains(activeElement)
+      ) {
+        const productId = activeElement.dataset.cartProductId;
+        const action = activeElement.dataset.cartLineAction;
+
+        if (productId !== undefined && isCartLineAction(action)) {
+          this.#pendingLineFocus = { productId, action };
+        }
+      }
+
+      this.#itemsElement.replaceChildren(
+        ...this.#items.map((item) => this.#createCartLine(item)),
+      );
+
+      const isEmpty = this.#items.length === 0;
+      this.#emptyElement.hidden = !isEmpty;
+      this.#itemsElement.hidden = isEmpty;
+      this.#summaryElement.hidden = isEmpty;
+
+      if (isEmpty) {
+        if (this.#checkoutStatusElement !== null) {
+          this.#checkoutStatusElement.textContent = "";
+        }
+        this.#scheduleLineFocusRestore();
+        return;
+      }
+
+      this.#countElement.textContent = `${this.#count} ${
+        this.#count === 1 ? "item" : "items"
+      }`;
+
+      this.#pricingNoteElement.hidden = !this.#hasPendingPricing;
+
+      if (this.#hasPendingPricing) {
+        this.#subtotalElement.textContent = "Pending clinic confirmation";
+      } else if (this.#currency !== null) {
+        this.#subtotalElement.textContent = formatMoneyMinor(
+          this.#subtotalMinor,
+          this.#currency,
+        );
+      } else {
+        this.#subtotalElement.textContent = "Unavailable";
+      }
+
+      this.#scheduleLineFocusRestore();
+    }
+
+    #scheduleLineFocusRestore(): void {
+      if (
+        this.#pendingLineFocus === null ||
+        this.#lineFocusRestoreScheduled
+      ) {
+        return;
+      }
+
+      this.#lineFocusRestoreScheduled = true;
+      queueMicrotask(() => {
+        this.#lineFocusRestoreScheduled = false;
+        const pendingFocus = this.#pendingLineFocus;
+        this.#pendingLineFocus = null;
+
+        if (
+          pendingFocus === null ||
+          !this.#dialog?.open ||
+          this.#itemsElement === null
+        ) {
+          return;
+        }
+
+        const actionButtons =
+          this.#itemsElement.querySelectorAll<HTMLButtonElement>(
+            "button[data-cart-line-action][data-cart-product-id]",
+          );
+        let fallbackButton: HTMLButtonElement | null = null;
+
+        for (const button of actionButtons) {
+          if (button.dataset.cartLineAction !== pendingFocus.action) {
+            continue;
+          }
+
+          fallbackButton ??= button;
+
+          if (button.dataset.cartProductId === pendingFocus.productId) {
+            button.focus();
+            return;
+          }
+        }
+
+        const closeButton = this.#dialog.querySelector("[data-cart-close]");
+        if (fallbackButton !== null) {
+          fallbackButton.focus();
+        } else if (closeButton instanceof HTMLButtonElement) {
+          closeButton.focus();
+        }
+      });
+    }
+
+    #createCartLine(item: CartItem): HTMLLIElement {
+      const listItem = document.createElement("li");
+      listItem.className = "py-6 first:pt-0 last:pb-0";
+
+      const headingRow = document.createElement("div");
+      headingRow.className = "flex min-w-0 items-start justify-between gap-4";
+
+      const headingGroup = document.createElement("div");
+      headingGroup.className = "min-w-0";
+      headingGroup.append(
+        createTextElement(
+          "h3",
+          item.titleSnapshot,
+          "break-words font-serif text-xl font-medium leading-snug",
+        ),
+      );
+
+      const unitPrice =
+        item.verificationStatusSnapshot === "pending-clinic-confirmation"
+          ? "Price pending clinic confirmation"
+          : formatMoneyMinor(
+              item.unitPriceMinorSnapshot,
+              item.currency,
+            );
+      headingGroup.append(
+        createTextElement(
+          "p",
+          unitPrice,
+          "mt-2 text-xs leading-5 text-muted-foreground",
+        ),
+      );
+
+      const removeButton = document.createElement("button");
+      removeButton.type = "button";
+      removeButton.className =
+        "focus-ring-primary min-h-11 shrink-0 text-xs font-semibold text-muted-foreground underline underline-offset-4 hover:text-primary";
+      removeButton.textContent = "Remove";
+      removeButton.setAttribute(
+        "aria-label",
+        `Remove ${item.titleSnapshot} from cart`,
+      );
+      removeButton.dataset.cartProductId = item.productId;
+      removeButton.dataset.cartLineAction = "remove";
+      removeButton.addEventListener("click", () => {
+        removeFromCart(item.productId);
+      });
+
+      headingRow.append(headingGroup, removeButton);
+
+      const quantityRow = document.createElement("div");
+      quantityRow.className = "mt-5 flex items-center justify-between gap-4";
+      quantityRow.append(
+        createTextElement(
+          "span",
+          "Quantity",
+          "text-xs uppercase tracking-[0.14em] text-muted-foreground",
+        ),
+      );
+
+      const controls = document.createElement("div");
+      controls.className = "flex items-center";
+
+      const decrementButton = document.createElement("button");
+      decrementButton.type = "button";
+      decrementButton.className = ITEM_BUTTON_CLASS;
+      decrementButton.textContent = "−";
+      decrementButton.setAttribute(
+        "aria-label",
+        `Decrease quantity of ${item.titleSnapshot}`,
+      );
+      decrementButton.dataset.cartProductId = item.productId;
+      decrementButton.dataset.cartLineAction = "decrement";
+      decrementButton.addEventListener("click", () => {
+        setCartItemQuantity(item.productId, item.quantity - 1);
+      });
+
+      const quantity = createTextElement(
+        "span",
+        String(item.quantity),
+        "inline-flex min-w-10 items-center justify-center px-2 text-sm font-semibold",
+      );
+      quantity.setAttribute(
+        "aria-label",
+        `${item.quantity} of ${item.titleSnapshot}`,
+      );
+
+      const incrementButton = document.createElement("button");
+      incrementButton.type = "button";
+      incrementButton.className = ITEM_BUTTON_CLASS;
+      incrementButton.textContent = "+";
+      incrementButton.setAttribute(
+        "aria-label",
+        `Increase quantity of ${item.titleSnapshot}`,
+      );
+      incrementButton.dataset.cartProductId = item.productId;
+      incrementButton.dataset.cartLineAction = "increment";
+      incrementButton.addEventListener("click", () => {
+        setCartItemQuantity(item.productId, item.quantity + 1);
+      });
+
+      controls.append(decrementButton, quantity, incrementButton);
+      quantityRow.append(controls);
+      listItem.append(headingRow, quantityRow);
+
+      return listItem;
+    }
+  }
+
+  if (!customElements.get("cart-drawer")) {
+    customElements.define("cart-drawer", CartDrawerElement);
+  }
+</script>
