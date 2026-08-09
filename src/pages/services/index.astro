@@ -1,0 +1,191 @@
+---
+import Container from "../../components/ui/Container.astro";
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import {
+  BOOKING_HREF,
+  PENDING_CLINIC_CONFIRMATION,
+  clinicContact,
+} from "../../lib/clinic";
+
+export const prerender = true;
+
+const serviceGroups = [
+  {
+    title: "Doctor Consultations",
+    items: ["Adult", "Pediatric", "Chief Physician"],
+  },
+  {
+    title: "Hardware Diagnostics",
+    items: ["Autorefractometry", "Biomicroscopy", "Volk-90D"],
+  },
+  {
+    title: "Optics Selection",
+    items: [
+      "Spherical correction",
+      "Sphero-cylindrical correction",
+      "Contact lenses",
+    ],
+  },
+  {
+    title: "Procedures & Manipulations",
+    items: [
+      "Eyelid massage",
+      "Foreign body removal",
+      "Lacrimal duct probing",
+    ],
+  },
+  {
+    title: "Injections & Therapy",
+    items: ["Parabulbar", "Subconjunctival courses"],
+  },
+];
+---
+
+<BaseLayout
+  title="Services and Price List | Med.uz.ua"
+  description="Review Med.uz.ua consultation, diagnostic, optical-selection, and clinical procedure categories. Unconfirmed prices remain pending clinic confirmation."
+>
+  <header class="border-b border-border bg-background py-16 sm:py-20 lg:py-28">
+    <Container class="grid gap-10 lg:grid-cols-12 lg:items-end lg:gap-16">
+      <div class="lg:col-span-8">
+        <p class="text-xs font-semibold uppercase tracking-[0.24em] text-primary">
+          Services &amp; price list
+        </p>
+        <h1 class="mt-6 max-w-[14ch] text-balance text-5xl font-medium leading-[0.98] tracking-[-0.035em] text-foreground sm:text-6xl lg:text-7xl">
+          A clear view of clinic services.
+        </h1>
+      </div>
+
+      <div class="lg:col-span-4">
+        <p class="max-w-xl text-base leading-7 text-muted-foreground">
+          An editorial overview of diagnostics, consultations, optical
+          selection, and clinical procedures. Prices are published only after
+          clinic confirmation.
+        </p>
+        <a
+          class="focus-ring-primary mt-6 inline-flex min-h-11 items-center border-b border-primary text-sm font-semibold text-primary transition-colors hover:border-accent hover:text-primary/80"
+          href="/services/programs"
+        >
+          View special &amp; social programs
+        </a>
+      </div>
+    </Container>
+  </header>
+
+  <section
+    class="bg-background py-16 sm:py-20 lg:py-28"
+    aria-labelledby="price-list-heading"
+  >
+    <Container>
+      <div class="grid gap-6 border-b border-border pb-8 lg:grid-cols-12 lg:items-end">
+        <div class="lg:col-span-7">
+          <p class="text-xs font-semibold uppercase tracking-[0.22em] text-primary">
+            Current structure
+          </p>
+          <h2
+            id="price-list-heading"
+            class="mt-4 text-balance text-3xl font-medium tracking-tight text-foreground sm:text-4xl"
+          >
+            Consultation and care categories
+          </h2>
+        </div>
+        <p class="max-w-lg text-sm leading-6 text-muted-foreground lg:col-span-5 lg:justify-self-end">
+          Every unconfirmed price is identified explicitly. No temporary or
+          inferred figures are shown.
+        </p>
+      </div>
+
+      <div class="divide-y divide-border">
+        {
+          serviceGroups.map((group, groupIndex) => (
+            <section
+              class="grid gap-7 py-10 sm:py-12 lg:grid-cols-12 lg:gap-12"
+              aria-labelledby={`service-group-${groupIndex}`}
+            >
+              <div class="lg:col-span-4">
+                <p class="text-xs font-semibold tabular-nums tracking-[0.18em] text-primary/60">
+                  {String(groupIndex + 1).padStart(2, "0")}
+                </p>
+                <h3
+                  id={`service-group-${groupIndex}`}
+                  class="mt-3 max-w-sm text-2xl font-medium leading-tight text-foreground sm:text-3xl"
+                >
+                  {group.title}
+                </h3>
+              </div>
+
+              <dl class="divide-y divide-border border-t border-border lg:col-span-8">
+                {group.items.map((item) => (
+                  <div class="grid min-w-0 gap-2 py-5 sm:grid-cols-[minmax(0,1fr)_minmax(13rem,auto)] sm:items-baseline sm:gap-8">
+                    <dt class="min-w-0 break-words text-sm font-medium leading-6 text-foreground sm:text-base">
+                      {item}
+                    </dt>
+                    <dd class="text-sm leading-6 text-muted-foreground sm:text-right">
+                      {PENDING_CLINIC_CONFIRMATION}
+                    </dd>
+                  </div>
+                ))}
+              </dl>
+            </section>
+          ))
+        }
+      </div>
+    </Container>
+  </section>
+
+  <section class="border-y border-border bg-muted py-16 sm:py-20" aria-labelledby="programs-heading">
+    <Container class="grid gap-8 lg:grid-cols-12 lg:items-center lg:gap-16">
+      <div class="lg:col-span-8">
+        <p class="text-xs font-semibold uppercase tracking-[0.22em] text-primary">
+          Dedicated programs
+        </p>
+        <h2
+          id="programs-heading"
+          class="mt-4 max-w-3xl text-balance text-3xl font-medium tracking-tight sm:text-4xl"
+        >
+          Special and social programs, presented separately.
+        </h2>
+      </div>
+      <div class="lg:col-span-4 lg:justify-self-end">
+        <a
+          class="focus-ring-primary inline-flex min-h-12 items-center border border-primary px-5 text-sm font-semibold text-primary transition-colors hover:bg-primary hover:text-primary-foreground"
+          href="/services/programs"
+        >
+          Explore programs
+        </a>
+      </div>
+    </Container>
+  </section>
+
+  <section class="bg-primary py-16 text-primary-foreground sm:py-20" aria-labelledby="services-action-heading">
+    <Container class="grid gap-10 lg:grid-cols-12 lg:items-end lg:gap-16">
+      <div class="lg:col-span-7">
+        <p class="text-xs font-semibold uppercase tracking-[0.22em] text-accent">
+          Next step
+        </p>
+        <h2
+          id="services-action-heading"
+          class="mt-4 max-w-2xl text-balance text-3xl font-medium tracking-tight sm:text-4xl"
+        >
+          Arrange a consultation or speak with the clinic.
+        </h2>
+      </div>
+
+      <div class="flex flex-col gap-3 sm:flex-row sm:flex-wrap lg:col-span-5 lg:justify-end">
+        <a
+          class="focus-ring-primary inline-flex min-h-12 items-center justify-center bg-primary-foreground px-6 text-sm font-semibold text-primary transition-colors hover:bg-accent hover:text-foreground"
+          href={BOOKING_HREF}
+        >
+          Book a consultation
+        </a>
+        <a
+          class="inline-flex min-h-12 items-center justify-center border border-primary-foreground/45 px-6 text-sm font-semibold text-primary-foreground transition-colors hover:border-accent hover:text-accent"
+          href={clinicContact.phoneHref}
+          aria-label={`Call the clinic at ${clinicContact.phoneDisplay}`}
+        >
+          Call the clinic
+        </a>
+      </div>
+    </Container>
+  </section>
+</BaseLayout>

@@ -4,6 +4,11 @@ import GoogleMap from "../components/clinic/GoogleMap.astro";
 import ServiceCard from "../components/clinic/ServiceCard.astro";
 import Container from "../components/ui/Container.astro";
 import BaseLayout from "../layouts/BaseLayout.astro";
+import {
+  BOOKING_HREF,
+  chiefPhysician,
+  clinicContact,
+} from "../lib/clinic";
 import { getAllActiveServices } from "../lib/cms";
 
 export const prerender = true;
@@ -95,6 +100,12 @@ function getServiceCardClass(index: number): string {
         >
           Focused care for every stage of vision.
         </h2>
+        <a
+          class="focus-ring-primary mt-7 inline-flex min-h-11 items-center border-b border-primary text-sm font-semibold text-primary transition-colors hover:border-accent"
+          href="/services"
+        >
+          View services &amp; price list
+        </a>
       </div>
 
       <ul class="mt-14 grid gap-px overflow-hidden border border-border bg-border md:grid-cols-2 lg:mt-20 lg:grid-cols-12">
@@ -129,15 +140,24 @@ function getServiceCardClass(index: number): string {
       </div>
       <div class="lg:col-span-4 lg:col-start-9">
         <p class="text-sm leading-7 text-muted-foreground sm:text-base">
-          Doctor profiles will appear here after clinic-approved biographies and
-          credentials have been supplied and verified.
+          {chiefPhysician.name} serves as {chiefPhysician.role}. The supplied
+          profile confirms {chiefPhysician.experience}. Additional credentials
+          will appear only after clinic confirmation.
         </p>
-        <a
-          class="mt-7 inline-flex min-h-11 items-center text-sm font-semibold text-primary underline underline-offset-4"
-          href="/#appointment-form"
-        >
-          Request a private consultation
-        </a>
+        <div class="mt-7 flex flex-wrap gap-x-6 gap-y-2">
+          <a
+            class="focus-ring-primary inline-flex min-h-11 items-center text-sm font-semibold text-primary underline underline-offset-4"
+            href="/about"
+          >
+            About the clinic
+          </a>
+          <a
+            class="focus-ring-primary inline-flex min-h-11 items-center text-sm font-semibold text-primary underline underline-offset-4"
+            href={BOOKING_HREF}
+          >
+            Request a consultation
+          </a>
+        </div>
       </div>
     </Container>
   </section>
@@ -156,15 +176,22 @@ function getServiceCardClass(index: number): string {
           A considered place to begin.
         </h2>
         <p class="mt-6 text-base leading-7 text-muted-foreground">
-          Med.uz.ua is based in Uzhhorod. The exact clinic address will be added
-          after confirmation by the clinic team.
+          {clinicContact.streetAddress}, {clinicContact.floor}, {clinicContact.city}.
         </p>
-        <a
-          class="focus-ring-primary mt-8 inline-flex min-h-11 items-center rounded-lg bg-primary px-5 text-sm font-semibold text-primary-foreground transition-colors hover:bg-primary/90"
-          href="/#appointment-form"
-        >
-          Book consultation
-        </a>
+        <div class="mt-8 flex flex-wrap gap-3">
+          <a
+            class="focus-ring-primary inline-flex min-h-11 items-center rounded-lg bg-primary px-5 text-sm font-semibold text-primary-foreground transition-colors hover:bg-primary/90"
+            href="/contacts"
+          >
+            Contact details
+          </a>
+          <a
+            class="focus-ring-primary inline-flex min-h-11 items-center rounded-lg border border-primary px-5 text-sm font-semibold text-primary transition-colors hover:bg-primary hover:text-primary-foreground"
+            href={BOOKING_HREF}
+          >
+            Book consultation
+          </a>
+        </div>
       </div>
       <div class="lg:col-span-8">
         <GoogleMap />

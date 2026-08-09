@@ -1,7 +1,14 @@
 ---
+import { clinicContact } from "../../lib/clinic";
+import {
+  isNavigationItemActive,
+  primaryNavigation,
+  programsNavigation,
+} from "../../lib/navigation";
 import Container from "../ui/Container.astro";
 
 const currentYear = new Date().getFullYear();
+const pathname = Astro.url.pathname;
 ---
 
 <footer class="bg-primary text-primary-foreground">
@@ -17,17 +24,26 @@ const currentYear = new Date().getFullYear();
         </a>
         <p class="mt-5 max-w-sm text-sm leading-7 text-primary-foreground/65">
           A calm digital starting point for private ophthalmology care in
-          Uzhhorod.
+          {clinicContact.city}.
         </p>
       </div>
 
       <div class="md:col-span-4 lg:col-span-3">
         <h2 class="font-sans text-xs font-semibold uppercase tracking-[0.18em] text-primary-foreground/50">
-          Clinic location
+          Clinic contact
         </h2>
         <address class="mt-5 text-sm not-italic leading-7 text-primary-foreground/75">
-          <span class="block">Uzhhorod, Ukraine</span>
-          <span class="block">Street address pending clinic confirmation</span>
+          <span class="block">
+            {clinicContact.city}, {clinicContact.country}
+          </span>
+          <span class="block">{clinicContact.streetAddress}</span>
+          <span class="block">{clinicContact.floor}</span>
+          <a
+            class="mt-2 inline-flex min-h-11 items-center border-b border-primary-foreground/25 transition-colors hover:border-primary-foreground hover:text-primary-foreground"
+            href={clinicContact.phoneHref}
+          >
+            {clinicContact.phoneDisplay}
+          </a>
         </address>
       </div>
 
@@ -35,11 +51,37 @@ const currentYear = new Date().getFullYear();
         <h2 class="font-sans text-xs font-semibold uppercase tracking-[0.18em] text-primary-foreground/50">
           Explore
         </h2>
-        <ul class="mt-5 space-y-3 text-sm text-primary-foreground/75">
-          <li><a class="inline-flex min-h-11 items-center transition-colors hover:text-primary-foreground" href="/#services">Services</a></li>
-          <li><a class="inline-flex min-h-11 items-center transition-colors hover:text-primary-foreground" href="/#doctors">Doctors</a></li>
-          <li><a class="inline-flex min-h-11 items-center transition-colors hover:text-primary-foreground" href="/#contacts">Contacts</a></li>
-          <li><a class="inline-flex min-h-11 items-center transition-colors hover:text-primary-foreground" href="/shop">Shop</a></li>
+        <ul class="mt-5 space-y-1 text-sm text-primary-foreground/75">
+          {
+            primaryNavigation.map((item) => {
+              const isActive = isNavigationItemActive(pathname, item);
+
+              return (
+                <li>
+                  <a
+                    class:list={[
+                      "inline-flex min-h-11 items-center border-b transition-colors hover:text-primary-foreground",
+                      isActive
+                        ? "border-accent text-primary-foreground"
+                        : "border-transparent",
+                    ]}
+                    href={item.href}
+                    aria-current={isActive ? "page" : undefined}
+                  >
+                    {item.label}
+                  </a>
+                </li>
+              );
+            })
+          }
+          <li>
+            <a
+              class="inline-flex min-h-11 items-center border-b border-transparent transition-colors hover:text-primary-foreground"
+              href={programsNavigation.href}
+            >
+              {programsNavigation.label}
+            </a>
+          </li>
         </ul>
       </nav>
     </div>

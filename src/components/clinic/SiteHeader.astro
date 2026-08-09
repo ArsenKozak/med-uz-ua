@@ -1,81 +1,167 @@
 ---
+import { BOOKING_HREF } from "../../lib/clinic";
+import {
+  isNavigationItemActive,
+  primaryNavigation,
+  programsNavigation,
+} from "../../lib/navigation";
 import Container from "../ui/Container.astro";
 
-const navigation = [
-  { label: "Services", href: "/#services" },
-  { label: "Doctors", href: "/#doctors" },
-  { label: "Contacts", href: "/#contacts" },
-  { label: "Shop", href: "/shop" },
-];
+const pathname = Astro.url.pathname;
 ---
 
-<header class="border-b border-border bg-background">
-  <Container class="flex h-20 items-center justify-between gap-4">
+<header class="relative z-30 border-b border-border bg-background">
+  <Container class="flex h-20 items-center justify-between gap-3">
     <a
-      class="inline-flex min-h-11 shrink-0 items-center font-serif text-2xl font-medium tracking-tight text-primary"
+      class="focus-ring-primary inline-flex min-h-11 shrink-0 items-center font-serif text-2xl font-medium tracking-tight text-primary"
       href="/"
       aria-label="Med.uz.ua home"
     >
       Med.uz.ua
     </a>
 
-    <div class="flex items-center gap-2 sm:gap-4 lg:gap-9">
-      <nav class="hidden md:block" aria-label="Primary navigation">
-        <ul class="flex items-center gap-4 lg:gap-9">
+    <div class="flex min-w-0 items-center gap-2 lg:gap-3">
+      <nav class="hidden lg:block" aria-label="Primary navigation">
+        <ul class="flex items-center gap-1 xl:gap-2">
           {
-            navigation.map(({ label, href }) => (
-              <li>
-                <a
-                  class="inline-flex min-h-11 items-center text-sm font-medium text-foreground/70 transition-colors duration-200 hover:text-primary"
-                  href={href}
-                >
-                  {label}
-                </a>
-              </li>
-            ))
+            primaryNavigation.map((item) => {
+              const isActive = isNavigationItemActive(pathname, item);
+
+              return (
+                <li>
+                  <a
+                    class:list={[
+                      "focus-ring-primary inline-flex min-h-11 items-center border-b-2 px-2 text-sm font-medium transition-colors duration-200 xl:px-3",
+                      isActive
+                        ? "border-accent text-primary"
+                        : "border-transparent text-foreground/70 hover:border-border hover:text-primary",
+                    ]}
+                    href={item.href}
+                    aria-current={isActive ? "page" : undefined}
+                  >
+                    {item.label}
+                  </a>
+                </li>
+              );
+            })
           }
         </ul>
       </nav>
 
-      <div class="flex items-center gap-2 sm:gap-3">
-        <a
-          class="focus-ring-primary inline-flex min-h-11 items-center justify-center rounded-lg bg-primary px-3 text-center text-sm font-semibold text-primary-foreground transition-colors duration-200 hover:bg-primary/90 sm:px-5"
-          href="/#appointment-form"
-          aria-label="Book consultation"
-        >
-          <span class="sm:hidden" aria-hidden="true">Book</span>
-          <span class="hidden sm:inline" aria-hidden="true">Book consultation</span>
-        </a>
+      <a
+        class="focus-ring-primary hidden min-h-11 items-center justify-center rounded-lg bg-primary px-3 text-center text-sm font-semibold text-primary-foreground transition-colors duration-200 hover:bg-primary/90 lg:inline-flex xl:px-5"
+        href={BOOKING_HREF}
+      >
+        <span class="xl:hidden">Book</span>
+        <span class="hidden xl:inline">Book consultation</span>
+      </a>
 
-        <button
-          class="focus-ring-primary relative inline-flex size-11 items-center justify-center rounded-lg border border-border bg-card text-primary transition-colors duration-200 hover:bg-muted"
-          type="button"
-          aria-label="Open cart, 0 items"
-          aria-haspopup="dialog"
-          aria-controls="cart-dialog"
-          data-cart-trigger
+      <button
+        class="focus-ring-primary relative inline-flex size-11 shrink-0 items-center justify-center rounded-lg border border-border bg-card text-primary transition-colors duration-200 hover:bg-muted"
+        type="button"
+        aria-label="Open cart, 0 items"
+        aria-haspopup="dialog"
+        aria-controls="cart-dialog"
+        data-cart-trigger
+      >
+        <svg
+          class="size-5"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="1.5"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          aria-hidden="true"
+          focusable="false"
         >
+          <path d="M6.75 8.25h10.5l-.75 10.5h-9l-.75-10.5Z"></path>
+          <path d="M9 8.25V6a3 3 0 0 1 6 0v2.25"></path>
+        </svg>
+        <span
+          class="absolute -right-1.5 -top-1.5 inline-flex min-h-5 min-w-5 items-center justify-center rounded-full bg-accent px-1 text-[0.65rem] font-bold leading-none text-primary"
+          data-cart-count
+          aria-hidden="true"
+        >0</span>
+      </button>
+
+      <details class="group relative lg:hidden" data-mobile-navigation>
+        <summary
+          class="focus-ring-primary inline-flex size-11 cursor-pointer list-none items-center justify-center rounded-lg border border-border bg-card text-primary transition-colors duration-200 hover:bg-muted [&::-webkit-details-marker]:hidden"
+        >
+          <span class="sr-only">Toggle navigation menu</span>
           <svg
-            class="size-5"
+            class="size-5 group-open:hidden"
             viewBox="0 0 24 24"
             fill="none"
             stroke="currentColor"
             stroke-width="1.5"
             stroke-linecap="round"
-            stroke-linejoin="round"
             aria-hidden="true"
             focusable="false"
           >
-            <path d="M6.75 8.25h10.5l-.75 10.5h-9l-.75-10.5Z"></path>
-            <path d="M9 8.25V6a3 3 0 0 1 6 0v2.25"></path>
+            <path d="M4 7.5h16M4 12h16M4 16.5h16"></path>
           </svg>
-          <span
-            class="absolute -right-1.5 -top-1.5 inline-flex min-h-5 min-w-5 items-center justify-center rounded-full bg-accent px-1 text-[0.65rem] font-bold leading-none text-primary"
-            data-cart-count
+          <svg
+            class="hidden size-5 group-open:block"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="1.5"
+            stroke-linecap="round"
             aria-hidden="true"
-          >0</span>
-        </button>
-      </div>
+            focusable="false"
+          >
+            <path d="m6 6 12 12M18 6 6 18"></path>
+          </svg>
+        </summary>
+
+        <div
+          class="absolute right-0 top-[calc(100%+0.75rem)] w-[min(20rem,calc(100vw-2.5rem))] border border-border bg-card p-3 shadow-concierge"
+        >
+          <nav aria-label="Mobile navigation">
+            <ul class="space-y-1">
+              {
+                primaryNavigation.map((item) => {
+                  const isActive = isNavigationItemActive(pathname, item);
+
+                  return (
+                    <li>
+                      <a
+                        class:list={[
+                          "focus-ring-primary flex min-h-12 items-center border-l-2 px-4 text-sm font-medium transition-colors duration-200",
+                          isActive
+                            ? "border-accent bg-muted text-primary"
+                            : "border-transparent text-foreground/75 hover:bg-muted hover:text-primary",
+                        ]}
+                        href={item.href}
+                        aria-current={isActive ? "page" : undefined}
+                      >
+                        {item.label}
+                      </a>
+                    </li>
+                  );
+                })
+              }
+              <li class="border-t border-border pt-1">
+                <a
+                  class="focus-ring-primary flex min-h-12 items-center border-l-2 border-transparent px-4 text-sm font-medium text-foreground/75 transition-colors duration-200 hover:bg-muted hover:text-primary"
+                  href={programsNavigation.href}
+                >
+                  {programsNavigation.label}
+                </a>
+              </li>
+            </ul>
+          </nav>
+
+          <a
+            class="focus-ring-primary mt-3 inline-flex min-h-12 w-full items-center justify-center rounded-lg bg-primary px-5 text-center text-sm font-semibold text-primary-foreground transition-colors duration-200 hover:bg-primary/90"
+            href={BOOKING_HREF}
+          >
+            Book a consultation
+          </a>
+        </div>
+      </details>
     </div>
   </Container>
 </header>
@@ -102,4 +188,36 @@ const navigation = [
       );
     }
   });
+
+  const mobileMenus = document.querySelectorAll<HTMLDetailsElement>(
+    "details[data-mobile-navigation]",
+  );
+
+  for (const menu of mobileMenus) {
+    const summary = menu.querySelector<HTMLElement>("summary");
+
+    menu.addEventListener("keydown", (event) => {
+      if (event.key !== "Escape" || !menu.open) return;
+
+      event.preventDefault();
+      menu.open = false;
+      summary?.focus();
+    });
+
+    menu.addEventListener("click", (event) => {
+      const target = event.target;
+
+      if (target instanceof Element && target.closest("a")) {
+        menu.open = false;
+      }
+    });
+
+    document.addEventListener("pointerdown", (event) => {
+      const target = event.target;
+
+      if (menu.open && target instanceof Node && !menu.contains(target)) {
+        menu.open = false;
+      }
+    });
+  }
 </script>

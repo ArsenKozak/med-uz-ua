@@ -34,6 +34,8 @@ export interface ProductSummary {
 type ServiceEntry = CollectionEntry<"services">;
 type ProductEntry = CollectionEntry<"products">;
 
+const RESERVED_SERVICE_SLUG = "programs";
+
 function mapServiceEntry(entry: ServiceEntry): ServiceDetail {
   return {
     slug: entry.id,
@@ -80,7 +82,8 @@ function compareProductsById(
 export async function getAllActiveServices(): Promise<ServiceDetail[]> {
   const entries = await getCollection(
     "services",
-    ({ data }) => data.status === "active",
+    ({ data, id }) =>
+      data.status === "active" && id !== RESERVED_SERVICE_SLUG,
   );
 
   return entries.map(mapServiceEntry).sort(compareServicesBySlug);
@@ -100,7 +103,7 @@ export async function getAllActiveProducts(): Promise<
 export async function getServiceBySlug(
   slug: string,
 ): Promise<ServiceDetail | null> {
-  if (slug.length === 0) return null;
+  if (slug.length === 0 || slug === RESERVED_SERVICE_SLUG) return null;
 
   const entry = await getEntry("services", slug);
 
