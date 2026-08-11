@@ -1,4 +1,6 @@
 ---
+import GoogleMap from "../clinic/GoogleMap.astro";
+import Wayfinding from "../clinic/Wayfinding.astro";
 import Container from "../ui/Container.astro";
 import BaseLayout from "../../layouts/BaseLayout.astro";
 import { clinicContact } from "../../lib/clinic";
@@ -108,12 +110,31 @@ const { locale } = Astro.props;
     </Container>
   </section>
 
-  <section
-    class="bg-background py-20 sm:py-24 lg:py-32"
-    aria-labelledby="map-heading"
-  >
+  <section class="bg-background py-20 sm:py-24 lg:py-32" aria-labelledby="wayfinding-heading">
     <Container>
-      <div class="mb-10 max-w-3xl lg:mb-14">
+      <div class="grid gap-8 lg:grid-cols-12 lg:items-end">
+        <div class="lg:col-span-8">
+          <p class="text-xs font-semibold uppercase tracking-[0.22em] text-primary">
+            {t(locale, "contacts.wayfindingEyebrow")}
+          </p>
+          <h2 id="wayfinding-heading" class="mt-5 max-w-3xl text-balance text-4xl font-medium leading-tight tracking-tight sm:text-5xl lg:text-6xl">
+            {t(locale, "contacts.wayfindingTitle")}
+          </h2>
+        </div>
+        <p class="max-w-md text-sm leading-7 text-muted-foreground lg:col-span-4 lg:justify-self-end">
+          {t(locale, "contacts.wayfindingIntro")}
+        </p>
+      </div>
+
+      <div class="mt-12 lg:mt-16">
+        <Wayfinding locale={locale} />
+      </div>
+    </Container>
+  </section>
+
+  <section class="border-t border-border bg-muted py-20 sm:py-24 lg:py-32" aria-labelledby="map-heading">
+    <Container class="grid gap-10 lg:grid-cols-12 lg:items-center lg:gap-16">
+      <div class="lg:col-span-4">
         <p class="text-xs font-semibold uppercase tracking-[0.22em] text-primary">
           {t(locale, "contacts.mapEyebrow")}
         </p>
@@ -123,31 +144,17 @@ const { locale } = Astro.props;
         >
           {t(locale, "contacts.mapTitle")}
         </h2>
-      </div>
-
-      <div class="relative min-h-[24rem] overflow-hidden border border-border bg-muted sm:min-h-[30rem]">
-        <div class="absolute inset-x-0 top-1/4 h-px bg-border" aria-hidden="true"></div>
-        <div class="absolute inset-x-0 top-3/4 h-px bg-border" aria-hidden="true"></div>
-        <div class="absolute inset-y-0 left-1/4 w-px bg-border" aria-hidden="true"></div>
-        <div class="absolute inset-y-0 left-3/4 w-px bg-border" aria-hidden="true"></div>
-
-        <div class="relative z-10 flex min-h-[24rem] items-center justify-center p-6 sm:min-h-[30rem] sm:p-10">
-          <div class="max-w-xl border border-border bg-background p-7 text-center sm:p-10">
-            <p class="text-xs font-semibold uppercase tracking-[0.2em] text-primary">
-              {t(locale, "contacts.mapIntegrationEyebrow")}
-            </p>
-            <p class="mt-5 font-serif text-3xl leading-tight text-foreground sm:text-4xl">
-              {t(locale, "contacts.mapPending")}
-            </p>
-            <p class="mx-auto mt-5 max-w-md text-sm leading-7 text-muted-foreground">
-              {t(locale, "contacts.mapBody")}
-            </p>
-          </div>
-        </div>
-
-        <p class="absolute bottom-5 left-5 right-5 z-10 border-l-2 border-accent bg-background px-4 py-3 text-sm font-medium text-foreground sm:bottom-7 sm:left-7 sm:right-auto">
-          {t(locale, "clinic.city")} · {t(locale, "clinic.street")} · {t(locale, "clinic.floor")}
+        <p class="mt-6 max-w-md text-sm leading-7 text-muted-foreground">
+          {t(locale, "contacts.mapBody")}
         </p>
+        <address class="mt-7 border-l-2 border-accent pl-5 text-sm not-italic leading-7 text-foreground">
+          <span class="block">{t(locale, "clinic.city")}</span>
+          <span class="block">{t(locale, "clinic.street")}</span>
+          <span class="block">{t(locale, "clinic.floor")}</span>
+        </address>
+      </div>
+      <div class="lg:col-span-8">
+        <GoogleMap title={t(locale, "contacts.mapFrameTitle")} />
       </div>
     </Container>
   </section>

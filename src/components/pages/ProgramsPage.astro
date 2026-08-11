@@ -167,6 +167,16 @@ const callAriaLabel = t(locale, "programs.callAria").replace(
         >
           {t(locale, "programs.enquiriesTitle")}
         </h2>
+        <p class="mt-5 max-w-xl text-sm leading-6 text-muted-foreground">
+          {t(locale, "programs.relatedPrompt")} {" "}
+          <a class="font-semibold text-primary underline underline-offset-4" href={localizePath("/services", locale)}>
+            {t(locale, "programs.servicesLink")}
+          </a>
+          <span aria-hidden="true"> · </span>
+          <a class="font-semibold text-primary underline underline-offset-4" href={localizePath("/shop", locale)}>
+            {t(locale, "programs.shopLink")}
+          </a>
+        </p>
       </div>
 
       <div class="flex flex-col gap-3 sm:flex-row sm:flex-wrap lg:col-span-5 lg:justify-end">

@@ -117,6 +117,15 @@ const categoryKeys: Record<ServiceDetail["category"], TranslationKey> = {
             }
           </ol>
         </div>
+
+        <aside class="mt-12 flex flex-col gap-5 border-y border-border py-7 sm:flex-row sm:items-center sm:justify-between" aria-label={t(locale, "serviceDetail.shopAria")}>
+          <p class="max-w-2xl text-sm leading-6 text-muted-foreground">
+            {t(locale, "serviceDetail.shopPrompt")}
+          </p>
+          <a class="inline-flex min-h-11 shrink-0 items-center border-b border-primary text-sm font-semibold text-primary" href={localizePath("/shop", locale)}>
+            {t(locale, "serviceDetail.shopLink")}
+          </a>
+        </aside>
       </Container>
     </section>
   </article>

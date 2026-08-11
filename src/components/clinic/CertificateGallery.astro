@@ -1,0 +1,247 @@
+---
+import type { VerifiedImageAsset } from "../../lib/assets";
+import { t, type Locale } from "../../lib/i18n";
+
+interface Props {
+  locale: Locale;
+  certificates: readonly VerifiedImageAsset[];
+}
+
+const { locale, certificates } = Astro.props;
+const firstCertificate = certificates.at(0);
+const total = certificates.length;
+---
+
+<div
+  class="max-w-full"
+  data-certificate-gallery
+  data-position-template={t(locale, "about.certificatePosition")}
+>
+  <ul
+    class="flex max-w-full snap-x snap-mandatory gap-4 overflow-x-auto overscroll-x-contain pb-5 [scrollbar-width:thin] sm:gap-6"
+    aria-label={t(locale, "about.certificateGalleryAria")}
+  >
+    {
+      certificates.map((certificate, index) => {
+        const position = t(locale, "about.certificatePosition", {
+          current: index + 1,
+          total,
+        });
+
+        return (
+          <li class="w-[84vw] max-w-md shrink-0 snap-start sm:w-[58vw] lg:w-[38vw]">
+            <button
+              type="button"
+              class="group block w-full border border-border bg-card p-3 text-left transition-colors hover:border-accent focus-visible:border-primary sm:p-4"
+              aria-label={`${t(locale, "about.certificateOpen")}. ${position}`}
+              data-certificate-open
+              data-certificate-src={certificate.src}
+              data-certificate-width={String(certificate.width)}
+              data-certificate-height={String(certificate.height)}
+            >
+              <span class="flex aspect-[4/3] items-center justify-center overflow-hidden bg-muted">
+                <img
+                  class="h-full w-full object-contain transition-transform duration-300 group-hover:scale-[1.015]"
+                  src={certificate.src}
+                  width={certificate.width}
+                  height={certificate.height}
+                  alt={t(locale, "about.certificateImageAlt")}
+                  loading="lazy"
+                  decoding="async"
+                />
+              </span>
+              <span class="mt-3 block text-xs font-semibold uppercase tracking-[0.14em] text-muted-foreground">
+                {position}
+              </span>
+            </button>
+          </li>
+        );
+      })
+    }
+  </ul>
+
+  {
+    firstCertificate && (
+      <dialog
+        class="m-auto max-h-[calc(100dvh-2rem)] w-[min(72rem,calc(100vw-2rem))] max-w-none border-0 bg-transparent p-0 text-foreground backdrop:bg-primary/90 backdrop:backdrop-blur-sm"
+        aria-label={t(locale, "about.certificateDialogAria")}
+        data-certificate-dialog
+      >
+        <div class="flex max-h-[calc(100dvh-2rem)] min-h-0 flex-col overflow-hidden rounded-xl bg-background shadow-concierge">
+          <div class="flex min-h-14 items-center justify-between gap-5 border-b border-border px-4 sm:px-6">
+            <p
+              class="text-xs font-semibold uppercase tracking-[0.14em] text-muted-foreground"
+              aria-live="polite"
+              data-certificate-position
+            >
+              {t(locale, "about.certificatePosition", {
+                current: 1,
+                total,
+              })}
+            </p>
+            <form method="dialog">
+              <button
+                type="submit"
+                class="inline-flex min-h-11 min-w-11 items-center justify-center rounded-full border border-border px-4 text-sm font-semibold transition-colors hover:border-primary"
+                aria-label={t(locale, "about.certificateClose")}
+                data-certificate-close
+              >
+                <span aria-hidden="true">×</span>
+                <span class="sr-only">{t(locale, "about.certificateClose")}</span>
+              </button>
+            </form>
+          </div>
+
+          <div class="grid min-h-0 flex-1 grid-cols-[3.25rem_minmax(0,1fr)_3.25rem] items-center gap-2 p-2 sm:grid-cols-[4rem_minmax(0,1fr)_4rem] sm:gap-4 sm:p-5">
+            <button
+              type="button"
+              class="inline-flex min-h-12 min-w-12 items-center justify-center rounded-full border border-border bg-card text-2xl transition-colors hover:border-primary"
+              aria-label={t(locale, "about.certificatePrevious")}
+              data-certificate-previous
+            >
+              <span aria-hidden="true">←</span>
+            </button>
+
+            <div class="flex min-h-0 items-center justify-center overflow-auto">
+              <img
+                class="max-h-[calc(100dvh-10rem)] w-auto max-w-full object-contain"
+                src={firstCertificate.src}
+                width={firstCertificate.width}
+                height={firstCertificate.height}
+                alt={t(locale, "about.certificateImageAlt")}
+                decoding="async"
+                data-certificate-dialog-image
+              />
+            </div>
+
+            <button
+              type="button"
+              class="inline-flex min-h-12 min-w-12 items-center justify-center rounded-full border border-border bg-card text-2xl transition-colors hover:border-primary"
+              aria-label={t(locale, "about.certificateNext")}
+              data-certificate-next
+            >
+              <span aria-hidden="true">→</span>
+            </button>
+          </div>
+        </div>
+      </dialog>
+    )
+  }
+</div>
+
+<script>
+  for (const candidate of document.querySelectorAll("[data-certificate-gallery]")) {
+    if (!(candidate instanceof HTMLElement)) {
+      continue;
+    }
+
+    const dialog = candidate.querySelector("[data-certificate-dialog]");
+    const dialogImage = candidate.querySelector(
+      "[data-certificate-dialog-image]",
+    );
+    const position = candidate.querySelector("[data-certificate-position]");
+    const closeButton = candidate.querySelector("[data-certificate-close]");
+    const previousButton = candidate.querySelector(
+      "[data-certificate-previous]",
+    );
+    const nextButton = candidate.querySelector("[data-certificate-next]");
+    const triggers: HTMLButtonElement[] = [];
+
+    for (const trigger of candidate.querySelectorAll("[data-certificate-open]")) {
+      if (trigger instanceof HTMLButtonElement) {
+        triggers.push(trigger);
+      }
+    }
+
+    if (
+      !(dialog instanceof HTMLDialogElement) ||
+      !(dialogImage instanceof HTMLImageElement) ||
+      !(position instanceof HTMLElement) ||
+      !(closeButton instanceof HTMLButtonElement) ||
+      !(previousButton instanceof HTMLButtonElement) ||
+      !(nextButton instanceof HTMLButtonElement) ||
+      triggers.length === 0
+    ) {
+      continue;
+    }
+
+    let activeIndex = 0;
+    let triggerToRestore: HTMLButtonElement | null = null;
+
+    const renderCertificate = (requestedIndex: number): void => {
+      const normalizedIndex =
+        ((requestedIndex % triggers.length) + triggers.length) % triggers.length;
+      const trigger = triggers[normalizedIndex];
+
+      if (trigger === undefined) {
+        return;
+      }
+
+      const source = trigger.dataset.certificateSrc;
+      const width = Number.parseInt(trigger.dataset.certificateWidth ?? "", 10);
+      const height = Number.parseInt(trigger.dataset.certificateHeight ?? "", 10);
+
+      if (
+        source === undefined ||
+        !Number.isSafeInteger(width) ||
+        !Number.isSafeInteger(height) ||
+        width <= 0 ||
+        height <= 0
+      ) {
+        return;
+      }
+
+      activeIndex = normalizedIndex;
+      dialogImage.src = source;
+      dialogImage.width = width;
+      dialogImage.height = height;
+
+      const template = candidate.dataset.positionTemplate ?? "{current} / {total}";
+      position.textContent = template
+        .replace("{current}", String(activeIndex + 1))
+        .replace("{total}", String(triggers.length));
+    };
+
+    triggers.forEach((trigger, index) => {
+      trigger.addEventListener("click", () => {
+        triggerToRestore = trigger;
+        renderCertificate(index);
+
+        if (!dialog.open) {
+          dialog.showModal();
+        }
+
+        closeButton.focus();
+      });
+    });
+
+    previousButton.addEventListener("click", () => {
+      renderCertificate(activeIndex - 1);
+    });
+
+    nextButton.addEventListener("click", () => {
+      renderCertificate(activeIndex + 1);
+    });
+
+    dialog.addEventListener("keydown", (event) => {
+      if (event.key === "ArrowLeft") {
+        event.preventDefault();
+        renderCertificate(activeIndex - 1);
+      } else if (event.key === "ArrowRight") {
+        event.preventDefault();
+        renderCertificate(activeIndex + 1);
+      } else if (event.key === "Home") {
+        event.preventDefault();
+        renderCertificate(0);
+      } else if (event.key === "End") {
+        event.preventDefault();
+        renderCertificate(triggers.length - 1);
+      }
+    });
+
+    dialog.addEventListener("close", () => {
+      triggerToRestore?.focus();
+      triggerToRestore = null;
+    });
+  }
+</script>

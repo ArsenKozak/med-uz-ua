@@ -1,5 +1,6 @@
 ---
-import { clinicContact } from "../../lib/clinic";
+import { clinicContact, socialChannels } from "../../lib/clinic";
+import { brandImageAssets } from "../../lib/assets";
 import {
   defaultLocale,
   localizePath,
@@ -8,8 +9,10 @@ import {
 } from "../../lib/i18n";
 import {
   isNavigationItemActive,
+  normalizePathname,
   primaryNavigation,
   programsNavigation,
+  type NavigationItem,
 } from "../../lib/navigation";
 import Container from "../ui/Container.astro";
 
@@ -46,25 +49,49 @@ const localizedProgramsNavigation = {
   href: localizePath(programsNavigation.href, locale),
   label: t(locale, "nav.programs"),
 };
+const footerNavigation = [
+  localizedPrimaryNavigation[0],
+  localizedProgramsNavigation,
+  ...localizedPrimaryNavigation.slice(1),
+].filter((item) => item !== undefined);
+function isFooterItemActive(item: NavigationItem): boolean {
+  return isNavigationItemActive(pathname, item);
+}
+
+function isFooterItemCurrent(item: NavigationItem): boolean {
+  return normalizePathname(pathname) === normalizePathname(item.href);
+}
 ---
 
 <footer class="bg-primary text-primary-foreground">
   <Container class="py-16 sm:py-20 lg:py-24">
     <div class="grid gap-12 border-b border-primary-foreground/15 pb-14 md:grid-cols-12">
-      <div class="md:col-span-5 lg:col-span-6">
+      <div class="md:col-span-6 lg:col-span-4">
         <a
           class="inline-flex min-h-11 items-center font-serif text-3xl font-medium tracking-tight"
           href={localizePath("/", locale)}
           aria-label={t(locale, "a11y.home")}
         >
+          <img
+            class="mr-3 h-12 w-[4.9rem] object-contain"
+            src={brandImageAssets.legacyClinicMark.src}
+            width={brandImageAssets.legacyClinicMark.width}
+            height={brandImageAssets.legacyClinicMark.height}
+            alt=""
+            loading="lazy"
+            decoding="async"
+          />
           Med.uz.ua
         </a>
+        <p class="mt-3 max-w-xs text-xs uppercase leading-5 tracking-[0.16em] text-primary-foreground/45">
+          {t(locale, "clinic.publicName")}
+        </p>
         <p class="mt-5 max-w-sm text-sm leading-7 text-primary-foreground/65">
           {t(locale, "footer.tagline")}
         </p>
       </div>
 
-      <div class="md:col-span-4 lg:col-span-3">
+      <div class="md:col-span-6 lg:col-span-3">
         <h2 class="font-sans text-xs font-semibold uppercase tracking-[0.18em] text-primary-foreground/50">
           {t(locale, "footer.contactHeading")}
         </h2>
@@ -83,14 +110,15 @@ const localizedProgramsNavigation = {
         </address>
       </div>
 
-      <nav class="md:col-span-3" aria-label={t(locale, "a11y.footerNavigation")}>
+      <nav class="md:col-span-6 lg:col-span-3" aria-label={t(locale, "a11y.footerNavigation")}>
         <h2 class="font-sans text-xs font-semibold uppercase tracking-[0.18em] text-primary-foreground/50">
           {t(locale, "footer.explore")}
         </h2>
         <ul class="mt-5 space-y-1 text-sm text-primary-foreground/75">
           {
-            localizedPrimaryNavigation.map((item) => {
-              const isActive = isNavigationItemActive(pathname, item);
+            footerNavigation.map((item) => {
+              const isActive = isFooterItemActive(item);
+              const isCurrent = isFooterItemCurrent(item);
 
               return (
                 <li>
@@ -102,7 +130,7 @@ const localizedProgramsNavigation = {
                         : "border-transparent",
                     ]}
                     href={item.href}
-                    aria-current={isActive ? "page" : undefined}
+                    aria-current={isCurrent ? "page" : undefined}
                   >
                     {item.label}
                   </a>
@@ -110,16 +138,31 @@ const localizedProgramsNavigation = {
               );
             })
           }
-          <li>
-            <a
-              class="inline-flex min-h-11 items-center border-b border-transparent transition-colors hover:text-primary-foreground"
-              href={localizedProgramsNavigation.href}
-            >
-              {localizedProgramsNavigation.label}
-            </a>
-          </li>
         </ul>
       </nav>
+
+      <div class="md:col-span-6 lg:col-span-2">
+        <h2 class="font-sans text-xs font-semibold uppercase tracking-[0.18em] text-primary-foreground/50">
+          {t(locale, "footer.socialHeading")}
+        </h2>
+        <ul class="mt-5 space-y-1 text-sm text-primary-foreground/75">
+          {
+            socialChannels.map((channel) => (
+              <li>
+                <a
+                  class="inline-flex min-h-11 items-center border-b border-transparent transition-colors hover:border-primary-foreground/40 hover:text-primary-foreground"
+                  href={channel.href}
+                  target="_blank"
+                  rel="noreferrer"
+                >
+                  {channel.label}
+                  <span class="ml-1.5 text-primary-foreground/35" aria-hidden="true">↗</span>
+                </a>
+              </li>
+            ))
+          }
+        </ul>
+      </div>
     </div>
 
     <div class="flex flex-col gap-3 pt-7 text-xs text-primary-foreground/50 sm:flex-row sm:items-center sm:justify-between">

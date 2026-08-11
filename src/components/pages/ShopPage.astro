@@ -2,12 +2,27 @@
 import ProductCard from "../commerce/ProductCard.astro";
 import Container from "../ui/Container.astro";
 import BaseLayout from "../../layouts/BaseLayout.astro";
-import type { ProductSummary } from "../../lib/cms";
-import { t, type Locale } from "../../lib/i18n";
+import type {
+  ProductCategory,
+  ProductSummary,
+} from "../../lib/cms";
+import {
+  localizePath,
+  t,
+  type Locale,
+  type TranslationKey,
+} from "../../lib/i18n";
 
 interface Props {
   locale: Locale;
   products: readonly ProductSummary[];
+}
+
+type CatalogFilter = "all" | ProductCategory;
+
+interface CatalogFilterOption {
+  readonly value: CatalogFilter;
+  readonly labelKey: TranslationKey;
 }
 
 const { locale, products } = Astro.props;
@@ -15,6 +30,28 @@ const hasPendingProducts = products.some(
   (product) =>
     product.verificationStatus === "pending-clinic-confirmation",
 );
+const categoryCounts: Record<ProductCategory, number> = {
+  lenses: 0,
+  frames: 0,
+  sunglasses: 0,
+  care: 0,
+};
+
+for (const product of products) {
+  categoryCounts[product.category] += 1;
+}
+
+const catalogFilters: readonly CatalogFilterOption[] = [
+  { value: "all", labelKey: "shop.filterAll" },
+  { value: "lenses", labelKey: "shop.filterLenses" },
+  { value: "frames", labelKey: "shop.filterFrames" },
+  { value: "sunglasses", labelKey: "shop.filterSunglasses" },
+  { value: "care", labelKey: "shop.filterCare" },
+];
+
+function getFilterCount(filter: CatalogFilter): number {
+  return filter === "all" ? products.length : categoryCounts[filter];
+}
 ---
 
 <BaseLayout
@@ -43,7 +80,12 @@ const hasPendingProducts = products.some(
     </Container>
   </section>
 
-  <section class="bg-background py-16 sm:py-20 lg:py-28" aria-labelledby="catalog-heading">
+  <section
+    class="overflow-x-hidden bg-background py-16 sm:py-20 lg:py-28"
+    aria-labelledby="catalog-heading"
+    data-shop-catalog
+    data-filter-status-template={t(locale, "shop.filterStatus")}
+  >
     <Container>
       <div class="flex flex-col gap-5 border-b border-border pb-7 sm:flex-row sm:items-end sm:justify-between">
         <div>
@@ -64,10 +106,65 @@ const hasPendingProducts = products.some(
       </div>
 
       {
+        products.length > 0 && (
+          <div class="mt-8 grid gap-4 border-b border-border pb-8 lg:grid-cols-[minmax(0,1fr)_auto] lg:items-end">
+            <div
+              role="group"
+              aria-labelledby="catalog-filter-label"
+              class="min-w-0"
+            >
+              <p
+                id="catalog-filter-label"
+                class="text-xs font-semibold uppercase tracking-[0.18em] text-muted-foreground"
+              >
+                {t(locale, "shop.filterLabel")}
+              </p>
+              <div class="mt-3 flex max-w-full flex-wrap gap-2">
+                {catalogFilters.map((filter) => (
+                  <button
+                    class="focus-ring-primary inline-flex min-h-11 items-center gap-2 rounded-full border border-border bg-card px-4 text-sm font-semibold text-foreground transition-colors hover:border-primary hover:text-primary aria-pressed:border-primary aria-pressed:bg-primary aria-pressed:text-primary-foreground"
+                    type="button"
+                    aria-controls="shop-catalog-products"
+                    aria-pressed={filter.value === "all" ? "true" : "false"}
+                    data-catalog-filter={filter.value}
+                  >
+                    <span>{t(locale, filter.labelKey)}</span>
+                    <span
+                      class="text-xs tabular-nums opacity-65"
+                      aria-hidden="true"
+                    >
+                      {getFilterCount(filter.value)}
+                    </span>
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            <p
+              class="text-sm tabular-nums text-muted-foreground lg:text-right"
+              role="status"
+              aria-live="polite"
+              aria-atomic="true"
+              data-filter-status
+            >
+              {t(locale, "shop.filterStatus", { count: products.length })}
+            </p>
+          </div>
+        )
+      }
+
+      {
         products.length > 0 ? (
-          <ul class="mt-10 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 lg:gap-6">
+          <ul
+            id="shop-catalog-products"
+            class="mt-10 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3 lg:gap-6 xl:grid-cols-4"
+          >
             {products.map((product) => (
-              <li class="min-w-0">
+              <li
+                class="min-w-0"
+                data-catalog-item
+                data-product-category={product.category}
+              >
                 <ProductCard product={product} locale={locale} />
               </li>
             ))}
@@ -83,6 +180,103 @@ const hasPendingProducts = products.some(
           </div>
         )
       }
+
+      <aside class="mt-14 border-y border-border bg-muted px-6 py-8 sm:px-8 sm:py-10 lg:mt-20 lg:grid lg:grid-cols-12 lg:items-end lg:gap-12 lg:px-10">
+        <div class="lg:col-span-8">
+          <p class="text-xs font-semibold uppercase tracking-[0.2em] text-primary">
+            {t(locale, "shop.prescriptionEyebrow")}
+          </p>
+          <h2 class="mt-3 text-balance text-3xl font-medium tracking-tight text-foreground sm:text-4xl">
+            {t(locale, "shop.prescriptionTitle")}
+          </h2>
+          <p class="mt-4 max-w-2xl text-sm leading-7 text-muted-foreground sm:text-base">
+            {t(locale, "shop.prescriptionBody")}
+          </p>
+        </div>
+        <div class="mt-7 lg:col-span-4 lg:mt-0 lg:justify-self-end">
+          <a
+            class="focus-ring-primary inline-flex min-h-12 items-center border-b border-primary text-sm font-semibold text-primary transition-colors hover:border-accent"
+            href={localizePath("/services#price-list-heading", locale)}
+          >
+            {t(locale, "shop.prescriptionAction")}
+          </a>
+        </div>
+      </aside>
     </Container>
   </section>
 </BaseLayout>
+
+<script>
+  type CatalogFilter = "all" | "lenses" | "frames" | "sunglasses" | "care";
+
+  function isCatalogFilter(value: string | undefined): value is CatalogFilter {
+    return (
+      value === "all" ||
+      value === "lenses" ||
+      value === "frames" ||
+      value === "sunglasses" ||
+      value === "care"
+    );
+  }
+
+  document.querySelectorAll<HTMLElement>("[data-shop-catalog]").forEach(
+    (catalog) => {
+      if (catalog.dataset.filterBound === "true") return;
+
+      const buttons = catalog.querySelectorAll<HTMLButtonElement>(
+        "button[data-catalog-filter]",
+      );
+      const items = catalog.querySelectorAll<HTMLElement>(
+        "[data-catalog-item]",
+      );
+      const status = catalog.querySelector<HTMLElement>("[data-filter-status]");
+      const statusTemplate = catalog.dataset.filterStatusTemplate;
+
+      if (buttons.length === 0 || status === null || statusTemplate === undefined) {
+        return;
+      }
+
+      catalog.dataset.filterBound = "true";
+      const statusElement = status;
+      const resolvedStatusTemplate = statusTemplate;
+
+      function applyFilter(filter: CatalogFilter): void {
+        let visibleCount = 0;
+
+        for (const item of items) {
+          const isVisible =
+            filter === "all" || item.dataset.productCategory === filter;
+          item.hidden = !isVisible;
+
+          if (isVisible) visibleCount += 1;
+        }
+
+        for (const button of buttons) {
+          button.setAttribute(
+            "aria-pressed",
+            String(button.dataset.catalogFilter === filter),
+          );
+        }
+
+        statusElement.textContent = resolvedStatusTemplate.replace(
+          "{count}",
+          String(visibleCount),
+        );
+      }
+
+      for (const button of buttons) {
+        button.addEventListener("click", () => {
+          const filter = button.dataset.catalogFilter;
+
+          if (isCatalogFilter(filter)) applyFilter(filter);
+        });
+      }
+    },
+  );
+</script>
+
+<style>
+  [data-catalog-item][hidden] {
+    display: none;
+  }
+</style>

@@ -1,6 +1,8 @@
 ---
 import Container from "../ui/Container.astro";
 import BaseLayout from "../../layouts/BaseLayout.astro";
+import CertificateGallery from "../clinic/CertificateGallery.astro";
+import { certificateAssets, siteImageAssets } from "../../lib/assets";
 import {
   localizePath,
   t,
@@ -25,12 +27,6 @@ const philosophyThemes: readonly CopyCard[] = [
   { title: "about.theme3Title", body: "about.theme3Body" },
   { title: "about.theme4Title", body: "about.theme4Body" },
 ];
-
-const documentSlots: readonly CopyCard[] = [
-  { title: "about.document1Title", body: "about.document1Body" },
-  { title: "about.document2Title", body: "about.document2Body" },
-  { title: "about.document3Title", body: "about.document3Body" },
-];
 ---
 
 <BaseLayout
@@ -38,12 +34,12 @@ const documentSlots: readonly CopyCard[] = [
   description={t(locale, "seo.about.description")}
   locale={locale}
 >
-  <article>
+  <article class="overflow-x-hidden">
     <header class="border-b border-primary-foreground/15 bg-primary text-primary-foreground">
       <Container class="grid gap-12 py-16 sm:py-20 lg:grid-cols-12 lg:gap-16 lg:py-28">
         <div class="lg:col-span-8">
           <p class="text-xs font-semibold uppercase tracking-[0.24em] text-accent">
-            {t(locale, "about.heroEyebrow")}
+            {t(locale, "about.clinicIdentity")}
           </p>
           <h1 class="mt-6 max-w-[12ch] text-balance text-[clamp(3rem,7vw,6.5rem)] font-medium leading-[0.94] tracking-[-0.04em]">
             {t(locale, "about.heroTitle")}
@@ -65,17 +61,32 @@ const documentSlots: readonly CopyCard[] = [
       class="border-b border-border bg-background py-20 sm:py-24 lg:py-32"
       aria-labelledby="chief-physician-heading"
     >
-      <Container class="grid gap-12 lg:grid-cols-12 lg:gap-16">
-        <div class="lg:col-span-4">
+      <Container class="grid gap-12 lg:grid-cols-12 lg:items-start lg:gap-16">
+        <figure class="lg:col-span-5">
+          <div class="overflow-hidden bg-muted">
+            <img
+              class="aspect-[4/5] h-full w-full object-cover object-center"
+              src={siteImageAssets.miroslavaLeno.src}
+              width={siteImageAssets.miroslavaLeno.width}
+              height={siteImageAssets.miroslavaLeno.height}
+              alt={t(locale, "about.portraitAlt")}
+              loading="lazy"
+              decoding="async"
+              sizes="(min-width: 1024px) 38vw, 100vw"
+            />
+          </div>
+          <figcaption class="mt-4 text-xs font-semibold uppercase tracking-[0.16em] text-muted-foreground">
+            {t(locale, "clinic.chiefRole")}
+          </figcaption>
+        </figure>
+
+        <div class="lg:col-span-7 lg:pt-8">
           <p class="text-xs font-semibold uppercase tracking-[0.22em] text-primary">
             {t(locale, "about.doctorEyebrow")}
           </p>
           <p class="mt-5 max-w-sm text-sm leading-7 text-muted-foreground sm:text-base">
             {t(locale, "about.doctorIntro")}
           </p>
-        </div>
-
-        <div class="lg:col-span-8">
           <div class="border-y border-border py-8 sm:py-10">
             <h2
               id="chief-physician-heading"
@@ -146,10 +157,7 @@ const documentSlots: readonly CopyCard[] = [
       </Container>
     </section>
 
-    <section
-      class="bg-background py-20 sm:py-24 lg:py-32"
-      aria-labelledby="credentials-heading"
-    >
+    <section class="bg-background py-20 sm:py-24 lg:py-32" aria-labelledby="credentials-heading">
       <Container>
         <div class="max-w-3xl">
           <p class="text-xs font-semibold uppercase tracking-[0.22em] text-primary">
@@ -166,26 +174,9 @@ const documentSlots: readonly CopyCard[] = [
           </p>
         </div>
 
-        <ul class="mt-12 grid gap-px border border-border bg-border lg:mt-16 lg:grid-cols-3">
-          {
-            documentSlots.map((slot, index) => (
-              <li class="flex min-h-72 flex-col bg-card p-7 sm:p-9">
-                <span class="text-xs font-semibold tabular-nums tracking-[0.18em] text-primary/60">
-                  {String(index + 1).padStart(2, "0")}
-                </span>
-                <h3 class="mt-10 text-2xl font-medium text-card-foreground">
-                  {t(locale, slot.title)}
-                </h3>
-                <p class="mt-4 text-sm leading-7 text-muted-foreground">
-                  {t(locale, slot.body)}
-                </p>
-                <p class="mt-auto border-t border-border pt-6 text-xs font-semibold uppercase tracking-[0.14em] text-primary">
-                  {t(locale, "about.pending")}
-                </p>
-              </li>
-            ))
-          }
-        </ul>
+        <div class="mt-12 lg:mt-16">
+          <CertificateGallery locale={locale} certificates={certificateAssets} />
+        </div>
       </Container>
     </section>
 

@@ -244,6 +244,15 @@ const showTranslationFallback = usesOfficialUkrainianNameFallback(locale);
         >
           {t(locale, "services.nextTitle")}
         </h2>
+        <p class="mt-5 max-w-xl text-sm leading-6 text-primary-foreground/65">
+          {t(locale, "services.shopPrompt")} {" "}
+          <a
+            class="border-b border-primary-foreground/35 font-semibold text-primary-foreground transition-colors hover:border-accent hover:text-accent"
+            href={localizePath("/shop", locale)}
+          >
+            {t(locale, "services.shopLink")}
+          </a>
+        </p>
       </div>
 
       <div class="flex flex-col gap-3 sm:flex-row sm:flex-wrap lg:col-span-5 lg:justify-end">
