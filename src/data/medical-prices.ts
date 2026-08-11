@@ -11,7 +11,7 @@ export const MEDICAL_PRICE_LIST_META: MedicalPriceListMeta = {
     'ЗАКАРПАТСЬКА ОБЛ., М. УЖГОРОД, вул. Гойди Юрія, 10 "а", корп. 5, прим. 436',
 };
 
-export const MEDICAL_PRICE_ITEMS: readonly MedicalPriceItem[] = [
+export const MEDICAL_PRICE_ITEMS = [
   {
     id: 1,
     officialSection: "ophthalmology",
@@ -297,4 +297,8 @@ export const MEDICAL_PRICE_ITEMS: readonly MedicalPriceItem[] = [
     officialNameUk: "Забір матеріалу на БАК(у транс.середовище)",
     priceUah: 100,
   },
-];
+] as const satisfies readonly MedicalPriceItem[];
+
+export type MedicalPriceId = (typeof MEDICAL_PRICE_ITEMS)[number]["id"];
+export type CanonicalMedicalPriceItem = (typeof MEDICAL_PRICE_ITEMS)[number] &
+  MedicalPriceItem;
