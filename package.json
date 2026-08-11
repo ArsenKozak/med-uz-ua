@@ -15,6 +15,7 @@
     "seed:products": "node scripts/seed-products.ts",
     "validate:prices": "node scripts/validate-medical-prices.ts",
     "validate:data": "pnpm seed:products && pnpm validate:prices",
+    "verify:stage6": "pnpm validate:prices && node scripts/verify-stage6.ts",
     "typecheck": "astro check",
     "check": "pnpm typecheck && pnpm build"
   },
