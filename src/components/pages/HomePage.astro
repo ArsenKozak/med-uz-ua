@@ -31,10 +31,10 @@ const localizedServices = services
   description={t(locale, "seo.home.description")}
   locale={locale}
 >
-  <header class="overflow-x-hidden bg-primary text-primary-foreground">
+  <header class="relative overflow-x-hidden bg-primary text-primary-foreground">
     <Container class="grid min-h-[calc(100svh-5rem)] grid-cols-1 lg:grid-cols-12">
       <div
-        class="flex flex-col justify-center py-16 sm:py-20 lg:col-span-7 lg:py-24 lg:pr-14 xl:pr-20"
+        class="relative z-10 flex flex-col justify-center py-16 sm:py-20 lg:col-span-7 lg:py-24 lg:pr-14 xl:pr-20"
         data-reveal
       >
         <p class="text-xs font-semibold uppercase tracking-[0.24em] text-accent">
@@ -75,7 +75,7 @@ const localizedServices = services
       </div>
 
       <figure
-        class="relative -mx-5 min-h-[26rem] overflow-hidden sm:-mx-8 lg:col-span-5 lg:mx-0 lg:min-h-full"
+        class="relative -mx-5 min-h-[26rem] overflow-hidden sm:-mx-8 lg:absolute lg:inset-y-0 lg:right-0 lg:mx-0 lg:w-[38vw] xl:w-[40vw] 2xl:w-[42vw]"
         data-reveal
       >
         <div
@@ -103,45 +103,62 @@ const localizedServices = services
   </header>
 
   <section class="border-b border-border bg-background" aria-label={t(locale, "home.trustLabel")}>
-    <Container>
-      <dl class="grid divide-y divide-border md:grid-cols-3 md:divide-x md:divide-y-0">
-        <div class="grid grid-cols-[7rem_1fr] items-center gap-5 py-7 md:block md:px-7 md:py-9 md:first:pl-0 lg:grid lg:grid-cols-[8rem_1fr] lg:px-10">
-          <dt class="font-serif text-3xl text-primary sm:text-4xl">{OPHTHALMOLOGY_SINCE}</dt>
-          <dd class="text-xs uppercase leading-5 tracking-[0.14em] text-muted-foreground">
-            {t(locale, "home.trustSince")}
-          </dd>
-        </div>
-        <div class="grid grid-cols-[7rem_1fr] items-center gap-5 py-7 md:block md:px-7 md:py-9 lg:grid lg:grid-cols-[8rem_1fr] lg:px-10">
-          <dt class="font-serif text-3xl text-primary sm:text-4xl">{PATIENT_TRUST_COUNT}</dt>
-          <dd class="text-xs uppercase leading-5 tracking-[0.14em] text-muted-foreground">
-            {t(locale, "home.trustPatients")}
-          </dd>
-        </div>
-        <div class="grid grid-cols-[7rem_1fr] items-center gap-5 py-7 md:block md:px-7 md:py-9 md:last:pr-0 lg:grid lg:grid-cols-[8rem_1fr] lg:px-10">
-          <dt class="font-serif text-3xl text-primary sm:text-4xl">{t(locale, "clinic.city")}</dt>
-          <dd class="text-xs uppercase leading-5 tracking-[0.14em] text-muted-foreground">
-            {t(locale, "home.trustLocal")}
-          </dd>
-        </div>
-      </dl>
-    </Container>
-  </section>
+     <Container>
+       <dl class="grid divide-y divide-border md:grid-cols-3 md:divide-x md:divide-y-0">
+         <div class="grid grid-cols-[max-content_1fr] items-center gap-5 py-7 md:block md:px-7 md:py-9 md:first:pl-0 lg:grid lg:grid-cols-[max-content_1fr] lg:px-10">
+           <dt class="font-serif text-3xl text-primary sm:text-4xl">{OPHTHALMOLOGY_SINCE}</dt>
+           <dd class="text-xs uppercase leading-5 tracking-[0.14em] text-muted-foreground">
+             {t(locale, "home.trustSince")}
+           </dd>
+         </div>
+         <div class="grid grid-cols-[max-content_1fr] items-center gap-5 py-7 md:block md:px-7 md:py-9 lg:grid lg:grid-cols-[max-content_1fr] lg:px-10">
+           <dt class="font-serif text-3xl text-primary sm:text-4xl">{PATIENT_TRUST_COUNT}</dt>
+           <dd class="text-xs uppercase leading-5 tracking-[0.14em] text-muted-foreground">
+             {t(locale, "home.trustPatients")}
+           </dd>
+         </div>
+         <div class="grid grid-cols-[max-content_1fr] items-center gap-5 py-7 md:block md:px-7 md:py-9 md:last:pr-0 lg:grid lg:grid-cols-[max-content_1fr] lg:px-10">
+           <dt class="font-serif text-3xl text-primary sm:text-4xl">{t(locale, "clinic.city")}</dt>
+           <dd class="text-xs uppercase leading-5 tracking-[0.14em] text-muted-foreground">
+             {t(locale, "home.trustLocal")}
+           </dd>
+         </div>
+       </dl>
+     </Container>
+   </section>
 
   <section class="overflow-x-hidden bg-background py-20 sm:py-24 lg:py-32" aria-labelledby="two-worlds-heading">
     <Container>
       <div class="grid gap-8 lg:grid-cols-12 lg:items-end" data-reveal>
         <div class="lg:col-span-8">
+          <!-- Посилання замість статичного тексту -->
           <p class="text-xs font-semibold uppercase tracking-[0.22em] text-primary">
-            {t(locale, "home.worldsEyebrow")}
+            <a
+              href={localizePath("/services", locale)}
+              class="transition-colors hover:text-accent hover:underline"
+            >
+              Клініка
+            </a>
+            <span class="mx-1.5 text-muted-foreground/50">|</span>
+            <a
+              href={localizePath("/shop", locale)}
+              class="transition-colors hover:text-accent hover:underline"
+            >
+              Оптика
+            </a>
           </p>
+
           <h2 id="two-worlds-heading" class="mt-5 max-w-4xl text-balance text-4xl font-medium leading-tight tracking-tight sm:text-5xl lg:text-6xl">
             {t(locale, "home.worldsTitle")}
           </h2>
         </div>
+
         <p class="max-w-md text-sm leading-7 text-muted-foreground lg:col-span-4 lg:justify-self-end">
           {t(locale, "home.worldsIntro")}
         </p>
       </div>
+
+      <!-- Решта блоку з картками без змін -->
 
       <div
         class="relative mt-12 grid border border-border md:grid-cols-2 lg:mt-16"
@@ -192,9 +209,6 @@ const localizedServices = services
           </div>
         </article>
 
-        <p class="pointer-events-none absolute left-1/2 top-1/2 hidden -translate-x-1/2 -translate-y-1/2 bg-background px-2 py-5 text-[0.625rem] font-semibold uppercase tracking-[0.24em] text-primary [writing-mode:vertical-rl] md:block" aria-hidden="true">
-          {t(locale, "home.worldsAxis")}
-        </p>
       </div>
     </Container>
   </section>
