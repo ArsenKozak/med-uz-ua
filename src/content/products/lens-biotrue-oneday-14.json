@@ -1,0 +1,13 @@
+{
+  "title": "Biotrue ONEday (30 шт.)",
+  "description": "Одноденні лінзи, що імітують природну сльозу та зберігають 98% зволоження.",
+  "category": "lenses",
+  "brand": "Bausch & Lomb",
+  "priceMinor": 110000,
+  "currency": "UAH",
+  "image": "/images/artificial/macro-lens-hydration.jpg",
+  "imageKind": "editorial",
+  "inStock": true,
+  "status": "active",
+  "verificationStatus": "verified"
+}

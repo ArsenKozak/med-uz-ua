@@ -2,8 +2,12 @@
   "title": "Lens Care Option",
   "description": "A neutral catalog placeholder for lens-care supplies. Product details, pricing, and availability are pending clinic confirmation.",
   "category": "care",
+  "brand": "Pending clinic confirmation",
   "priceMinor": 0,
   "currency": "UAH",
-  "status": "active",
+  "image": "/images/artificial/macro-lens-hydration.jpg",
+  "imageKind": "editorial",
+  "inStock": false,
+  "status": "draft",
   "verificationStatus": "pending-clinic-confirmation"
 }

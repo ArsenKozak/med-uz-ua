@@ -1,0 +1,253 @@
+import {
+  MEDICAL_PRICE_ITEMS,
+  MEDICAL_PRICE_LIST_META,
+} from "../src/data/medical-prices.ts";
+import {
+  medicalPriceItemSchema,
+  medicalPriceListMetaSchema,
+} from "../src/schemas/medical-price.ts";
+import type {
+  MedicalUiCategory,
+  OfficialPriceSection,
+} from "../src/schemas/medical-price.ts";
+
+const EXPECTED_ITEM_COUNT = 40;
+
+const EXPECTED_PRICES_UAH: readonly number[] = [
+  800, 700, 700, 700, 600, 600, 200, 200, 200, 300,
+  400, 300, 200, 300, 150, 250, 300, 200, 50, 300,
+  350, 300, 400, 600, 200, 300, 200, 1200, 400, 400,
+  700, 300, 200, 400, 3000, 400, 3000, 600, 300, 100,
+];
+
+const EXPECTED_UI_CATEGORIES: readonly MedicalUiCategory[] = [
+  "consultations",
+  "consultations",
+  "consultations",
+  "consultations",
+  "consultations",
+  "consultations",
+  "diagnostics",
+  "diagnostics",
+  "diagnostics",
+  "diagnostics",
+  "diagnostics",
+  "diagnostics",
+  "diagnostics",
+  "diagnostics",
+  "diagnostics",
+  "diagnostics",
+  "diagnostics",
+  "diagnostics",
+  "diagnostics",
+  "optical-selection",
+  "optical-selection",
+  "optical-selection",
+  "optical-selection",
+  "procedures",
+  "diagnostics",
+  "diagnostics",
+  "diagnostics",
+  "procedures",
+  "procedures",
+  "procedures",
+  "procedures",
+  "diagnostics",
+  "diagnostics",
+  "injections-therapy",
+  "injections-therapy",
+  "injections-therapy",
+  "injections-therapy",
+  "laboratory",
+  "laboratory",
+  "laboratory",
+];
+
+const EXPECTED_OFFICIAL_NAMES_UK: readonly string[] = [
+  "Консультація головного лікаря",
+  "Первинна консультація офтальмолога*+ ВОТ(з40 р.)",
+  "Первинна консультація офтальмолога",
+  "Первинна консультація дитячого офтальмолога",
+  "Повторна консультація дитячого офтальмолога",
+  "Повторна консультація офтальмолога",
+  "Авторефрактометрія 2 ока",
+  "Автокераторефрактометрія 2 ока",
+  "Візометрія 2 ока",
+  "Тонометрія за Маклаковим  2 ока",
+  "Біомікроскопія 2 ока",
+  "Біомікроскопія 1 око",
+  "Офтальмоскопія (асферичною лінзою) VOLK-90D 1 око",
+  "Офтальмоскопія (асферичною лінзою) VOLK-90D 2 ока",
+  "Офтальмоскопія (дзеркальна) 2 ока",
+  "Офтальмоскопія (пряма) 2 ока",
+  "Ретиноскопія 2 ока",
+  "Ретиноскопія 1 око",
+  "Транспальпебральна тонометрія 2 ока",
+  "Підбір окулярів (сферичних) 2 ока",
+  "Підбір окулярів (сферо-циліндричних) 2 ока",
+  "Підбір контактних лінз 2 ока",
+  "Навчання маніпуляціям з м’якими контактними лінзами (одягання/знімання/догляд)",
+  "Видалення стороннього тіла з поверхневих шарів рогівки та кон'юктиви 1 око",
+  "Визначення кута косоокості методом Гіршберга",
+  "Визначення порушення кольоровідчуття (поліхроматичними таблицями Рабкіна)",
+  "Тест (проба) Ширмера",
+  "Ін'єкція в ділянку халязіона лікарського засобу",
+  "Масаж повік обох очей",
+  "Зондування слізних каналів (1 око)",
+  "Зондування слізних каналів (2 ока)",
+  "Проведення канальцевої та сльозоносової проб",
+  'Тести на синдром"сухого ока"',
+  "Парабульбарна ін'єкція ( 1 ін. )",
+  "Парабульбарна ін'єкція  ( курс 7-10 ін. )",
+  "Субкон'юктивальна ін'єкція ( 1 ін.)",
+  "Субкон'юктивальна ін'єкція ( курс 7-10)",
+  "Бакпосів з ока+антибіотикограма (1 око)",
+  "Демодекс (Мікроскопія на виявлення шкірного кліща роду Demodex)",
+  "Забір матеріалу на БАК(у транс.середовище)",
+];
+
+const EXPECTED_NOTE_UK_BY_ID = new Map<number, string>([
+  [2, "*акційний комплексний (поглиблений) огляд"],
+]);
+
+const KEY_PRICE_ASSERTIONS: ReadonlyArray<{
+  id: number;
+  priceUah: number;
+}> = [
+  { id: 1, priceUah: 800 },
+  { id: 2, priceUah: 700 },
+  { id: 3, priceUah: 700 },
+  { id: 4, priceUah: 700 },
+  { id: 5, priceUah: 600 },
+  { id: 6, priceUah: 600 },
+  { id: 28, priceUah: 1200 },
+  { id: 35, priceUah: 3000 },
+  { id: 37, priceUah: 3000 },
+  { id: 40, priceUah: 100 },
+];
+
+const validationErrors: string[] = [];
+const metaResult = medicalPriceListMetaSchema.safeParse(MEDICAL_PRICE_LIST_META);
+const itemsResult = medicalPriceItemSchema.array().safeParse(MEDICAL_PRICE_ITEMS);
+
+if (!metaResult.success) {
+  validationErrors.push(`Metadata failed Zod validation: ${metaResult.error.message}`);
+}
+
+if (!itemsResult.success) {
+  validationErrors.push(`Items failed Zod validation: ${itemsResult.error.message}`);
+} else {
+  const items = itemsResult.data;
+  const ids = items.map(({ id }) => id);
+  const uniqueIds = new Set(ids);
+  const itemById = new Map(items.map((item) => [item.id, item]));
+
+  if (items.length !== EXPECTED_ITEM_COUNT) {
+    validationErrors.push(
+      `Expected ${EXPECTED_ITEM_COUNT} items, received ${items.length}.`,
+    );
+  }
+
+  if (uniqueIds.size !== ids.length) {
+    const duplicateIds = ids.filter((id, index) => ids.indexOf(id) !== index);
+    validationErrors.push(
+      `Duplicate IDs found: ${[...new Set(duplicateIds)].join(", ")}.`,
+    );
+  }
+
+  for (let expectedId = 1; expectedId <= EXPECTED_ITEM_COUNT; expectedId += 1) {
+    if (!uniqueIds.has(expectedId)) {
+      validationErrors.push(`Missing ID ${expectedId}.`);
+    }
+  }
+
+  for (const [zeroBasedIndex, expectedPriceUah] of EXPECTED_PRICES_UAH.entries()) {
+    const id = zeroBasedIndex + 1;
+    const item = itemById.get(id);
+    const expectedUiCategory = EXPECTED_UI_CATEGORIES[zeroBasedIndex];
+    const expectedOfficialNameUk = EXPECTED_OFFICIAL_NAMES_UK[zeroBasedIndex];
+    const expectedOfficialSection: OfficialPriceSection =
+      id <= 37 ? "ophthalmology" : "other-medical-services";
+    const expectedNoteUk = EXPECTED_NOTE_UK_BY_ID.get(id);
+
+    if (!item) {
+      continue;
+    }
+
+    if (expectedUiCategory === undefined) {
+      validationErrors.push(`Canonical UI category is missing for ID ${id}.`);
+    } else if (item.uiCategory !== expectedUiCategory) {
+      validationErrors.push(
+        `ID ${id} uiCategory mismatch: expected ${JSON.stringify(expectedUiCategory)}, received ${JSON.stringify(item.uiCategory)}.`,
+      );
+    }
+
+    if (expectedOfficialNameUk === undefined) {
+      validationErrors.push(`Canonical officialNameUk is missing for ID ${id}.`);
+    } else if (item.officialNameUk !== expectedOfficialNameUk) {
+      validationErrors.push(
+        `ID ${id} officialNameUk mismatch: expected ${JSON.stringify(expectedOfficialNameUk)}, received ${JSON.stringify(item.officialNameUk)}.`,
+      );
+    }
+
+    if (item.officialSection !== expectedOfficialSection) {
+      validationErrors.push(
+        `ID ${id} officialSection mismatch: expected ${JSON.stringify(expectedOfficialSection)}, received ${JSON.stringify(item.officialSection)}.`,
+      );
+    }
+
+    if (item.priceUah !== expectedPriceUah) {
+      validationErrors.push(
+        `ID ${id} priceUah mismatch: expected ${expectedPriceUah}, received ${item.priceUah}.`,
+      );
+    }
+
+    if (item.noteUk !== expectedNoteUk) {
+      validationErrors.push(
+        `ID ${id} noteUk mismatch: expected ${JSON.stringify(expectedNoteUk)}, received ${JSON.stringify(item.noteUk)}.`,
+      );
+    }
+  }
+
+  for (const expected of KEY_PRICE_ASSERTIONS) {
+    const item = itemById.get(expected.id);
+
+    if (!item) {
+      validationErrors.push(`Key price assertion could not find ID ${expected.id}.`);
+    } else if (item.priceUah !== expected.priceUah) {
+      validationErrors.push(
+        `Key price assertion failed for ID ${expected.id}: expected ${expected.priceUah} UAH, received ${item.priceUah} UAH.`,
+      );
+    }
+  }
+}
+
+if (EXPECTED_PRICES_UAH.length !== EXPECTED_ITEM_COUNT) {
+  validationErrors.push(
+    `Expected-price table must contain ${EXPECTED_ITEM_COUNT} values, received ${EXPECTED_PRICES_UAH.length}.`,
+  );
+}
+
+if (EXPECTED_UI_CATEGORIES.length !== EXPECTED_ITEM_COUNT) {
+  validationErrors.push(
+    `Canonical UI-category table must contain ${EXPECTED_ITEM_COUNT} values, received ${EXPECTED_UI_CATEGORIES.length}.`,
+  );
+}
+
+if (EXPECTED_OFFICIAL_NAMES_UK.length !== EXPECTED_ITEM_COUNT) {
+  validationErrors.push(
+    `Canonical official-name table must contain ${EXPECTED_ITEM_COUNT} values, received ${EXPECTED_OFFICIAL_NAMES_UK.length}.`,
+  );
+}
+
+if (validationErrors.length > 0) {
+  console.error("Medical price validation failed:");
+  for (const validationError of validationErrors) {
+    console.error(`- ${validationError}`);
+  }
+  process.exitCode = 1;
+} else {
+  console.log(
+    `Medical price validation passed: ${EXPECTED_ITEM_COUNT} complete canonical records matched, with valid metadata and contiguous unique IDs 1–40.`,
+  );
+}

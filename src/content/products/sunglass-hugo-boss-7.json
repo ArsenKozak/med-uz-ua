@@ -1,0 +1,13 @@
+{
+  "title": "Окуляри Hugo Boss BOSS 1045/S",
+  "description": "Елегантні чоловічі окуляри з поляризованими лінзами та металевою оправою.",
+  "category": "sunglasses",
+  "brand": "Hugo Boss",
+  "priceMinor": 480000,
+  "currency": "UAH",
+  "image": "/images/artificial/shop-editorial-eyewear.jpg",
+  "imageKind": "editorial",
+  "inStock": true,
+  "status": "active",
+  "verificationStatus": "verified"
+}

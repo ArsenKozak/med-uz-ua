@@ -1,0 +1,13 @@
+{
+  "title": "Окуляри Polaroid PLD 6010/N",
+  "description": "Поляризовані авіатори з легкою металевою оправою та UV400 захистом.",
+  "category": "sunglasses",
+  "brand": "Polaroid",
+  "priceMinor": 195000,
+  "currency": "UAH",
+  "image": "/images/artificial/shop-editorial-eyewear.jpg",
+  "imageKind": "editorial",
+  "inStock": true,
+  "status": "active",
+  "verificationStatus": "verified"
+}

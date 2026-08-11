@@ -1,0 +1,13 @@
+{
+  "title": "Окуляри Oakley Holbrook Prizm",
+  "description": "Спортивно-міський стиль із лінзами Prizm для максимальної контрастності.",
+  "category": "sunglasses",
+  "brand": "Oakley",
+  "priceMinor": 610000,
+  "currency": "UAH",
+  "image": "/images/artificial/shop-editorial-eyewear.jpg",
+  "imageKind": "editorial",
+  "inStock": true,
+  "status": "active",
+  "verificationStatus": "verified"
+}

@@ -3,12 +3,19 @@ import {
   getEntry,
   type CollectionEntry,
 } from "astro:content";
+import type {
+  ProductCategory,
+  ProductImageKind,
+  ProductVerificationStatus,
+} from "../../schemas/product";
+
+export type {
+  ProductCategory,
+  ProductImageKind,
+  ProductVerificationStatus,
+} from "../../schemas/product";
 
 export type ServiceCategory = "adult" | "pediatric" | "optical";
-export type ProductCategory = "contacts" | "glasses" | "care";
-export type ProductVerificationStatus =
-  | "verified"
-  | "pending-clinic-confirmation";
 
 export interface ServiceDetail {
   readonly slug: string;
@@ -26,8 +33,12 @@ export interface ProductSummary {
   readonly title: string;
   readonly description: string;
   readonly category: ProductCategory;
+  readonly brand: string;
   readonly priceMinor: number;
   readonly currency: string;
+  readonly image: string;
+  readonly imageKind: ProductImageKind;
+  readonly inStock: boolean;
   readonly verificationStatus: ProductVerificationStatus;
 }
 
@@ -55,8 +66,12 @@ function mapProductEntry(entry: ProductEntry): ProductSummary {
     title: entry.data.title,
     description: entry.data.description,
     category: entry.data.category,
+    brand: entry.data.brand,
     priceMinor: entry.data.priceMinor,
     currency: entry.data.currency,
+    image: entry.data.image,
+    imageKind: entry.data.imageKind,
+    inStock: entry.data.inStock,
     verificationStatus: entry.data.verificationStatus,
   };
 }

@@ -1,0 +1,13 @@
+{
+  "title": "Окуляри Oakley Radar EV Path Prizm",
+  "description": "Спортивні окуляри з технологією Prizm для активного відпочинку та велоспорту.",
+  "category": "sunglasses",
+  "brand": "Oakley",
+  "priceMinor": 720000,
+  "currency": "UAH",
+  "image": "/images/artificial/shop-editorial-eyewear.jpg",
+  "imageKind": "editorial",
+  "inStock": true,
+  "status": "active",
+  "verificationStatus": "verified"
+}

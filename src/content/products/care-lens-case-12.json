@@ -1,0 +1,13 @@
+{
+  "title": "Контейнер для лінз з дзеркалом",
+  "description": "Компактний контейнер для зберігання лінз з вбудованим дзеркалом.",
+  "category": "care",
+  "brand": "Bausch & Lomb",
+  "priceMinor": 8500,
+  "currency": "UAH",
+  "image": "/images/artificial/macro-lens-hydration.jpg",
+  "imageKind": "editorial",
+  "inStock": true,
+  "status": "active",
+  "verificationStatus": "verified"
+}

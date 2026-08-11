@@ -1,0 +1,13 @@
+{
+  "title": "Окуляри Hugo Boss BOSS 1296/S",
+  "description": "Круглі чоловічі окуляри з тонкими металевими оправами та поляризацією.",
+  "category": "sunglasses",
+  "brand": "Hugo Boss",
+  "priceMinor": 450000,
+  "currency": "UAH",
+  "image": "/images/artificial/shop-editorial-eyewear.jpg",
+  "imageKind": "editorial",
+  "inStock": true,
+  "status": "active",
+  "verificationStatus": "verified"
+}
