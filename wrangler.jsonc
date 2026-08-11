@@ -1,6 +1,9 @@
 {
   "$schema": "./node_modules/wrangler/config-schema.json",
   "name": "med-uz-ua",
-  "pages_build_output_dir": "./dist",
-  "compatibility_date": "2026-08-08"
+  "main": "./dist/_worker.js/index.js",
+  "compatibility_date": "2026-08-08",
+  "assets": {
+    "directory": "./dist"
+  }
 }
