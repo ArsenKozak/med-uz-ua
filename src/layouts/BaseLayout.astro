@@ -40,6 +40,24 @@ const canonicalUrl = new URL(
     <script is:inline>
       window.dataLayer = window.dataLayer || [];
     </script>
+    <!-- Google Tag Manager -->
+    <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+    new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+    j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+    'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+    })(window,document,'script','dataLayer','GTM-K96GCCJ5');</script>
+    <!-- End Google Tag Manager -->
+
+    <!-- Google Analytics 4 (G-WWZ9XN8B0B) & Google Ads (AW-785774760) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-WWZ9XN8B0B"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'G-WWZ9XN8B0B');
+      gtag('config', 'AW-785774760');
+    </script>
 
     <slot name="head" />
   </head>

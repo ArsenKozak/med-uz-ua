@@ -1,0 +1,617 @@
+[
+  /* ========================================================= */
+  /* CATEGORY 1: CONTACT LENSES (15 ITEMS) */
+  /* ========================================================= */
+  {
+    "id": "lens-air-optix-night-day-1",
+    "title": "Air Optix Night & Day Aqua (3 шт.)",
+    "category": "lenses",
+    "brand": "Alcon",
+    "price": 850,
+    "inStock": true,
+    "image": "/images/shop/lenses/air-optix-night-day.jpg",
+    "description": "Контактні лінзи безперервного носіння до 30 днів із високим рівнем киснепроникності."
+  },
+  {
+    "id": "lens-biofinity-2",
+    "title": "Biofinity CooperVision (6 шт.)",
+    "category": "lenses",
+    "brand": "CooperVision",
+    "price": 1150,
+    "inStock": true,
+    "image": "/images/shop/lenses/biofinity.jpg",
+    "description": "Силікон-гідрогелеві лінзи щомісячної заміни для природного зволоження очей."
+  },
+  {
+    "id": "lens-acuvue-oasys-3",
+    "title": "Acuvue Oasys with Hydraclear Plus (6 шт.)",
+    "category": "lenses",
+    "brand": "Johnson & Johnson",
+    "price": 1280,
+    "inStock": true,
+    "image": "/images/shop/lenses/acuvue-oasys.jpg",
+    "description": "Двотижневі лінзи з ультрагладенькою поверхнею для тривалої роботи за монітором."
+  },
+  {
+    "id": "lens-dailies-total-1-4",
+    "title": "Dailies Total 1 (30 шт.)",
+    "category": "lenses",
+    "brand": "Alcon",
+    "price": 1650,
+    "inStock": true,
+    "image": "/images/shop/lenses/dailies-total-1.jpg",
+    "description": "Одноденні водоградієнтні лінзи, що майже не відчуваються на оці."
+  },
+  {
+    "id": "lens-ultra-bausch-lomb-5",
+    "title": "Bausch & Lomb ULTRA (3 шт.)",
+    "category": "lenses",
+    "brand": "Bausch & Lomb",
+    "price": 790,
+    "inStock": true,
+    "image": "/images/shop/lenses/bausch-ultra.jpg",
+    "description": "Лінзи з технологією MoistureSeal для підтримання 95% зволоження протягом 16 годин."
+  },
+  {
+    "id": "lens-clariti-1day-6",
+    "title": "Clariti 1 Day (30 шт.)",
+    "category": "lenses",
+    "brand": "CooperVision",
+    "price": 980,
+    "inStock": true,
+    "image": "/images/shop/lenses/clariti-1day.jpg",
+    "description": "Одноденні силікон-гідрогелеві лінзи з високим комфортом і UV-захистом."
+  },
+  {
+    "id": "lens-acuvue-moist-7",
+    "title": "Acuvue Moist (30 шт.)",
+    "category": "lenses",
+    "brand": "Johnson & Johnson",
+    "price": 890,
+    "inStock": true,
+    "image": "/images/shop/lenses/acuvue-moist.jpg",
+    "description": "Одноденні гідрогелеві лінзи з технологією Lacreon для тривалого зволоження."
+  },
+  {
+    "id": "lens-air-optix-plus-8",
+    "title": "Air Optix Plus HydraGlyde (3 шт.)",
+    "category": "lenses",
+    "brand": "Alcon",
+    "price": 720,
+    "inStock": true,
+    "image": "/images/shop/lenses/air-optix-hydra.jpg",
+    "description": "Місячні лінзи з подвійною технологією зволоження HydraGlyde."
+  },
+  {
+    "id": "lens-proclear-9",
+    "title": "Proclear CooperVision (6 шт.)",
+    "category": "lenses",
+    "brand": "CooperVision",
+    "price": 1050,
+    "inStock": false,
+    "image": "/images/shop/lenses/proclear.jpg",
+    "description": "Лінзи з технологією PC, рекомендовані при синдромі сухого ока."
+  },
+  {
+    "id": "lens-purevision-2-10",
+    "title": "PureVision 2 HD (6 шт.)",
+    "category": "lenses",
+    "brand": "Bausch & Lomb",
+    "price": 950,
+    "inStock": true,
+    "image": "/images/shop/lenses/purevision-2.jpg",
+    "description": "Місячні лінзи з високою чіткістю зображення та ComfortMoist."
+  },
+  {
+    "id": "lens-menicon-z-11",
+    "title": "Menicon Z (1 шт.)",
+    "category": "lenses",
+    "brand": "Menicon",
+    "price": 2100,
+    "inStock": true,
+    "image": "/images/shop/lenses/menicon-z.jpg",
+    "description": "Жорсткі газопроникні лінзи преміум-класу для складних випадків корекції."
+  },
+  {
+    "id": "lens-seed-1day-pure-12",
+    "title": "SEED 1day Pure Moisture (30 шт.)",
+    "category": "lenses",
+    "brand": "SEED",
+    "price": 920,
+    "inStock": true,
+    "image": "/images/shop/lenses/seed-1day.jpg",
+    "description": "Японські одноденні лінзи з природним зволожувачем і UV-фільтром."
+  },
+  {
+    "id": "lens-rodenstock-cxl-13",
+    "title": "Rodenstock CXL (6 шт.)",
+    "category": "lenses",
+    "brand": "Rodenstock",
+    "price": 1380,
+    "inStock": true,
+    "image": "/images/shop/lenses/rodenstock-cxl.jpg",
+    "description": "Німецькі лінзи з високою киснепроникністю та антибактеріальним покриттям."
+  },
+  {
+    "id": "lens-biotrue-oneday-14",
+    "title": "Biotrue ONEday (30 шт.)",
+    "category": "lenses",
+    "brand": "Bausch & Lomb",
+    "price": 1100,
+    "inStock": true,
+    "image": "/images/shop/lenses/biotrue-oneday.jpg",
+    "description": "Одноденні лінзи, що імітують природну сльозу та зберігають 98% зволоження."
+  },
+  {
+    "id": "lens-acuvue-vita-15",
+    "title": "Acuvue Vita (6 шт.)",
+    "category": "lenses",
+    "brand": "Johnson & Johnson",
+    "price": 1320,
+    "inStock": true,
+    "image": "/images/shop/lenses/acuvue-vita.jpg",
+    "description": "Місячні лінзи з технологією HydraMax для комфорту протягом усього місяця."
+  },
+
+  /* ========================================================= */
+  /* CATEGORY 2: EYE CARE & SOLUTIONS (15 ITEMS) */
+  /* ========================================================= */
+  {
+    "id": "care-biotrue-solution-1",
+    "title": "Універсальний розчин Biotrue 300 мл",
+    "category": "care",
+    "brand": "Bausch & Lomb",
+    "price": 380,
+    "inStock": true,
+    "image": "/images/shop/care/biotrue-300ml.jpg",
+    "description": "Розчин з природним зволожувачем гіалуронаном, який відповідає pH сльози людини."
+  },
+  {
+    "id": "care-opti-free-puremoist-2",
+    "title": "Багатофункціональний розчин Opti-Free PureMoist 360 мл",
+    "category": "care",
+    "brand": "Alcon",
+    "price": 420,
+    "inStock": true,
+    "image": "/images/shop/care/opti-free-puremoist.jpg",
+    "description": "Забезпечує зволоження поверхні лінзи до 16 годин завдяки матриці HydraGlyde."
+  },
+  {
+    "id": "care-systane-ultra-drops-3",
+    "title": "Зволожуючі краплі Systane Ultra 10 мл",
+    "category": "care",
+    "brand": "Alcon",
+    "price": 340,
+    "inStock": true,
+    "image": "/images/shop/care/systane-ultra.jpg",
+    "description": "Швидке зняття синдрому сухого ока та подразнення під час носіння лінз."
+  },
+  {
+    "id": "care-hylo-comod-4",
+    "title": "Краплі для очей HYLO-COMOD 10 мл",
+    "category": "care",
+    "brand": "URSAPHARM",
+    "price": 490,
+    "inStock": true,
+    "image": "/images/shop/care/hylo-comod.jpg",
+    "description": "Безконсервантні краплі з чистою гіалуроновою кислотою у флаконі системи COMOD."
+  },
+  {
+    "id": "care-renu-multiplus-5",
+    "title": "Розчин ReNu MultiPlus 360 мл",
+    "category": "care",
+    "brand": "Bausch & Lomb",
+    "price": 310,
+    "inStock": true,
+    "image": "/images/shop/care/renu-multiplus.jpg",
+    "description": "Класичний багатофункціональний розчин для очищення, дезінфекції та зберігання."
+  },
+  {
+    "id": "care-ao-sept-plus-6",
+    "title": "Пероксидна система AOSEPT PLUS 360 мл",
+    "category": "care",
+    "brand": "Alcon",
+    "price": 520,
+    "inStock": true,
+    "image": "/images/shop/care/aosept-plus.jpg",
+    "description": "Пероксидна система глибокого очищення з нейтралізатором каталази."
+  },
+  {
+    "id": "care-blink-contacts-7",
+    "title": "Краплі Blink Contacts 10 мл",
+    "category": "care",
+    "brand": "Johnson & Johnson",
+    "price": 290,
+    "inStock": true,
+    "image": "/images/shop/care/blink-contacts.jpg",
+    "description": "Зволожуючі краплі спеціально для користувачів контактних лінз."
+  },
+  {
+    "id": "care-complete-revitalens-8",
+    "title": "Розчин Complete RevitaLens 360 мл",
+    "category": "care",
+    "brand": "Johnson & Johnson",
+    "price": 390,
+    "inStock": true,
+    "image": "/images/shop/care/complete-revitalens.jpg",
+    "description": "Багатофункціональний розчин з подвійною дезінфекцією та зволоженням."
+  },
+  {
+    "id": "care-hylo-dual-9",
+    "title": "Краплі HYLO DUAL 10 мл",
+    "category": "care",
+    "brand": "URSAPHARM",
+    "price": 560,
+    "inStock": true,
+    "image": "/images/shop/care/hylo-dual.jpg",
+    "description": "Безконсервантні краплі з гіалуроновою кислотою та ектоїном проти алергії."
+  },
+  {
+    "id": "care-opti-free-replenish-10",
+    "title": "Розчин Opti-Free RepleniSH 300 мл",
+    "category": "care",
+    "brand": "Alcon",
+    "price": 370,
+    "inStock": false,
+    "image": "/images/shop/care/opti-free-replenish.jpg",
+    "description": "Розчин з технологією TearGlyde для тривалого зволоження лінз."
+  },
+  {
+    "id": "care-systane-balance-11",
+    "title": "Краплі Systane Balance 10 мл",
+    "category": "care",
+    "brand": "Alcon",
+    "price": 360,
+    "inStock": true,
+    "image": "/images/shop/care/systane-balance.jpg",
+    "description": "Ліпідні краплі для відновлення слізної плівки при випаровуванні."
+  },
+  {
+    "id": "care-lens-case-12",
+    "title": "Контейнер для лінз з дзеркалом",
+    "category": "care",
+    "brand": "Bausch & Lomb",
+    "price": 85,
+    "inStock": true,
+    "image": "/images/shop/care/lens-case.jpg",
+    "description": "Компактний контейнер для зберігання лінз з вбудованим дзеркалом."
+  },
+  {
+    "id": "care-tweezers-13",
+    "title": "Пінцет для контактних лінз силіконовий",
+    "category": "care",
+    "brand": "SEED",
+    "price": 65,
+    "inStock": true,
+    "image": "/images/shop/care/tweezers.jpg",
+    "description": "М’який силіконовий пінцет для безпечного зняття та надягання лінз."
+  },
+  {
+    "id": "care-peroxide-neutralizer-14",
+    "title": "Нейтралізатор для пероксидних систем 360 мл",
+    "category": "care",
+    "brand": "Menicon",
+    "price": 280,
+    "inStock": true,
+    "image": "/images/shop/care/peroxide-neutralizer.jpg",
+    "description": "Спеціальний розчин для повної нейтралізації перекису водню."
+  },
+  {
+    "id": "care-artificial-tears-15",
+    "title": "Штучні сльози Thealoz Duo 10 мл",
+    "category": "care",
+    "brand": "Thea",
+    "price": 410,
+    "inStock": true,
+    "image": "/images/shop/care/thealoz-duo.jpg",
+    "description": "Безконсервантні краплі з трегалозою та гіалуроновою кислотою."
+  },
+
+  /* ========================================================= */
+  /* CATEGORY 3: OPTICAL FRAMES (15 ITEMS) */
+  /* ========================================================= */
+  {
+    "id": "frame-rayban-clubmaster-1",
+    "title": "Оправа Ray-Ban Clubmaster Optics RX5154",
+    "category": "frames",
+    "brand": "Ray-Ban",
+    "price": 4200,
+    "inStock": true,
+    "image": "/images/shop/frames/rayban-rx5154.jpg",
+    "description": "Легендарна броулайнер-оправа з поєднання преміального ацетату та металу."
+  },
+  {
+    "id": "frame-vogue-eyewear-2",
+    "title": "Оправа Vogue VO5354",
+    "category": "frames",
+    "brand": "Vogue",
+    "price": 2800,
+    "inStock": true,
+    "image": "/images/shop/frames/vogue-vo5354.jpg",
+    "description": "Витончена жіноча оправа формату «котяче око» у глибокому черепаховому відтінку."
+  },
+  {
+    "id": "frame-silhouette-minimal-3",
+    "title": "Титанова безобідкова оправа Silhouette TMA Must",
+    "category": "frames",
+    "brand": "Silhouette",
+    "price": 9500,
+    "inStock": true,
+    "image": "/images/shop/frames/silhouette-tma.jpg",
+    "description": "Ультралегка австрійська оправа з високоочищеного титану без гвинтів та шарнірів."
+  },
+  {
+    "id": "frame-tom-ford-4",
+    "title": "Оправа Tom Ford TF5398",
+    "category": "frames",
+    "brand": "Tom Ford",
+    "price": 12500,
+    "inStock": true,
+    "image": "/images/shop/frames/tom-ford-tf5398.jpg",
+    "description": "Преміальна чоловіча оправа з італійського ацетату в класичному прямокутному дизайні."
+  },
+  {
+    "id": "frame-carrera-5",
+    "title": "Оправа Carrera 1134/G",
+    "category": "frames",
+    "brand": "Carrera",
+    "price": 3100,
+    "inStock": true,
+    "image": "/images/shop/frames/carrera-1134.jpg",
+    "description": "Спортивно-елегантна оправа з металевими елементами та регульованими носоупорами."
+  },
+  {
+    "id": "frame-polaroid-6",
+    "title": "Оправа Polaroid PLD D424",
+    "category": "frames",
+    "brand": "Polaroid",
+    "price": 1950,
+    "inStock": true,
+    "image": "/images/shop/frames/polaroid-d424.jpg",
+    "description": "Легка пластикова оправа в ретро-стилі з гнучкими завушниками."
+  },
+  {
+    "id": "frame-rayban-wayfarer-7",
+    "title": "Оправа Ray-Ban Wayfarer Optics RX5121",
+    "category": "frames",
+    "brand": "Ray-Ban",
+    "price": 3900,
+    "inStock": true,
+    "image": "/images/shop/frames/rayban-rx5121.jpg",
+    "description": "Культова оправа Wayfarer з товстим ацетатом і класичною формою."
+  },
+  {
+    "id": "frame-vogue-round-8",
+    "title": "Оправа Vogue VO5167",
+    "category": "frames",
+    "brand": "Vogue",
+    "price": 2450,
+    "inStock": false,
+    "image": "/images/shop/frames/vogue-vo5167.jpg",
+    "description": "Кругла жіноча оправа в стилі 70-х з м’якими лініями та легким ацетатом."
+  },
+  {
+    "id": "frame-silhouette-titan-9",
+    "title": "Оправа Silhouette Titan Minimal Art",
+    "category": "frames",
+    "brand": "Silhouette",
+    "price": 8900,
+    "inStock": true,
+    "image": "/images/shop/frames/silhouette-titan.jpg",
+    "description": "Безобідкова титанова оправа вагою менше 2 грамів з гнучкими завушниками."
+  },
+  {
+    "id": "frame-tom-ford-cat-10",
+    "title": "Оправа Tom Ford TF5634-B",
+    "category": "frames",
+    "brand": "Tom Ford",
+    "price": 11200,
+    "inStock": true,
+    "image": "/images/shop/frames/tom-ford-tf5634.jpg",
+    "description": "Жіноча оправа «котяче око» з преміального ацетату та золотими деталями."
+  },
+  {
+    "id": "frame-carrera-metal-11",
+    "title": "Оправа Carrera 2020/T",
+    "category": "frames",
+    "brand": "Carrera",
+    "price": 2750,
+    "inStock": true,
+    "image": "/images/shop/frames/carrera-2020.jpg",
+    "description": "Тонка металева оправа з гнучкими завушниками та силіконовими носоупорами."
+  },
+  {
+    "id": "frame-polaroid-acetate-12",
+    "title": "Оправа Polaroid PLD D380",
+    "category": "frames",
+    "brand": "Polaroid",
+    "price": 2100,
+    "inStock": true,
+    "image": "/images/shop/frames/polaroid-d380.jpg",
+    "description": "Сучасна ацетатна оправа прямокутної форми з матовим покриттям."
+  },
+  {
+    "id": "frame-rayban-hexagonal-13",
+    "title": "Оправа Ray-Ban Hexagonal Optics RX6448",
+    "category": "frames",
+    "brand": "Ray-Ban",
+    "price": 4500,
+    "inStock": true,
+    "image": "/images/shop/frames/rayban-rx6448.jpg",
+    "description": "Гексагональна металева оправа з тонкими оправами та класичним дизайном."
+  },
+  {
+    "id": "frame-vogue-oversized-14",
+    "title": "Оправа Vogue VO5334",
+    "category": "frames",
+    "brand": "Vogue",
+    "price": 2650,
+    "inStock": true,
+    "image": "/images/shop/frames/vogue-vo5334.jpg",
+    "description": "Велика жіноча оправа з товстим ацетатом і модним oversized-силуетом."
+  },
+  {
+    "id": "frame-silhouette-spirit-15",
+    "title": "Оправа Silhouette Spirit 2936",
+    "category": "frames",
+    "brand": "Silhouette",
+    "price": 7800,
+    "inStock": true,
+    "image": "/images/shop/frames/silhouette-spirit.jpg",
+    "description": "Легка титанова оправа з мінімалістичним дизайном і високою гнучкістю."
+  },
+
+  /* ========================================================= */
+  /* CATEGORY 4: SUNGLASSES (15 ITEMS) */
+  /* ========================================================= */
+  {
+    "id": "sunglass-polaroid-classic-1",
+    "title": "Сонцезахисні окуляри Polaroid PLD 2086/S",
+    "category": "sunglasses",
+    "brand": "Polaroid",
+    "price": 2400,
+    "inStock": true,
+    "image": "/images/shop/sunglasses/polaroid-pld2086.jpg",
+    "description": "Поляризовані лінзи UltraSight для 100% захисту від UV400 та відблисків."
+  },
+  {
+    "id": "sunglass-rayban-aviator-2",
+    "title": "Окуляри Ray-Ban Aviator Classic RB3025",
+    "category": "sunglasses",
+    "brand": "Ray-Ban",
+    "price": 5400,
+    "inStock": true,
+    "image": "/images/shop/sunglasses/rayban-rb3025.jpg",
+    "description": "Культові авіатори з позолоченою металевою оправою та мінеральним склом G-15."
+  },
+  {
+    "id": "sunglass-oakley-holbrook-3",
+    "title": "Окуляри Oakley Holbrook Prizm",
+    "category": "sunglasses",
+    "brand": "Oakley",
+    "price": 6100,
+    "inStock": true,
+    "image": "/images/shop/sunglasses/oakley-holbrook.jpg",
+    "description": "Спортивно-міський стиль із лінзами Prizm для максимальної контрастності."
+  },
+  {
+    "id": "sunglass-rayban-wayfarer-4",
+    "title": "Окуляри Ray-Ban Wayfarer Classic RB2140",
+    "category": "sunglasses",
+    "brand": "Ray-Ban",
+    "price": 4900,
+    "inStock": true,
+    "image": "/images/shop/sunglasses/rayban-rb2140.jpg",
+    "description": "Легендарні Wayfarer з товстим ацетатом і класичними лінзами G-15."
+  },
+  {
+    "id": "sunglass-polaroid-aviator-5",
+    "title": "Окуляри Polaroid PLD 6010/N",
+    "category": "sunglasses",
+    "brand": "Polaroid",
+    "price": 1950,
+    "inStock": true,
+    "image": "/images/shop/sunglasses/polaroid-pld6010.jpg",
+    "description": "Поляризовані авіатори з легкою металевою оправою та UV400 захистом."
+  },
+  {
+    "id": "sunglass-oakley-radar-6",
+    "title": "Окуляри Oakley Radar EV Path Prizm",
+    "category": "sunglasses",
+    "brand": "Oakley",
+    "price": 7200,
+    "inStock": true,
+    "image": "/images/shop/sunglasses/oakley-radar.jpg",
+    "description": "Спортивні окуляри з технологією Prizm для активного відпочинку та велоспорту."
+  },
+  {
+    "id": "sunglass-hugo-boss-7",
+    "title": "Окуляри Hugo Boss BOSS 1045/S",
+    "category": "sunglasses",
+    "brand": "Hugo Boss",
+    "price": 4800,
+    "inStock": true,
+    "image": "/images/shop/sunglasses/hugo-boss-1045.jpg",
+    "description": "Елегантні чоловічі окуляри з поляризованими лінзами та металевою оправою."
+  },
+  {
+    "id": "sunglass-furla-8",
+    "title": "Окуляри Furla SFU239",
+    "category": "sunglasses",
+    "brand": "Furla",
+    "price": 3900,
+    "inStock": true,
+    "image": "/images/shop/sunglasses/furla-sfu239.jpg",
+    "description": "Жіночі сонцезахисні окуляри в стилі «котяче око» з градієнтними лінзами."
+  },
+  {
+    "id": "sunglass-rayban-round-9",
+    "title": "Окуляри Ray-Ban Round Metal RB3447",
+    "category": "sunglasses",
+    "brand": "Ray-Ban",
+    "price": 5100,
+    "inStock": true,
+    "image": "/images/shop/sunglasses/rayban-rb3447.jpg",
+    "description": "Круглі металеві окуляри в ретро-стилі з зеленими лінзами G-15."
+  },
+  {
+    "id": "sunglass-polaroid-square-10",
+    "title": "Окуляри Polaroid PLD 6126/S",
+    "category": "sunglasses",
+    "brand": "Polaroid",
+    "price": 2200,
+    "inStock": false,
+    "image": "/images/shop/sunglasses/polaroid-pld6126.jpg",
+    "description": "Прямокутні поляризовані окуляри з ацетатною оправою та дзеркальними лінзами."
+  },
+  {
+    "id": "sunglass-oakley-frogskins-11",
+    "title": "Окуляри Oakley Frogskins Prizm",
+    "category": "sunglasses",
+    "brand": "Oakley",
+    "price": 5800,
+    "inStock": true,
+    "image": "/images/shop/sunglasses/oakley-frogskins.jpg",
+    "description": "Культові окуляри 80-х років з сучасними лінзами Prizm і гнучкою оправою."
+  },
+  {
+    "id": "sunglass-hugo-boss-round-12",
+    "title": "Окуляри Hugo Boss BOSS 1296/S",
+    "category": "sunglasses",
+    "brand": "Hugo Boss",
+    "price": 4500,
+    "inStock": true,
+    "image": "/images/shop/sunglasses/hugo-boss-1296.jpg",
+    "description": "Круглі чоловічі окуляри з тонкими металевими оправами та поляризацією."
+  },
+  {
+    "id": "sunglass-furla-oversized-13",
+    "title": "Окуляри Furla SFU350",
+    "category": "sunglasses",
+    "brand": "Furla",
+    "price": 4200,
+    "inStock": true,
+    "image": "/images/shop/sunglasses/furla-sfu350.jpg",
+    "description": "Великі жіночі окуляри oversized з градієнтними лінзами та ацетатною оправою."
+  },
+  {
+    "id": "sunglass-rayban-clubmaster-14",
+    "title": "Окуляри Ray-Ban Clubmaster RB3016",
+    "category": "sunglasses",
+    "brand": "Ray-Ban",
+    "price": 5600,
+    "inStock": true,
+    "image": "/images/shop/sunglasses/rayban-rb3016.jpg",
+    "description": "Класичні Clubmaster з комбінованою оправою ацетат + метал і лінзами G-15."
+  },
+  {
+    "id": "sunglass-polaroid-sport-15",
+    "title": "Окуляри Polaroid PLD 7033/S",
+    "category": "sunglasses",
+    "brand": "Polaroid",
+    "price": 2650,
+    "inStock": true,
+    "image": "/images/shop/sunglasses/polaroid-pld7033.jpg",
+    "description": "Спортивні поляризовані окуляри з обтічною формою та 100% UV-захистом."
+  }
+]

@@ -1,0 +1,277 @@
+.
+├── ARCHITECTURE.md
+├── astro.config.mjs
+├── dist
+│   ├── _astro
+│   │   ├── about.C8F6xU3Y.css
+│   │   ├── cart.ZcAPj3jT.js
+│   │   ├── CartDrawer.astro_astro_type_script_index_0_lang.VSE58d12.js
+│   │   ├── ProductCard.astro_astro_type_script_index_0_lang.COlt-WzH.js
+│   │   └── SiteHeader.astro_astro_type_script_index_0_lang.Yuep9X81.js
+│   ├── _routes.json
+│   ├── _worker.js
+│   │   ├── _@astrojs-ssr-adapter.mjs
+│   │   ├── _astro-internal_middleware.mjs
+│   │   ├── chunks
+│   │   │   ├── _@astrojs-ssr-adapter_DRTFW5WA.mjs
+│   │   │   ├── _astro_assets_CJosIBGB.mjs
+│   │   │   ├── _astro_data-layer-content_Cr7H2TIZ.mjs
+│   │   │   ├── astro
+│   │   │   │   └── server_tt5zRp_Z.mjs
+│   │   │   ├── astro-designed-error-pages_CxpOZvZa.mjs
+│   │   │   ├── cloudflare-kv-binding_DMly_2Gl.mjs
+│   │   │   ├── consts_DBS1dnOp.mjs
+│   │   │   ├── content-assets_XqCgPAV2.mjs
+│   │   │   ├── content-modules_Bvq7llv8.mjs
+│   │   │   ├── noop-middleware_8Jjvndwq.mjs
+│   │   │   ├── parse_CKDs5fGw.mjs
+│   │   │   ├── path_BgNISshD.mjs
+│   │   │   ├── remote_CVXTZJrr.mjs
+│   │   │   ├── render-context_BSfikLub.mjs
+│   │   │   └── sharp_CfIGi8RE.mjs
+│   │   ├── index.js
+│   │   ├── manifest_5lbEaCcS.mjs
+│   │   ├── noop-entrypoint.mjs
+│   │   ├── pages
+│   │   │   ├── _image.astro.mjs
+│   │   │   ├── about.astro.mjs
+│   │   │   ├── api
+│   │   │   │   └── appointments.astro.mjs
+│   │   │   ├── contacts.astro.mjs
+│   │   │   ├── index.astro.mjs
+│   │   │   ├── services
+│   │   │   │   ├── _slug_.astro.mjs
+│   │   │   │   └── programs.astro.mjs
+│   │   │   ├── services.astro.mjs
+│   │   │   └── shop.astro.mjs
+│   │   └── renderers.mjs
+│   ├── about
+│   │   └── index.html
+│   ├── contacts
+│   │   └── index.html
+│   ├── index.html
+│   ├── services
+│   │   ├── index.html
+│   │   ├── pediatric
+│   │   │   └── index.html
+│   │   └── programs
+│   │       └── index.html
+│   └── shop
+│       └── index.html
+├── LICENSE
+├── node_modules
+│   ├── @astrojs
+│   │   ├── check ⇒ ../.pnpm/@astrojs+check@0.9.10_prettier@3.9.6_typescript@5.9.3/node_modules/@astrojs/check
+│   │   └── cloudflare ⇒ ../.pnpm/@astrojs+cloudflare@12.6.13_astro@5.18.2_jiti@2.7.0_lightningcss@1.32.0_rollup@4.62.4_typescr_jk3clda632cxsqyhlwgmskrvl4/node_modules/@astrojs/cloudflare
+│   ├── @cloudflare
+│   │   └── workers-types ⇒ ../.pnpm/@cloudflare+workers-types@5.20260808.1/node_modules/@cloudflare/workers-types
+│   ├── @nanostores
+│   │   └── persistent ⇒ ../.pnpm/@nanostores+persistent@1.3.5_nanostores@1.4.2/node_modules/@nanostores/persistent
+│   ├── @tailwindcss
+│   │   └── vite ⇒ ../.pnpm/@tailwindcss+vite@4.3.3_vite@6.4.3_jiti@2.7.0_lightningcss@1.32.0_yaml@2.9.0_/node_modules/@tailwindcss/vite
+│   ├── astro ⇒ .pnpm/astro@5.18.2_jiti@2.7.0_lightningcss@1.32.0_rollup@4.62.4_typescript@5.9.3_yaml@2.9.0/node_modules/astro
+│   ├── nanostores ⇒ .pnpm/nanostores@1.4.2/node_modules/nanostores
+│   ├── prettier ⇒ .pnpm/prettier@3.9.6/node_modules/prettier
+│   ├── tailwindcss ⇒ .pnpm/tailwindcss@4.3.3/node_modules/tailwindcss
+│   ├── typescript ⇒ .pnpm/typescript@5.9.3/node_modules/typescript
+│   ├── volar-service-prettier ⇒ .pnpm/volar-service-prettier@0.0.71_@volar+language-service@2.4.28_prettier@3.9.6/node_modules/volar-service-prettier
+│   ├── wrangler ⇒ .pnpm/wrangler@4.120.0_@cloudflare+workers-types@5.20260808.1/node_modules/wrangler
+│   └── zod ⇒ .pnpm/zod@4.4.3/node_modules/zod
+├── package.json
+├── pnpm-lock.yaml
+├── public
+│   └── images
+│       ├── artificial
+│       │   ├── abstract-optical-glass.jpg
+│       │   ├── clinic-minimalist-vibe.jpg
+│       │   ├── hero-refraction-light.jpg
+│       │   ├── macro-lens-hydration.jpg
+│       │   └── shop-editorial-eyewear.jpg
+│       ├── clinic
+│       │   ├── bez-nazvanyia-20-lito-oryhinal.jpg
+│       │   ├── category_150_orig.jpg
+│       │   ├── certificate-01.jpg
+│       │   ├── certificate-02.jpg
+│       │   ├── certificate-03.jpg
+│       │   ├── certificate-04.jpg
+│       │   ├── certificate-05.jpg
+│       │   ├── certificate-06.jpg
+│       │   ├── certificate-07.jpg
+│       │   ├── certificate-08.jpg
+│       │   ├── certificate-09.jpg
+│       │   ├── certificate-10.jpg
+│       │   ├── certificate-archive-01.jpg
+│       │   ├── certificate-archive-02.jpg
+│       │   ├── certificate-archive-03.jpg
+│       │   ├── certificate-archive-04.jpg
+│       │   ├── certificate-archive-05.jpg
+│       │   ├── certificate-archive-06.jpg
+│       │   ├── certificate-archive-07.jpg
+│       │   ├── certificate-archive-08.jpg
+│       │   ├── certificate-archive-09.jpg
+│       │   ├── certificate-archive-10.jpg
+│       │   ├── certificate-archive-11.jpg
+│       │   ├── certificate-archive-12.jpg
+│       │   ├── certificate-archive-13.jpg
+│       │   ├── certificate-archive-14.jpg
+│       │   ├── certificate-archive-15.jpg
+│       │   ├── certificate-archive-16.jpg
+│       │   ├── certificate-archive-17.jpg
+│       │   ├── certificate-archive-18.jpeg
+│       │   ├── certificate-archive-19.jpeg
+│       │   ├── certificate-archive-20.jpeg
+│       │   ├── certificate-archive-21.jpeg
+│       │   ├── certificate-archive-22.jpeg
+│       │   ├── certificate-archive-23.jpeg
+│       │   ├── certificate-archive-24.jpeg
+│       │   ├── certificate-archive-25.jpg
+│       │   ├── certificate-archive-26.jpg
+│       │   ├── certificate-archive-27.jpg
+│       │   ├── certificate-archive-28.jpg
+│       │   ├── certificate-archive-29.jpg
+│       │   ├── certificate-archive-30.jpg
+│       │   ├── certificate-archive-31.jpg
+│       │   ├── certificate-archive-32.jpg
+│       │   ├── certificate-archive-33.jpg
+│       │   ├── certificate-archive-34.jpg
+│       │   ├── certificate-archive-35.jpg
+│       │   ├── certificate-archive-36.jpg
+│       │   ├── certificate-archive-37.jpg
+│       │   ├── clinic-logo-old.jpg
+│       │   ├── clinic-stock-water.png
+│       │   ├── foto-dytiacha-tablytsia-300x243-1.jpg
+│       │   ├── home_oculist_clinic3.png
+│       │   ├── home_oculist_pic2.png
+│       │   ├── home_oculist_pic3.png
+│       │   ├── logo-icon.jpeg
+│       │   └── old-hero.jpeg
+│       ├── doctors
+│       │   ├── doctor-archive-01.jpg
+│       │   ├── doctor-archive-02.jpg
+│       │   ├── doctor-archive-03.jpg
+│       │   ├── doctor-archive-04.jpg
+│       │   ├── doctor-archive-05.jpg
+│       │   ├── doctor-archive-06.jpg
+│       │   ├── doctor-archive-07.jpg
+│       │   ├── doctor-archive-08.jpg
+│       │   ├── doctor-archive-09.jpg
+│       │   ├── doctor-archive-10.jpg
+│       │   ├── doctor-archive-11.jpg
+│       │   ├── doctor-archive-12.jpg
+│       │   ├── doctor-archive-13.jpg
+│       │   ├── doctor-archive-14.jpg
+│       │   ├── doctor-archive-15.jpg
+│       │   ├── doctor-archive-16.jpg
+│       │   ├── doctor-archive-17.jpg
+│       │   ├── doctor-archive-18.jpg
+│       │   ├── doctor-archive-19.jpg
+│       │   ├── doctor-archive-20.jpg
+│       │   ├── doctor-archive-21.jpg
+│       │   ├── doctor-archive-22.jpg
+│       │   ├── doctor-archive-23.jpg
+│       │   ├── doctor-archive-24.jpg
+│       │   ├── doctor-archive-25.jpg
+│       │   ├── doctor-certificate-01.jpg
+│       │   ├── doctor-miroslava-suboty.jpeg
+│       │   ├── doctor-portrait-01.jpg
+│       │   └── doctor-portrait-02.jpg
+│       └── shop
+│           ├── care
+│           │   ├── care-solution-01.jpg
+│           │   ├── care-solution-02.jpg
+│           │   └── care-solution-03.jpg
+│           ├── frames
+│           │   ├── frames-catalog-01.jpeg
+│           │   ├── frames-catalog-02.webp
+│           │   └── frames-showcase-01.jpg
+│           ├── lenses
+│           │   ├── lens-product-01.jpg
+│           │   ├── lens-product-02.jpg
+│           │   ├── lens-product-03.jpg
+│           │   ├── lens-product-04.jpg
+│           │   ├── lens-product-05.jpg
+│           │   ├── lens-product-06.jpg
+│           │   ├── lens-product-07.jpg
+│           │   ├── lens-product-08.jpg
+│           │   ├── lens-product-09.jpg
+│           │   ├── lens-product-10.jpg
+│           │   ├── lens-product-11.jpg
+│           │   ├── lens-product-12.jpg
+│           │   ├── lens-product-13.jpg
+│           │   ├── lens-product-14.jpg
+│           │   ├── lens-product-15.jpg
+│           │   ├── lens-product-16.jpg
+│           │   ├── lens-product-17.jpg
+│           │   ├── lens-product-18.jpg
+│           │   ├── lens-product-19.jpg
+│           │   ├── lens-product-20.jpg
+│           │   ├── lens-product-21.jpg
+│           │   └── lens-product-22.jpg
+│           └── sunglasses
+│               ├── sunglass-oakley-sport-03.jpg
+│               ├── sunglass-polaroid-classic-02.jpg
+│               ├── sunglass-rayban-aviator-01.jpg
+│               ├── sunglass-tomford-luxury-05.jpg
+│               └── sunglass-vogue-fashion-04.jpg
+├── README.md
+├── scripts
+│   └── seed-products.ts
+├── shop_seed.json
+├── src
+│   ├── components
+│   │   ├── clinic
+│   │   │   ├── AppointmentForm.astro
+│   │   │   ├── GoogleMap.astro
+│   │   │   ├── ServiceCard.astro
+│   │   │   ├── SiteFooter.astro
+│   │   │   └── SiteHeader.astro
+│   │   ├── commerce
+│   │   │   ├── CartDrawer.astro
+│   │   │   └── ProductCard.astro
+│   │   └── ui
+│   │       └── Container.astro
+│   ├── content
+│   │   ├── products
+│   │   │   ├── daily-contact-lenses.json
+│   │   │   ├── lens-care-solution.json
+│   │   │   └── signature-optical-frame.json
+│   │   └── services
+│   │       └── pediatric.json
+│   ├── content.config.ts
+│   ├── layouts
+│   │   └── BaseLayout.astro
+│   ├── lib
+│   │   ├── analytics
+│   │   │   └── index.ts
+│   │   ├── clinic.ts
+│   │   ├── cms
+│   │   │   └── index.ts
+│   │   ├── commerce
+│   │   │   └── money.ts
+│   │   ├── leads
+│   │   │   └── dispatcher.ts
+│   │   └── navigation.ts
+│   ├── pages
+│   │   ├── about.astro
+│   │   ├── api
+│   │   │   └── appointments.ts
+│   │   ├── contacts.astro
+│   │   ├── index.astro
+│   │   ├── services
+│   │   │   ├── [slug].astro
+│   │   │   ├── index.astro
+│   │   │   └── programs.astro
+│   │   └── shop
+│   │       └── index.astro
+│   ├── schemas
+│   │   └── appointment.ts
+│   ├── store
+│   │   └── cart.ts
+│   ├── styles
+│   │   └── global.css
+│   └── types
+│       └── global.d.ts
+├── structure.txt
+├── tailwind.config.ts
+├── tsconfig.json
+└── wrangler.jsonc
