@@ -53,9 +53,13 @@ const productActionAriaLabel = product.inStock
   : `${product.title} — ${productActionLabel}`;
 ---
 
-<article class="group flex h-full min-w-0 flex-col border border-border bg-card">
+<article
+  class="group flex h-full min-w-0 flex-col border border-border bg-card"
+  data-pointer-depth={product.imageKind === "product" ? "" : undefined}
+>
   <div
     class="relative aspect-[4/3] overflow-hidden border-b border-border bg-muted/60"
+    data-soft-sharp={product.imageKind === "product" ? "" : undefined}
   >
     <img
       class:list={[

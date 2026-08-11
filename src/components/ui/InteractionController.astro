@@ -1,0 +1,234 @@
+<script>
+  interface PointerSurfaceState {
+    readonly element: HTMLElement;
+    rect: DOMRect;
+    clientX: number;
+    clientY: number;
+    active: boolean;
+  }
+
+  const clamp = (value: number, minimum: number, maximum: number): number =>
+    Math.min(Math.max(value, minimum), maximum);
+
+  function initializeInteractionController(): void {
+    const root = document.documentElement;
+
+    if (root.dataset.opticalInteractionsBound === "true") {
+      return;
+    }
+
+    root.dataset.opticalInteractionsBound = "true";
+
+    const reducedMotion = window.matchMedia(
+      "(prefers-reduced-motion: reduce)",
+    );
+    const precisePointer = window.matchMedia(
+      "(hover: hover) and (pointer: fine)",
+    );
+    const revealElements = Array.from(
+      document.querySelectorAll<HTMLElement>("[data-reveal]"),
+    );
+
+    const revealImmediately = (): void => {
+      for (const element of revealElements) {
+        element.dataset.revealed = "true";
+      }
+    };
+
+    let revealObserver: IntersectionObserver | null = null;
+
+    if (!reducedMotion.matches && "IntersectionObserver" in window) {
+      root.dataset.revealReady = "true";
+      revealObserver = new IntersectionObserver(
+        (entries) => {
+          for (const entry of entries) {
+            if (!entry.isIntersecting) {
+              continue;
+            }
+
+            const element = entry.target;
+
+            if (element instanceof HTMLElement) {
+              element.dataset.revealed = "true";
+              revealObserver?.unobserve(element);
+            }
+          }
+        },
+        {
+          rootMargin: "0px 0px -8% 0px",
+          threshold: 0.01,
+        },
+      );
+
+      for (const element of revealElements) {
+        revealObserver.observe(element);
+      }
+    } else {
+      revealImmediately();
+    }
+
+    const pointerSelector = "[data-focus-field], [data-pointer-depth]";
+    const pointerStates = new Map<HTMLElement, PointerSurfaceState>();
+    const dirtyStates = new Set<PointerSurfaceState>();
+    let activeState: PointerSurfaceState | null = null;
+    let animationFrame = 0;
+
+    const resetPointerState = (state: PointerSurfaceState): void => {
+      state.element.dataset.pointerActive = "false";
+      state.element.style.setProperty("--focus-x", "50%");
+      state.element.style.setProperty("--focus-y", "50%");
+      state.element.style.setProperty("--depth-x", "0px");
+      state.element.style.setProperty("--depth-y", "0px");
+      state.element.style.setProperty("--tilt-x", "0deg");
+      state.element.style.setProperty("--tilt-y", "0deg");
+    };
+
+    const renderPointerStates = (): void => {
+      animationFrame = 0;
+
+      for (const state of dirtyStates) {
+        if (!state.active || reducedMotion.matches || !precisePointer.matches) {
+          resetPointerState(state);
+          continue;
+        }
+
+        const horizontal = clamp(
+          (state.clientX - state.rect.left) / Math.max(state.rect.width, 1),
+          0,
+          1,
+        );
+        const vertical = clamp(
+          (state.clientY - state.rect.top) / Math.max(state.rect.height, 1),
+          0,
+          1,
+        );
+        const normalizedX = horizontal * 2 - 1;
+        const normalizedY = vertical * 2 - 1;
+
+        state.element.dataset.pointerActive = "true";
+
+        if (state.element.hasAttribute("data-focus-field")) {
+          state.element.style.setProperty(
+            "--focus-x",
+            `${(horizontal * 100).toFixed(2)}%`,
+          );
+          state.element.style.setProperty(
+            "--focus-y",
+            `${(vertical * 100).toFixed(2)}%`,
+          );
+        }
+
+        if (state.element.hasAttribute("data-pointer-depth")) {
+          state.element.style.setProperty(
+            "--depth-x",
+            `${(normalizedX * 1.5).toFixed(2)}px`,
+          );
+          state.element.style.setProperty(
+            "--depth-y",
+            `${(normalizedY * 1.5).toFixed(2)}px`,
+          );
+          state.element.style.setProperty(
+            "--tilt-x",
+            `${(-normalizedY * 0.35).toFixed(3)}deg`,
+          );
+          state.element.style.setProperty(
+            "--tilt-y",
+            `${(normalizedX * 0.35).toFixed(3)}deg`,
+          );
+        }
+      }
+
+      dirtyStates.clear();
+    };
+
+    const schedulePointerRender = (state: PointerSurfaceState): void => {
+      dirtyStates.add(state);
+
+      if (animationFrame === 0) {
+        animationFrame = window.requestAnimationFrame(renderPointerStates);
+      }
+    };
+
+    const deactivatePointerSurface = (): void => {
+      if (activeState === null) {
+        return;
+      }
+
+      activeState.active = false;
+      schedulePointerRender(activeState);
+      activeState = null;
+    };
+
+    document.addEventListener(
+      "pointermove",
+      (event) => {
+        if (
+          reducedMotion.matches ||
+          !precisePointer.matches ||
+          !(event.target instanceof Element)
+        ) {
+          deactivatePointerSurface();
+          return;
+        }
+
+        const candidate = event.target.closest(pointerSelector);
+
+        if (!(candidate instanceof HTMLElement)) {
+          deactivatePointerSurface();
+          return;
+        }
+
+        if (activeState?.element !== candidate) {
+          deactivatePointerSurface();
+
+          let nextState = pointerStates.get(candidate);
+
+          if (nextState === undefined) {
+            nextState = {
+              element: candidate,
+              rect: candidate.getBoundingClientRect(),
+              clientX: event.clientX,
+              clientY: event.clientY,
+              active: true,
+            };
+            pointerStates.set(candidate, nextState);
+          } else {
+            nextState.rect = candidate.getBoundingClientRect();
+            nextState.active = true;
+          }
+
+          activeState = nextState;
+        }
+
+        activeState.clientX = event.clientX;
+        activeState.clientY = event.clientY;
+        schedulePointerRender(activeState);
+      },
+      { passive: true },
+    );
+
+    document.addEventListener("pointerout", (event) => {
+      if (event.relatedTarget === null) {
+        deactivatePointerSurface();
+      }
+    });
+    document.addEventListener("pointercancel", deactivatePointerSurface);
+    window.addEventListener("blur", deactivatePointerSurface);
+
+    const handleMotionPreference = (): void => {
+      if (reducedMotion.matches) {
+        revealObserver?.disconnect();
+        revealObserver = null;
+        root.dataset.revealReady = "false";
+        revealImmediately();
+      }
+
+      deactivatePointerSurface();
+    };
+
+    reducedMotion.addEventListener("change", handleMotionPreference);
+    precisePointer.addEventListener("change", deactivatePointerSurface);
+  }
+
+  initializeInteractionController();
+</script>

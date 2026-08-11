@@ -33,7 +33,10 @@ const localizedServices = services
 >
   <header class="overflow-x-hidden bg-primary text-primary-foreground">
     <Container class="grid min-h-[calc(100svh-5rem)] grid-cols-1 lg:grid-cols-12">
-      <div class="flex flex-col justify-center py-16 sm:py-20 lg:col-span-7 lg:py-24 lg:pr-14 xl:pr-20">
+      <div
+        class="flex flex-col justify-center py-16 sm:py-20 lg:col-span-7 lg:py-24 lg:pr-14 xl:pr-20"
+        data-reveal
+      >
         <p class="text-xs font-semibold uppercase tracking-[0.24em] text-accent">
           {t(locale, "home.heroEyebrow")}
         </p>
@@ -48,6 +51,7 @@ const localizedServices = services
           <a
             class="inline-flex min-h-13 items-center justify-center bg-primary-foreground px-6 text-sm font-semibold text-primary transition-colors hover:bg-accent hover:text-foreground"
             href={localizePath("/#appointment-form", locale)}
+            data-pointer-depth
           >
             {t(locale, "actions.bookConsultation")}
           </a>
@@ -70,19 +74,28 @@ const localizedServices = services
         </p>
       </div>
 
-      <figure class="relative -mx-5 min-h-[26rem] overflow-hidden sm:-mx-8 lg:col-span-5 lg:mx-0 lg:min-h-full">
-        <img
-          class="absolute inset-0 size-full object-cover"
-          src={siteImageAssets.heroRefraction.src}
-          width={siteImageAssets.heroRefraction.width}
-          height={siteImageAssets.heroRefraction.height}
-          alt={t(locale, "home.heroImageAlt")}
-          loading="eager"
-          fetchpriority="high"
-          decoding="async"
-        />
-        <div class="absolute inset-0 bg-primary/15" aria-hidden="true"></div>
-        <figcaption class="absolute bottom-0 left-0 border-t border-r border-primary-foreground/25 bg-primary/88 px-5 py-4 text-xs uppercase tracking-[0.16em] text-primary-foreground/70 backdrop-blur-sm">
+      <figure
+        class="relative -mx-5 min-h-[26rem] overflow-hidden sm:-mx-8 lg:col-span-5 lg:mx-0 lg:min-h-full"
+        data-reveal
+      >
+        <div
+          class="absolute inset-0 overflow-hidden"
+          data-focus-field
+          data-soft-sharp
+        >
+          <img
+            class="size-full object-cover"
+            src={siteImageAssets.heroRefraction.src}
+            width={siteImageAssets.heroRefraction.width}
+            height={siteImageAssets.heroRefraction.height}
+            alt={t(locale, "home.heroImageAlt")}
+            loading="eager"
+            fetchpriority="high"
+            decoding="async"
+          />
+          <div class="absolute inset-0 bg-primary/15" aria-hidden="true"></div>
+        </div>
+        <figcaption class="absolute bottom-0 left-0 z-10 border-t border-r border-primary-foreground/25 bg-primary/88 px-5 py-4 text-xs uppercase tracking-[0.16em] text-primary-foreground/70 backdrop-blur-sm">
           {t(locale, "home.heroCaption")}
         </figcaption>
       </figure>
@@ -116,7 +129,7 @@ const localizedServices = services
 
   <section class="overflow-x-hidden bg-background py-20 sm:py-24 lg:py-32" aria-labelledby="two-worlds-heading">
     <Container>
-      <div class="grid gap-8 lg:grid-cols-12 lg:items-end">
+      <div class="grid gap-8 lg:grid-cols-12 lg:items-end" data-reveal>
         <div class="lg:col-span-8">
           <p class="text-xs font-semibold uppercase tracking-[0.22em] text-primary">
             {t(locale, "home.worldsEyebrow")}
@@ -130,7 +143,10 @@ const localizedServices = services
         </p>
       </div>
 
-      <div class="relative mt-12 grid border border-border md:grid-cols-2 lg:mt-16">
+      <div
+        class="relative mt-12 grid border border-border md:grid-cols-2 lg:mt-16"
+        data-reveal
+      >
         <article class="flex min-h-[28rem] flex-col bg-primary p-7 text-primary-foreground sm:p-10 lg:min-h-[34rem] lg:p-12">
           <p class="text-xs font-semibold uppercase tracking-[0.24em] text-accent">
             {t(locale, "home.clinicWorldEyebrow")}
@@ -146,7 +162,10 @@ const localizedServices = services
           </a>
         </article>
 
-        <article class="relative flex min-h-[28rem] flex-col overflow-hidden bg-muted p-7 sm:p-10 lg:min-h-[34rem] lg:p-12">
+        <article
+          class="relative flex min-h-[28rem] flex-col overflow-hidden bg-muted p-7 sm:p-10 lg:min-h-[34rem] lg:p-12"
+          data-soft-sharp
+        >
           <img
             class="absolute inset-0 size-full object-cover"
             src={siteImageAssets.shopEditorial.src}
@@ -182,7 +201,7 @@ const localizedServices = services
 
   <section class="overflow-x-hidden bg-muted py-20 sm:py-24 lg:py-32" aria-labelledby="services-heading">
     <Container>
-      <div class="grid gap-8 lg:grid-cols-12 lg:items-end">
+      <div class="grid gap-8 lg:grid-cols-12 lg:items-end" data-reveal>
         <div class="lg:col-span-8">
           <p class="text-xs font-semibold uppercase tracking-[0.22em] text-primary">
             {t(locale, "home.servicesEyebrow")}
@@ -198,7 +217,11 @@ const localizedServices = services
 
       {
         localizedServices.length > 0 ? (
-          <ul class="mt-12 grid gap-px border border-border bg-border lg:mt-16 lg:grid-cols-3">
+          <ul
+            class="mt-12 grid gap-px border border-border bg-border lg:mt-16 lg:grid-cols-3"
+            data-reveal
+            data-reveal-sequence
+          >
             {localizedServices.map((service, index) => (
               <li>
                 <ServiceCard
@@ -324,7 +347,10 @@ const localizedServices = services
   </section>
 
   <section class="overflow-x-hidden border-t border-border bg-muted py-20 sm:py-24 lg:py-32" aria-labelledby="final-action-heading">
-    <Container class="grid gap-12 lg:grid-cols-12 lg:items-start lg:gap-16">
+    <Container
+      class="grid gap-12 lg:grid-cols-12 lg:items-start lg:gap-16"
+      data-reveal
+    >
       <div class="lg:col-span-5 lg:pt-8">
         <p class="text-xs font-semibold uppercase tracking-[0.22em] text-primary">
           {t(locale, "home.finalEyebrow")}

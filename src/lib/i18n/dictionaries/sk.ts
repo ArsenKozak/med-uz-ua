@@ -58,7 +58,7 @@ export const sk = {
   "appointment.submit": "Objednať konzultáciu",
   "appointment.sending": "Odosiela sa…",
   "appointment.pending": "Odosielame vašu žiadosť…",
-  "appointment.success": "Ďakujeme. Vaša žiadosť bola odoslaná.",
+  "appointment.success": "Žiadosť bola odoslaná. Klinika vás bude kontaktovať, aby potvrdila termín.",
   "appointment.errorInvalid": "Skontrolujte údaje a skúste to znova.",
   "appointment.errorRequest": "Žiadosť sa nepodarilo odoslať. Skúste to neskôr.",
 

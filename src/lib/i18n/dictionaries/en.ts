@@ -58,7 +58,7 @@ export const en = {
   "appointment.submit": "Book consultation",
   "appointment.sending": "Sending…",
   "appointment.pending": "Sending your request…",
-  "appointment.success": "Thank you. Your request has been sent.",
+  "appointment.success": "Request sent. The clinic will contact you to confirm the appointment.",
   "appointment.errorInvalid": "Please review your details and try again.",
   "appointment.errorRequest": "We could not send your request. Please try again later.",
 

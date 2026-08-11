@@ -8,6 +8,7 @@ import type {
   ProductImageKind,
   ProductVerificationStatus,
 } from "../../schemas/product";
+import type { CartCatalogProduct } from "../commerce/cart-catalog";
 
 export type {
   ProductCategory,
@@ -113,6 +114,26 @@ export async function getAllActiveProducts(): Promise<
   );
 
   return entries.map(mapProductEntry).sort(compareProductsById);
+}
+
+/** Minimal active-catalog projection safe to embed for cart reconciliation. */
+export async function getActiveCartCatalogProducts(): Promise<
+  readonly CartCatalogProduct[]
+> {
+  const products = await getAllActiveProducts();
+
+  return Object.freeze(
+    products.map((product) =>
+      Object.freeze({
+        id: product.id,
+        title: product.title,
+        priceMinor: product.priceMinor,
+        currency: product.currency,
+        inStock: product.inStock,
+        verificationStatus: product.verificationStatus,
+      }),
+    ),
+  );
 }
 
 export async function getServiceBySlug(

@@ -56,7 +56,7 @@ export const uk = {
   "appointment.submit": "Записатися на консультацію",
   "appointment.sending": "Надсилання…",
   "appointment.pending": "Надсилаємо ваш запит…",
-  "appointment.success": "Дякуємо. Ваш запит надіслано.",
+  "appointment.success": "Запит надіслано. Клініка зв’яжеться з вами, щоб підтвердити запис.",
   "appointment.errorInvalid": "Перевірте введені дані та спробуйте ще раз.",
   "appointment.errorRequest": "Не вдалося надіслати запит. Спробуйте пізніше.",
 

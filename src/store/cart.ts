@@ -1,7 +1,7 @@
 import { persistentJSON } from "@nanostores/persistent";
 import { computed } from "nanostores";
 
-const CART_STORAGE_KEY = "meduzua:cart:v1";
+export const CART_STORAGE_KEY = "meduzua:cart:v1";
 const MAX_CART_LINES = 100;
 const MAX_PRODUCT_ID_LENGTH = 200;
 const MAX_TITLE_LENGTH = 240;

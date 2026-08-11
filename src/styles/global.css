@@ -86,6 +86,237 @@ textarea {
   border-radius: 999px;
 }
 
+/* Progressive reveal: without the controller (or with reduced motion), content
+   keeps its normal visible state. Sequence containers animate as one unit. */
+@media (prefers-reduced-motion: no-preference) {
+  html[data-reveal-ready="true"]
+    [data-reveal]:not([data-reveal-sequence]) {
+    transition:
+      opacity 560ms cubic-bezier(0.22, 1, 0.36, 1),
+      transform 620ms cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  html[data-reveal-ready="true"]
+    [data-reveal]:not([data-reveal-sequence]):not([data-revealed="true"]) {
+    opacity: 0;
+    transform: translate3d(0, 12px, 0);
+  }
+
+  html[data-reveal-ready="true"] [data-reveal-sequence] > * {
+    --reveal-order: 0;
+    transition:
+      opacity 520ms cubic-bezier(0.22, 1, 0.36, 1),
+      transform 580ms cubic-bezier(0.22, 1, 0.36, 1);
+    transition-delay: calc(var(--reveal-order) * 55ms);
+  }
+
+  html[data-reveal-ready="true"]
+    [data-reveal-sequence]:not([data-revealed="true"])
+    > * {
+    opacity: 0;
+    transform: translate3d(0, 10px, 0);
+  }
+
+  html[data-reveal-ready="true"]
+    [data-reveal-sequence]
+    > :nth-child(4n + 2) {
+    --reveal-order: 1;
+  }
+
+  html[data-reveal-ready="true"]
+    [data-reveal-sequence]
+    > :nth-child(4n + 3) {
+    --reveal-order: 2;
+  }
+
+  html[data-reveal-ready="true"]
+    [data-reveal-sequence]
+    > :nth-child(4n + 4) {
+    --reveal-order: 3;
+  }
+}
+
+/* The field only affects imagery: a soft outer field leaves a clear lens-sized
+   region around the pointer without adding a luminous cursor treatment. */
+[data-focus-field] {
+  --focus-x: 50%;
+  --focus-y: 50%;
+}
+
+@media (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference) {
+  [data-focus-field]::after {
+    position: absolute;
+    z-index: 1;
+    inset: 0;
+    content: "";
+    pointer-events: none;
+    background: rgb(6 44 48 / 0.035);
+    -webkit-backdrop-filter: blur(1.15px) saturate(0.94);
+    backdrop-filter: blur(1.15px) saturate(0.94);
+    -webkit-mask-image: radial-gradient(
+      circle 9rem at var(--focus-x) var(--focus-y),
+      transparent 0,
+      transparent 58%,
+      #000 100%
+    );
+    mask-image: radial-gradient(
+      circle 9rem at var(--focus-x) var(--focus-y),
+      transparent 0,
+      transparent 58%,
+      #000 100%
+    );
+    opacity: 0.72;
+    transition: opacity 220ms ease;
+  }
+
+  [data-focus-field][data-pointer-active="true"]::after {
+    opacity: 1;
+  }
+
+  [data-soft-sharp] > img {
+    filter: blur(0.35px) saturate(0.96) contrast(0.99);
+    transition:
+      filter 520ms cubic-bezier(0.22, 1, 0.36, 1),
+      transform 520ms cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  [data-soft-sharp]:is(:hover, :focus-within) > img,
+  [data-focus-field][data-pointer-active="true"] > img {
+    filter: blur(0) saturate(1) contrast(1);
+  }
+}
+
+/* One abstract, non-diagnostic scan crosses only the diagnostics group once. */
+[data-optical-scan] {
+  position: relative;
+  isolation: isolate;
+  overflow: clip;
+}
+
+[data-optical-scan] > * {
+  position: relative;
+  z-index: 1;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  [data-optical-scan]::after {
+    position: absolute;
+    z-index: 0;
+    inset: 0;
+    content: "";
+    pointer-events: none;
+    background-image: linear-gradient(
+      to bottom,
+      transparent 0,
+      transparent 47%,
+      rgb(197 168 128 / 0.32) 50%,
+      transparent 53%,
+      transparent 100%
+    );
+    background-repeat: no-repeat;
+    background-position: 0 -8rem;
+    background-size: 100% 8rem;
+    opacity: 0;
+  }
+
+  [data-optical-scan][data-revealed="true"]::after {
+    animation: ophthalmic-scan 1.35s cubic-bezier(0.22, 1, 0.36, 1) 1 both;
+  }
+}
+
+@keyframes ophthalmic-scan {
+  0% {
+    background-position: 0 -8rem;
+    opacity: 0;
+  }
+
+  18% {
+    opacity: 0.52;
+  }
+
+  82% {
+    opacity: 0.3;
+  }
+
+  100% {
+    background-position: 0 calc(100% + 8rem);
+    opacity: 0;
+  }
+}
+
+/* At most one branded motion: a single light pass over the real clinic mark. */
+[data-logo-lens] {
+  position: relative;
+  overflow: hidden;
+}
+
+@media (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference) {
+  [data-logo-lens]::after {
+    position: absolute;
+    inset: -35%;
+    content: "";
+    pointer-events: none;
+    background: linear-gradient(
+      105deg,
+      transparent 34%,
+      rgb(255 255 255 / 0.32) 49%,
+      rgb(197 168 128 / 0.2) 54%,
+      transparent 68%
+    );
+    opacity: 0;
+    transform: translate3d(-110%, 0, 0);
+  }
+
+  [data-logo-mark]:is(:hover, :focus-visible) [data-logo-lens]::after {
+    animation: logo-light-pass 620ms cubic-bezier(0.22, 1, 0.36, 1) 1;
+  }
+}
+
+@keyframes logo-light-pass {
+  0% {
+    opacity: 0;
+    transform: translate3d(-110%, 0, 0);
+  }
+
+  22% {
+    opacity: 0.75;
+  }
+
+  100% {
+    opacity: 0;
+    transform: translate3d(110%, 0, 0);
+  }
+}
+
+[data-pointer-depth] {
+  --depth-x: 0px;
+  --depth-y: 0px;
+  --tilt-x: 0deg;
+  --tilt-y: 0deg;
+}
+
+@media (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference) {
+  [data-pointer-depth] {
+    transform: perspective(1100px)
+      translate3d(var(--depth-x), var(--depth-y), 0)
+      rotateX(var(--tilt-x)) rotateY(var(--tilt-y));
+    transform-origin: center;
+  }
+
+  [data-pointer-depth][data-pointer-active="true"] {
+    border-color: rgb(197 168 128 / 0.72);
+    box-shadow: 0 10px 28px rgb(6 44 48 / 0.09);
+    will-change: transform;
+  }
+
+  [data-pointer-depth]:not([data-pointer-active="true"]) {
+    transition:
+      transform 200ms cubic-bezier(0.22, 1, 0.36, 1),
+      border-color 200ms ease,
+      box-shadow 200ms ease;
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   html {
     scroll-behavior: auto;
@@ -98,5 +329,27 @@ textarea {
     transition-duration: 0.01ms !important;
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;
+  }
+
+  [data-reveal],
+  [data-reveal-sequence] > * {
+    opacity: 1 !important;
+    transform: none !important;
+  }
+
+  [data-focus-field]::after,
+  [data-optical-scan]::after,
+  [data-logo-lens]::after {
+    display: none !important;
+    content: none !important;
+  }
+
+  [data-soft-sharp] > img {
+    filter: none !important;
+  }
+
+  [data-pointer-depth] {
+    box-shadow: none !important;
+    transform: none !important;
   }
 }

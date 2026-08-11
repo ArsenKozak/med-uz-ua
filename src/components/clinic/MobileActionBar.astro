@@ -1,0 +1,137 @@
+---
+import { BOOKING_HREF, clinicContact } from "../../lib/clinic";
+import {
+  defaultLocale,
+  localizePath,
+  t,
+  type Locale,
+} from "../../lib/i18n";
+
+interface Props {
+  locale?: Locale;
+}
+
+const { locale = defaultLocale } = Astro.props;
+const bookingHref = localizePath(BOOKING_HREF, locale);
+const initialCartLabel = t(locale, "a11y.openCartMany").replace(
+  "{count}",
+  "0",
+);
+---
+
+<div
+  class="mobile-action-bar-spacer md:hidden"
+  data-mobile-action-spacer
+  aria-hidden="true"
+></div>
+
+<mobile-action-bar
+  class="mobile-action-bar fixed inset-x-0 bottom-0 z-20 block border-t border-border bg-background/95 shadow-[0_-8px_30px_rgb(6_44_48_/_0.08)] backdrop-blur-sm md:hidden"
+  data-mobile-action-bar
+>
+  <nav
+    class="mx-auto max-w-md px-3 py-2"
+    aria-label={t(locale, "mobile.actionsLabel")}
+  >
+    <ul class="grid grid-cols-3 gap-2">
+      <li>
+        <a
+          class="focus-ring-primary inline-flex min-h-13 w-full items-center justify-center border border-border bg-card px-2 text-center text-sm font-semibold text-primary transition-colors duration-200 hover:border-primary hover:bg-muted"
+          href={clinicContact.phoneHref}
+          aria-label={t(locale, "a11y.callClinic", {
+            phone: clinicContact.phoneDisplay,
+          })}
+        >
+          {t(locale, "mobile.call")}
+        </a>
+      </li>
+      <li>
+        <a
+          class="focus-ring-primary inline-flex min-h-13 w-full items-center justify-center bg-primary px-2 text-center text-sm font-semibold text-primary-foreground transition-colors duration-200 hover:bg-primary/90"
+          href={bookingHref}
+        >
+          {t(locale, "mobile.book")}
+        </a>
+      </li>
+      <li>
+        <button
+          class="focus-ring-primary relative inline-flex min-h-13 w-full items-center justify-center gap-2 border border-border bg-card px-2 text-center text-sm font-semibold text-primary transition-colors duration-200 hover:border-primary hover:bg-muted"
+          type="button"
+          aria-label={initialCartLabel}
+          aria-haspopup="dialog"
+          aria-controls="cart-dialog"
+          data-cart-trigger
+          data-cart-label-one={t(locale, "a11y.openCartOne")}
+          data-cart-label-many={t(locale, "a11y.openCartMany")}
+        >
+          <span>{t(locale, "mobile.cart")}</span>
+          <span
+            class="inline-flex min-h-5 min-w-5 items-center justify-center rounded-full bg-accent px-1 text-[0.65rem] font-bold leading-none text-primary"
+            data-mobile-cart-count
+            aria-hidden="true"
+          >0</span>
+        </button>
+      </li>
+    </ul>
+  </nav>
+</mobile-action-bar>
+
+<style>
+  .mobile-action-bar {
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+
+  .mobile-action-bar-spacer {
+    height: calc(4.75rem + env(safe-area-inset-bottom));
+  }
+</style>
+
+<script>
+  import { $cartCount } from "../../store/cart";
+
+  class MobileActionBarElement extends HTMLElement {
+    #unsubscribe: (() => void) | undefined;
+
+    connectedCallback(): void {
+      if (this.#unsubscribe !== undefined) {
+        return;
+      }
+
+      const countElement = this.querySelector<HTMLElement>(
+        "[data-mobile-cart-count]",
+      );
+      const cartTrigger = this.querySelector<HTMLButtonElement>(
+        "button[data-cart-trigger]",
+      );
+
+      if (countElement === null || cartTrigger === null) {
+        return;
+      }
+
+      this.#unsubscribe = $cartCount.subscribe((count) => {
+        countElement.textContent = String(count);
+
+        const labelTemplate =
+          count === 1
+            ? cartTrigger.dataset.cartLabelOne
+            : cartTrigger.dataset.cartLabelMany;
+
+        if (labelTemplate !== undefined) {
+          cartTrigger.setAttribute(
+            "aria-label",
+            labelTemplate.replace("{count}", String(count)),
+          );
+        }
+      });
+    }
+
+    disconnectedCallback(): void {
+      this.#unsubscribe?.();
+      this.#unsubscribe = undefined;
+    }
+  }
+
+  if (!customElements.get("mobile-action-bar")) {
+    customElements.define("mobile-action-bar", MobileActionBarElement);
+  }
+</script>

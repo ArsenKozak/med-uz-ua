@@ -35,7 +35,10 @@ const showTranslationFallback = usesOfficialUkrainianNameFallback(locale);
   locale={locale}
 >
   <header class="overflow-x-hidden border-b border-border bg-background py-16 sm:py-20 lg:py-28">
-    <Container class="grid gap-10 lg:grid-cols-12 lg:items-end lg:gap-16">
+    <Container
+      class="grid gap-10 lg:grid-cols-12 lg:items-end lg:gap-16"
+      data-reveal
+    >
       <div class="lg:col-span-8">
         <p class="text-xs font-semibold uppercase tracking-[0.24em] text-primary">
           {t(locale, "services.heroEyebrow")}
@@ -64,7 +67,10 @@ const showTranslationFallback = usesOfficialUkrainianNameFallback(locale);
     aria-labelledby="price-list-heading"
   >
     <Container>
-      <div class="grid gap-6 border-b border-border pb-8 lg:grid-cols-12 lg:items-end">
+      <div
+        class="grid gap-6 border-b border-border pb-8 lg:grid-cols-12 lg:items-end"
+        data-reveal
+      >
         <div class="lg:col-span-7">
           <p class="text-xs font-semibold uppercase tracking-[0.22em] text-primary">
             {t(locale, "services.listEyebrow")}
@@ -95,6 +101,8 @@ const showTranslationFallback = usesOfficialUkrainianNameFallback(locale);
             <section
               class="grid gap-7 py-10 sm:py-12 lg:grid-cols-12 lg:gap-12"
               aria-labelledby={`service-group-${groupIndex}`}
+              data-reveal
+              data-optical-scan={group.category === "diagnostics" ? "" : undefined}
             >
               <div class="lg:col-span-4">
                 <p class="text-xs font-semibold tabular-nums tracking-[0.18em] text-primary/60">

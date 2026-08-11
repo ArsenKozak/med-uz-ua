@@ -1,8 +1,10 @@
 ---
 import "../styles/global.css";
 import CartDrawer from "../components/commerce/CartDrawer.astro";
+import MobileActionBar from "../components/clinic/MobileActionBar.astro";
 import SiteFooter from "../components/clinic/SiteFooter.astro";
 import SiteHeader from "../components/clinic/SiteHeader.astro";
+import InteractionController from "../components/ui/InteractionController.astro";
 import {
   localeFromPath,
   locales,
@@ -104,6 +106,8 @@ const defaultLocaleUrl = new URL(
       <slot />
     </main>
     <SiteFooter locale={locale} />
+    <MobileActionBar locale={locale} />
     <CartDrawer locale={locale} />
+    <InteractionController />
   </body>
 </html>

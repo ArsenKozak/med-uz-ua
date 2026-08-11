@@ -58,7 +58,7 @@ export const hu = {
   "appointment.submit": "Konzultáció kérése",
   "appointment.sending": "Küldés…",
   "appointment.pending": "Kérésének küldése…",
-  "appointment.success": "Köszönjük. Kérését elküldtük.",
+  "appointment.success": "A kérését elküldtük. A klinika felveszi önnel a kapcsolatot az időpont megerősítéséhez.",
   "appointment.errorInvalid": "Ellenőrizze az adatokat, majd próbálja újra.",
   "appointment.errorRequest": "A kérést nem sikerült elküldeni. Próbálja újra később.",
 

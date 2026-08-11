@@ -4,12 +4,15 @@ import {
   t,
   type Locale,
 } from "../../lib/i18n";
+import { getActiveCartCatalogProducts } from "../../lib/cms";
 
 interface Props {
   locale?: Locale;
 }
 
 const { locale = defaultLocale } = Astro.props;
+const activeCartCatalog = await getActiveCartCatalogProducts();
+const serializedCartCatalog = JSON.stringify(activeCartCatalog);
 const initialCountLabel = t(locale, "cart.countMany").replace(
   "{count}",
   "0",
@@ -18,6 +21,7 @@ const initialCountLabel = t(locale, "cart.countMany").replace(
 
 <cart-drawer
   data-locale={locale}
+  data-cart-catalog={serializedCartCatalog}
   data-checkout-status-message={t(locale, "cart.checkoutStatus")}
   data-count-one-message={t(locale, "cart.countOne")}
   data-count-many-message={t(locale, "cart.countMany")}
@@ -172,15 +176,18 @@ const initialCountLabel = t(locale, "cart.countMany").replace(
 <script>
   import {
     $cart,
-    $cartCount,
-    $cartCurrency,
-    $cartHasPendingPricing,
-    $cartSubtotalMinor,
     clearCart,
     removeFromCart,
     setCartItemQuantity,
     type CartItem,
   } from "../../store/cart";
+  import {
+    createCartCatalogIndex,
+    decodeCartCatalog,
+    resolveCart,
+    type CartCatalogProduct,
+    type ResolvedCartLine,
+  } from "../../lib/commerce/cart-catalog";
   import { formatMoneyMinor } from "../../lib/commerce/money";
   import { isLocale, type Locale } from "../../lib/i18n";
 
@@ -300,10 +307,7 @@ const initialCountLabel = t(locale, "cart.countMany").replace(
     #pricingNoteElement: HTMLElement | null = null;
     #checkoutStatusElement: HTMLElement | null = null;
     #items: readonly CartItem[] = [];
-    #count = 0;
-    #subtotalMinor = 0;
-    #currency: string | null = null;
-    #hasPendingPricing = false;
+    #catalog: ReadonlyMap<string, CartCatalogProduct> = new Map();
     #unsubscribers: Array<() => void> = [];
     #openingTrigger: HTMLButtonElement | null = null;
     #previousBodyOverflow: string | null = null;
@@ -350,6 +354,9 @@ const initialCountLabel = t(locale, "cart.countMany").replace(
       this.#pricingNoteElement = pricingNoteElement;
       this.#checkoutStatusElement = checkoutStatusElement;
       this.#messages = messages;
+      this.#catalog = createCartCatalogIndex(
+        decodeCartCatalog(this.dataset.cartCatalog),
+      );
       this.#isConnected = true;
 
       document.addEventListener("click", this.#handleDocumentClick);
@@ -361,22 +368,6 @@ const initialCountLabel = t(locale, "cart.countMany").replace(
       this.#unsubscribers = [
         $cart.subscribe((items) => {
           this.#items = items;
-          this.#render();
-        }),
-        $cartCount.subscribe((count) => {
-          this.#count = count;
-          this.#render();
-        }),
-        $cartSubtotalMinor.subscribe((subtotalMinor) => {
-          this.#subtotalMinor = subtotalMinor;
-          this.#render();
-        }),
-        $cartCurrency.subscribe((currency) => {
-          this.#currency = currency;
-          this.#render();
-        }),
-        $cartHasPendingPricing.subscribe((hasPendingPricing) => {
-          this.#hasPendingPricing = hasPendingPricing;
           this.#render();
         }),
       ];
@@ -540,11 +531,14 @@ const initialCountLabel = t(locale, "cart.countMany").replace(
       }
 
       const messages = this.#messages;
+      const resolvedCart = resolveCart(this.#items, this.#catalog);
       this.#itemsElement.replaceChildren(
-        ...this.#items.map((item) => this.#createCartLine(item, messages)),
+        ...resolvedCart.lines.map((item) =>
+          this.#createCartLine(item, messages),
+        ),
       );
 
-      const isEmpty = this.#items.length === 0;
+      const isEmpty = resolvedCart.lines.length === 0;
       this.#emptyElement.hidden = !isEmpty;
       this.#itemsElement.hidden = isEmpty;
       this.#summaryElement.hidden = isEmpty;
@@ -558,18 +552,23 @@ const initialCountLabel = t(locale, "cart.countMany").replace(
       }
 
       this.#countElement.textContent = formatMessage(
-        this.#count === 1 ? messages.countOne : messages.countMany,
-        { count: this.#count },
+        resolvedCart.count === 1 ? messages.countOne : messages.countMany,
+        { count: resolvedCart.count },
       );
 
-      this.#pricingNoteElement.hidden = !this.#hasPendingPricing;
+      this.#pricingNoteElement.hidden = !resolvedCart.hasPendingPricing;
 
-      if (this.#hasPendingPricing) {
+      if (
+        resolvedCart.hasUnavailableLines ||
+        resolvedCart.subtotalMinor === null
+      ) {
+        this.#subtotalElement.textContent = messages.unavailable;
+      } else if (resolvedCart.hasPendingPricing) {
         this.#subtotalElement.textContent = messages.pendingConfirmation;
-      } else if (this.#currency !== null) {
+      } else if (resolvedCart.currency !== null) {
         this.#subtotalElement.textContent = formatMoneyMinor(
-          this.#subtotalMinor,
-          this.#currency,
+          resolvedCart.subtotalMinor,
+          resolvedCart.currency,
           messages.locale,
         );
       } else {
@@ -630,7 +629,7 @@ const initialCountLabel = t(locale, "cart.countMany").replace(
     }
 
     #createCartLine(
-      item: CartItem,
+      item: ResolvedCartLine,
       messages: CartMessages,
     ): HTMLLIElement {
       const listItem = document.createElement("li");
@@ -644,16 +643,18 @@ const initialCountLabel = t(locale, "cart.countMany").replace(
       headingGroup.append(
         createTextElement(
           "h3",
-          item.titleSnapshot,
+          item.title,
           "break-words font-serif text-xl font-medium leading-snug",
         ),
       );
 
       const unitPrice =
-        item.verificationStatusSnapshot === "pending-clinic-confirmation"
+        item.availability === "unavailable"
+          ? messages.unavailable
+          : item.verificationStatus === "pending-clinic-confirmation"
           ? messages.unitPricePending
           : formatMoneyMinor(
-              item.unitPriceMinorSnapshot,
+              item.unitPriceMinor,
               item.currency,
               messages.locale,
             );
@@ -673,7 +674,7 @@ const initialCountLabel = t(locale, "cart.countMany").replace(
       removeButton.setAttribute(
         "aria-label",
         formatMessage(messages.removeProduct, {
-          product: item.titleSnapshot,
+          product: item.title,
         }),
       );
       removeButton.dataset.cartProductId = item.productId;
@@ -683,6 +684,16 @@ const initialCountLabel = t(locale, "cart.countMany").replace(
       });
 
       headingRow.append(headingGroup, removeButton);
+
+      if (item.availability === "unavailable") {
+        const unavailableQuantity = createTextElement(
+          "p",
+          `${messages.quantity}: ${item.quantity}`,
+          "mt-5 text-xs uppercase tracking-[0.14em] text-muted-foreground",
+        );
+        listItem.append(headingRow, unavailableQuantity);
+        return listItem;
+      }
 
       const quantityRow = document.createElement("div");
       quantityRow.className = "mt-5 flex items-center justify-between gap-4";
@@ -704,7 +715,7 @@ const initialCountLabel = t(locale, "cart.countMany").replace(
       decrementButton.setAttribute(
         "aria-label",
         formatMessage(messages.decreaseProduct, {
-          product: item.titleSnapshot,
+          product: item.title,
         }),
       );
       decrementButton.dataset.cartProductId = item.productId;
@@ -722,7 +733,7 @@ const initialCountLabel = t(locale, "cart.countMany").replace(
         "aria-label",
         formatMessage(messages.quantityProduct, {
           count: item.quantity,
-          product: item.titleSnapshot,
+          product: item.title,
         }),
       );
 
@@ -733,7 +744,7 @@ const initialCountLabel = t(locale, "cart.countMany").replace(
       incrementButton.setAttribute(
         "aria-label",
         formatMessage(messages.increaseProduct, {
-          product: item.titleSnapshot,
+          product: item.title,
         }),
       );
       incrementButton.dataset.cartProductId = item.productId;
