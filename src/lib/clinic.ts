@@ -8,15 +8,15 @@ export interface ClinicContact {
   readonly country: "Ukraine";
   readonly streetAddress: "Yuriy Goyda St, 10A";
   readonly floor: "2nd floor";
-  readonly phoneDisplay: "+38 (099) 777-07-58";
+  readonly phoneDisplay: "+380 99 777 07 58";
   readonly phoneHref: "tel:+380997770758";
   readonly workingHours: typeof PENDING_CLINIC_CONFIRMATION;
 }
 
 export interface ChiefPhysician {
-  readonly name: "Dr. Myroslava Yunivna Leno";
-  readonly role: "Chief Physician";
-  readonly experience: "15+ years experience";
+  readonly name: "Мирослава Леньо";
+  readonly role: "Founder & Chief Physician";
+  readonly experience: "In ophthalmology since 2004";
 }
 
 export const clinicContact: ClinicContact = {
@@ -24,13 +24,13 @@ export const clinicContact: ClinicContact = {
   country: "Ukraine",
   streetAddress: "Yuriy Goyda St, 10A",
   floor: "2nd floor",
-  phoneDisplay: "+38 (099) 777-07-58",
+  phoneDisplay: "+380 99 777 07 58",
   phoneHref: "tel:+380997770758",
   workingHours: PENDING_CLINIC_CONFIRMATION,
 };
 
 export const chiefPhysician: ChiefPhysician = {
-  name: "Dr. Myroslava Yunivna Leno",
-  role: "Chief Physician",
-  experience: "15+ years experience",
+  name: "Мирослава Леньо",
+  role: "Founder & Chief Physician",
+  experience: "In ophthalmology since 2004",
 };

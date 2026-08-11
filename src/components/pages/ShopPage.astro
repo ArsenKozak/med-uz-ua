@@ -1,0 +1,88 @@
+---
+import ProductCard from "../commerce/ProductCard.astro";
+import Container from "../ui/Container.astro";
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import type { ProductSummary } from "../../lib/cms";
+import { t, type Locale } from "../../lib/i18n";
+
+interface Props {
+  locale: Locale;
+  products: readonly ProductSummary[];
+}
+
+const { locale, products } = Astro.props;
+const hasPendingProducts = products.some(
+  (product) =>
+    product.verificationStatus === "pending-clinic-confirmation",
+);
+---
+
+<BaseLayout
+  title={t(locale, "seo.shop.title")}
+  description={t(locale, "seo.shop.description")}
+  locale={locale}
+>
+  <section class="border-b border-border bg-background py-16 sm:py-20 lg:py-28" aria-labelledby="shop-heading">
+    <Container class="grid gap-10 lg:grid-cols-12 lg:items-end">
+      <div class="lg:col-span-8">
+        <p class="text-xs font-semibold uppercase tracking-[0.24em] text-primary">
+          {t(locale, "shop.heroEyebrow")}
+        </p>
+        <h1
+          id="shop-heading"
+          class="mt-6 max-w-[13ch] text-balance text-5xl font-medium leading-[0.98] tracking-[-0.035em] text-foreground sm:text-6xl lg:text-7xl"
+        >
+          {t(locale, "shop.heroTitle")}
+        </h1>
+      </div>
+      <div class="lg:col-span-4">
+        <p class="max-w-lg text-base leading-7 text-muted-foreground">
+          {t(locale, "shop.heroIntro")}
+        </p>
+      </div>
+    </Container>
+  </section>
+
+  <section class="bg-background py-16 sm:py-20 lg:py-28" aria-labelledby="catalog-heading">
+    <Container>
+      <div class="flex flex-col gap-5 border-b border-border pb-7 sm:flex-row sm:items-end sm:justify-between">
+        <div>
+          <p class="text-xs font-semibold uppercase tracking-[0.2em] text-primary">
+            {t(locale, "shop.catalogEyebrow")}
+          </p>
+          <h2 id="catalog-heading" class="mt-3 text-3xl font-medium tracking-tight sm:text-4xl">
+            {t(locale, "shop.catalogTitle")}
+          </h2>
+        </div>
+        {
+          hasPendingProducts && (
+            <p class="max-w-md border-l-2 border-accent pl-4 text-xs leading-5 text-muted-foreground">
+              {t(locale, "shop.pendingNotice")}
+            </p>
+          )
+        }
+      </div>
+
+      {
+        products.length > 0 ? (
+          <ul class="mt-10 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 lg:gap-6">
+            {products.map((product) => (
+              <li class="min-w-0">
+                <ProductCard product={product} locale={locale} />
+              </li>
+            ))}
+          </ul>
+        ) : (
+          <div class="mt-10 border border-border bg-card px-6 py-14 text-center">
+            <p class="font-serif text-2xl text-foreground">
+              {t(locale, "shop.emptyTitle")}
+            </p>
+            <p class="mt-3 text-sm text-muted-foreground">
+              {t(locale, "shop.emptyBody")}
+            </p>
+          </div>
+        )
+      }
+    </Container>
+  </section>
+</BaseLayout>

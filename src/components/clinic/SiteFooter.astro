@@ -1,14 +1,51 @@
 ---
 import { clinicContact } from "../../lib/clinic";
 import {
+  defaultLocale,
+  localizePath,
+  t,
+  type Locale,
+} from "../../lib/i18n";
+import {
   isNavigationItemActive,
   primaryNavigation,
   programsNavigation,
 } from "../../lib/navigation";
 import Container from "../ui/Container.astro";
 
+interface Props {
+  locale?: Locale;
+}
+
+const { locale = defaultLocale } = Astro.props;
 const currentYear = new Date().getFullYear();
 const pathname = Astro.url.pathname;
+
+function getNavigationLabel(href: string): string {
+  switch (href) {
+    case "/services":
+      return t(locale, "nav.services");
+    case "/shop":
+      return t(locale, "nav.shop");
+    case "/about":
+      return t(locale, "nav.about");
+    case "/contacts":
+      return t(locale, "nav.contacts");
+    default:
+      return href;
+  }
+}
+
+const localizedPrimaryNavigation = primaryNavigation.map((item) => ({
+  ...item,
+  href: localizePath(item.href, locale),
+  label: getNavigationLabel(item.href),
+}));
+const localizedProgramsNavigation = {
+  ...programsNavigation,
+  href: localizePath(programsNavigation.href, locale),
+  label: t(locale, "nav.programs"),
+};
 ---
 
 <footer class="bg-primary text-primary-foreground">
@@ -17,27 +54,26 @@ const pathname = Astro.url.pathname;
       <div class="md:col-span-5 lg:col-span-6">
         <a
           class="inline-flex min-h-11 items-center font-serif text-3xl font-medium tracking-tight"
-          href="/"
-          aria-label="Med.uz.ua home"
+          href={localizePath("/", locale)}
+          aria-label={t(locale, "a11y.home")}
         >
           Med.uz.ua
         </a>
         <p class="mt-5 max-w-sm text-sm leading-7 text-primary-foreground/65">
-          A calm digital starting point for private ophthalmology care in
-          {clinicContact.city}.
+          {t(locale, "footer.tagline")}
         </p>
       </div>
 
       <div class="md:col-span-4 lg:col-span-3">
         <h2 class="font-sans text-xs font-semibold uppercase tracking-[0.18em] text-primary-foreground/50">
-          Clinic contact
+          {t(locale, "footer.contactHeading")}
         </h2>
         <address class="mt-5 text-sm not-italic leading-7 text-primary-foreground/75">
           <span class="block">
-            {clinicContact.city}, {clinicContact.country}
+            {t(locale, "clinic.city")}, {t(locale, "clinic.country")}
           </span>
-          <span class="block">{clinicContact.streetAddress}</span>
-          <span class="block">{clinicContact.floor}</span>
+          <span class="block">{t(locale, "clinic.streetAddress")}</span>
+          <span class="block">{t(locale, "clinic.floor")}</span>
           <a
             class="mt-2 inline-flex min-h-11 items-center border-b border-primary-foreground/25 transition-colors hover:border-primary-foreground hover:text-primary-foreground"
             href={clinicContact.phoneHref}
@@ -47,13 +83,13 @@ const pathname = Astro.url.pathname;
         </address>
       </div>
 
-      <nav class="md:col-span-3" aria-label="Footer navigation">
+      <nav class="md:col-span-3" aria-label={t(locale, "a11y.footerNavigation")}>
         <h2 class="font-sans text-xs font-semibold uppercase tracking-[0.18em] text-primary-foreground/50">
-          Explore
+          {t(locale, "footer.explore")}
         </h2>
         <ul class="mt-5 space-y-1 text-sm text-primary-foreground/75">
           {
-            primaryNavigation.map((item) => {
+            localizedPrimaryNavigation.map((item) => {
               const isActive = isNavigationItemActive(pathname, item);
 
               return (
@@ -77,9 +113,9 @@ const pathname = Astro.url.pathname;
           <li>
             <a
               class="inline-flex min-h-11 items-center border-b border-transparent transition-colors hover:text-primary-foreground"
-              href={programsNavigation.href}
+              href={localizedProgramsNavigation.href}
             >
-              {programsNavigation.label}
+              {localizedProgramsNavigation.label}
             </a>
           </li>
         </ul>
@@ -87,8 +123,8 @@ const pathname = Astro.url.pathname;
     </div>
 
     <div class="flex flex-col gap-3 pt-7 text-xs text-primary-foreground/50 sm:flex-row sm:items-center sm:justify-between">
-      <p>&copy; {currentYear} Med.uz.ua. All rights reserved.</p>
-      <p>Designed for clarity, privacy, and calm.</p>
+      <p>{t(locale, "footer.copyright").replace("{year}", String(currentYear))}</p>
+      <p>{t(locale, "footer.closing")}</p>
     </div>
   </Container>
 </footer>

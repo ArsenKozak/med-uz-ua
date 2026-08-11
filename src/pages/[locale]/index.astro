@@ -1,0 +1,29 @@
+---
+import type { GetStaticPaths } from "astro";
+import HomePage from "../../components/pages/HomePage.astro";
+import { getAllActiveServices } from "../../lib/cms";
+import {
+  localizedLocales,
+  type Locale,
+} from "../../lib/i18n";
+
+export const prerender = true;
+
+export const getStaticPaths = (async () => {
+  const services = await getAllActiveServices();
+
+  return localizedLocales.map((locale) => ({
+    params: { locale },
+    props: { locale, services },
+  }));
+}) satisfies GetStaticPaths;
+
+interface Props {
+  locale: Locale;
+  services: Awaited<ReturnType<typeof getAllActiveServices>>;
+}
+
+const { locale, services } = Astro.props;
+---
+
+<HomePage locale={locale} services={services} />

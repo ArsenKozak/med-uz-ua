@@ -3,23 +3,44 @@ import "../styles/global.css";
 import CartDrawer from "../components/commerce/CartDrawer.astro";
 import SiteFooter from "../components/clinic/SiteFooter.astro";
 import SiteHeader from "../components/clinic/SiteHeader.astro";
+import {
+  localeFromPath,
+  locales,
+  localizePath,
+  stripLocalePrefix,
+  t,
+  type Locale,
+} from "../lib/i18n";
 
 interface Props {
   title: string;
   description: string;
   canonical?: string | URL;
-  lang?: string;
+  locale?: Locale;
 }
 
-const { title, description, canonical, lang = "en" } = Astro.props;
+const { title, description, canonical, locale: localeProp } = Astro.props;
+const locale = localeProp ?? localeFromPath(Astro.url.pathname);
 const canonicalUrl = new URL(
   canonical ?? Astro.url.pathname,
+  Astro.site ?? Astro.url,
+).toString();
+const canonicalRoutePath = stripLocalePrefix(Astro.url.pathname);
+const alternateLocaleUrls = locales.map((alternateLocale) => ({
+  locale: alternateLocale,
+  url: new URL(
+    localizePath(canonicalRoutePath, alternateLocale),
+    Astro.site ?? Astro.url,
+  ).toString(),
+}));
+const defaultLocaleUrl = new URL(
+  localizePath(canonicalRoutePath, "uk"),
   Astro.site ?? Astro.url,
 ).toString();
 ---
 
 <!doctype html>
-<html lang={lang}>
+<html lang={locale}>
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -31,6 +52,16 @@ const canonicalUrl = new URL(
     <slot name="canonical">
       <link rel="canonical" href={canonicalUrl} />
     </slot>
+    {
+      alternateLocaleUrls.map((alternate) => (
+        <link
+          rel="alternate"
+          hreflang={alternate.locale}
+          href={alternate.url}
+        />
+      ))
+    }
+    <link rel="alternate" hreflang="x-default" href={defaultLocaleUrl} />
 
     <meta property="og:type" content="website" />
     <meta property="og:title" content={title} />
@@ -66,13 +97,13 @@ const canonicalUrl = new URL(
       class="fixed left-5 top-4 z-50 -translate-y-24 rounded-md bg-card px-4 py-3 text-sm font-semibold text-primary shadow-concierge transition-transform focus:translate-y-0"
       href="#main-content"
     >
-      Skip to content
+      {t(locale, "a11y.skipToContent")}
     </a>
-    <SiteHeader />
+    <SiteHeader locale={locale} />
     <main id="main-content">
       <slot />
     </main>
-    <SiteFooter />
-    <CartDrawer />
+    <SiteFooter locale={locale} />
+    <CartDrawer locale={locale} />
   </body>
 </html>

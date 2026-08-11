@@ -1,14 +1,29 @@
 ---
 import type { ServiceDetail } from "../../lib/cms";
+import {
+  defaultLocale,
+  localizePath,
+  t,
+  type Locale,
+} from "../../lib/i18n";
 
 interface Props {
   service: ServiceDetail;
   number: string;
+  locale?: Locale;
   class?: string;
 }
 
-const { service, number, class: className } = Astro.props;
-const serviceUrl = `/services/${service.slug}#appointment-form`;
+const {
+  service,
+  number,
+  locale = defaultLocale,
+  class: className,
+} = Astro.props;
+const serviceUrl = localizePath(
+  `/services/${service.slug}#appointment-form`,
+  locale,
+);
 ---
 
 <article
@@ -35,7 +50,7 @@ const serviceUrl = `/services/${service.slug}#appointment-form`;
       class="mt-8 inline-flex min-h-11 items-center gap-3 text-sm font-semibold text-primary underline-offset-4 hover:underline"
       href={serviceUrl}
     >
-      Request a consultation
+      {t(locale, "actions.requestConsultation")}
       <span class="transition-transform duration-200 motion-safe:group-hover:translate-x-1" aria-hidden="true">→</span>
     </a>
   </div>

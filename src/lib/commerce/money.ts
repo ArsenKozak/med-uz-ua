@@ -1,22 +1,30 @@
-const SITE_LOCALE = "en";
+import {
+  defaultLocale,
+  type Locale,
+} from "../i18n/config";
+
 const CURRENCY_CODE_PATTERN = /^[A-Z]{3}$/;
 
 const currencyFormatters = new Map<string, Intl.NumberFormat>();
 
-function getCurrencyFormatter(currency: string): Intl.NumberFormat {
-  const existingFormatter = currencyFormatters.get(currency);
+function getCurrencyFormatter(
+  currency: string,
+  locale: Locale,
+): Intl.NumberFormat {
+  const formatterKey = `${locale}:${currency}`;
+  const existingFormatter = currencyFormatters.get(formatterKey);
 
   if (existingFormatter !== undefined) {
     return existingFormatter;
   }
 
-  const formatter = new Intl.NumberFormat(SITE_LOCALE, {
+  const formatter = new Intl.NumberFormat(locale, {
     style: "currency",
     currency,
     currencyDisplay: "symbol",
   });
 
-  currencyFormatters.set(currency, formatter);
+  currencyFormatters.set(formatterKey, formatter);
   return formatter;
 }
 
@@ -27,6 +35,7 @@ function getCurrencyFormatter(currency: string): Intl.NumberFormat {
 export function formatMoneyMinor(
   amountMinor: number,
   currency: string,
+  locale: Locale = defaultLocale,
 ): string {
   if (!Number.isSafeInteger(amountMinor) || amountMinor < 0) {
     throw new RangeError("Money must be a non-negative safe integer.");
@@ -36,7 +45,7 @@ export function formatMoneyMinor(
     throw new RangeError("Currency must be a three-letter uppercase code.");
   }
 
-  const formatter = getCurrencyFormatter(currency);
+  const formatter = getCurrencyFormatter(currency, locale);
   const fractionDigits =
     formatter.resolvedOptions().maximumFractionDigits ?? 2;
   const minorUnitScale = 10 ** fractionDigits;

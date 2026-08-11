@@ -1,0 +1,210 @@
+---
+import AppointmentForm from "../clinic/AppointmentForm.astro";
+import GoogleMap from "../clinic/GoogleMap.astro";
+import ServiceCard from "../clinic/ServiceCard.astro";
+import Container from "../ui/Container.astro";
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import type { ServiceDetail } from "../../lib/cms";
+import {
+  localizePath,
+  t,
+  type Locale,
+} from "../../lib/i18n";
+import { localizeServiceDetail } from "./localize-service";
+
+interface Props {
+  locale: Locale;
+  services: readonly ServiceDetail[];
+}
+
+const { locale, services } = Astro.props;
+
+function getServiceItemClass(index: number): string {
+  if (services.length === 1) return "md:col-span-2 lg:col-span-12";
+  if (index === 0) return "md:col-span-2 lg:col-span-7 lg:row-span-2";
+  return "lg:col-span-5";
+}
+
+function getServiceCardClass(index: number): string {
+  if (services.length === 1) return "min-h-[24rem] lg:min-h-[30rem]";
+  if (index === 0) return "min-h-[24rem] lg:min-h-[34rem]";
+  return "min-h-[20rem]";
+}
+
+const localizedServices = services.map((service) =>
+  localizeServiceDetail(service, locale),
+);
+---
+
+<BaseLayout
+  title={t(locale, "seo.home.title")}
+  description={t(locale, "seo.home.description")}
+  locale={locale}
+>
+  <section
+    id="appointment"
+    class="scroll-mt-20 bg-primary text-primary-foreground"
+    aria-labelledby="hero-heading"
+  >
+    <Container class="grid grid-cols-1 items-center gap-12 py-16 sm:py-20 lg:grid-cols-12 lg:gap-14 lg:py-24 xl:gap-20 xl:py-28">
+      <div class="lg:col-span-7">
+        <p class="text-xs font-semibold uppercase tracking-[0.24em] text-accent">
+          {t(locale, "home.heroEyebrow")}
+        </p>
+        <h1
+          id="hero-heading"
+          class="mt-6 max-w-[12ch] text-balance font-serif text-[clamp(3rem,6vw,6rem)] font-medium leading-[0.95] tracking-[-0.04em]"
+        >
+          {t(locale, "home.heroTitleBefore")} <em class="font-normal italic text-accent">{t(locale, "home.heroTitleEmphasis")}</em>
+          {" "}{t(locale, "home.heroTitleAfter")}
+        </h1>
+        <p class="mt-7 max-w-xl text-lg font-light leading-8 text-primary-foreground/70 sm:text-xl">
+          {t(locale, "home.heroIntro")}
+        </p>
+
+        <div class="mt-12 border-y border-primary-foreground/20 py-6">
+          <p class="sr-only">{t(locale, "home.principlesLabel")}</p>
+          <dl class="grid grid-cols-3 divide-x divide-primary-foreground/20">
+            <div class="pr-3 sm:pr-6">
+              <dt class="font-serif text-xl sm:text-2xl">{t(locale, "home.principlePrivate")}</dt>
+              <dd class="mt-1 text-[0.65rem] uppercase tracking-[0.14em] text-primary-foreground/55 sm:text-xs">
+                {t(locale, "home.principleConsultation")}
+              </dd>
+            </div>
+            <div class="px-3 sm:px-6">
+              <dt class="font-serif text-xl sm:text-2xl">{t(locale, "home.principleDirect")}</dt>
+              <dd class="mt-1 text-[0.65rem] uppercase tracking-[0.14em] text-primary-foreground/55 sm:text-xs">
+                {t(locale, "home.principleCoordination")}
+              </dd>
+            </div>
+            <div class="pl-3 sm:pl-6">
+              <dt class="font-serif text-xl sm:text-2xl">{t(locale, "home.principleFocused")}</dt>
+              <dd class="mt-1 text-[0.65rem] uppercase tracking-[0.14em] text-primary-foreground/55 sm:text-xs">
+                {t(locale, "home.principleVisionCare")}
+              </dd>
+            </div>
+          </dl>
+        </div>
+      </div>
+
+      <div class="lg:col-span-5 xl:pl-4">
+        <AppointmentForm locale={locale} />
+      </div>
+    </Container>
+  </section>
+
+  <section
+    id="services"
+    class="scroll-mt-20 bg-background py-20 sm:py-24 lg:py-32"
+    aria-labelledby="services-heading"
+  >
+    <Container>
+      <div class="max-w-3xl">
+        <p class="text-xs font-semibold uppercase tracking-[0.22em] text-primary">
+          {t(locale, "home.servicesEyebrow")}
+        </p>
+        <h2
+          id="services-heading"
+          class="mt-5 text-balance text-4xl font-medium leading-tight tracking-tight text-foreground sm:text-5xl lg:text-6xl"
+        >
+          {t(locale, "home.servicesTitle")}
+        </h2>
+        <a
+          class="focus-ring-primary mt-7 inline-flex min-h-11 items-center border-b border-primary text-sm font-semibold text-primary transition-colors hover:border-accent"
+          href={localizePath("/services", locale)}
+        >
+          {t(locale, "home.servicesLink")}
+        </a>
+      </div>
+
+      <ul class="mt-14 grid gap-px overflow-hidden border border-border bg-border md:grid-cols-2 lg:mt-20 lg:grid-cols-12">
+        {
+          localizedServices.map((service, index) => (
+            <li class={getServiceItemClass(index)}>
+              <ServiceCard
+                service={service}
+                number={String(index + 1).padStart(2, "0")}
+                class={getServiceCardClass(index)}
+                locale={locale}
+              />
+            </li>
+          ))
+        }
+      </ul>
+    </Container>
+  </section>
+
+  <section
+    id="doctors"
+    class="scroll-mt-20 bg-muted py-20 sm:py-24 lg:py-28"
+    aria-labelledby="doctors-heading"
+  >
+    <Container class="grid gap-10 lg:grid-cols-12 lg:items-end">
+      <div class="lg:col-span-7">
+        <p class="text-xs font-semibold uppercase tracking-[0.22em] text-primary">
+          {t(locale, "home.doctorsEyebrow")}
+        </p>
+        <h2 id="doctors-heading" class="mt-5 max-w-3xl text-4xl font-medium leading-tight tracking-tight sm:text-5xl">
+          {t(locale, "home.doctorsTitle")}
+        </h2>
+      </div>
+      <div class="lg:col-span-4 lg:col-start-9">
+        <p class="text-sm leading-7 text-muted-foreground sm:text-base">
+          <span class="font-medium text-foreground">{t(locale, "clinic.chiefName")}</span>
+          {" "}{t(locale, "home.doctorsIntro")}
+        </p>
+        <div class="mt-7 flex flex-wrap gap-x-6 gap-y-2">
+          <a
+            class="focus-ring-primary inline-flex min-h-11 items-center text-sm font-semibold text-primary underline underline-offset-4"
+            href={localizePath("/about", locale)}
+          >
+            {t(locale, "home.aboutLink")}
+          </a>
+          <a
+            class="focus-ring-primary inline-flex min-h-11 items-center text-sm font-semibold text-primary underline underline-offset-4"
+            href={localizePath("/#appointment-form", locale)}
+          >
+            {t(locale, "home.bookLink")}
+          </a>
+        </div>
+      </div>
+    </Container>
+  </section>
+
+  <section
+    id="contacts"
+    class="scroll-mt-20 bg-background py-20 sm:py-24 lg:py-32"
+    aria-labelledby="location-heading"
+  >
+    <Container class="grid gap-12 lg:grid-cols-12 lg:items-center lg:gap-16">
+      <div class="lg:col-span-4">
+        <p class="text-xs font-semibold uppercase tracking-[0.22em] text-primary">
+          {t(locale, "home.visitEyebrow")}
+        </p>
+        <h2 id="location-heading" class="mt-5 text-4xl font-medium leading-tight tracking-tight sm:text-5xl">
+          {t(locale, "home.visitTitle")}
+        </h2>
+        <p class="mt-6 text-base leading-7 text-muted-foreground">
+          {t(locale, "clinic.street")}, {t(locale, "clinic.floor")}, {t(locale, "clinic.city")}.
+        </p>
+        <div class="mt-8 flex flex-wrap gap-3">
+          <a
+            class="focus-ring-primary inline-flex min-h-11 items-center rounded-lg bg-primary px-5 text-sm font-semibold text-primary-foreground transition-colors hover:bg-primary/90"
+            href={localizePath("/contacts", locale)}
+          >
+            {t(locale, "home.contactLink")}
+          </a>
+          <a
+            class="focus-ring-primary inline-flex min-h-11 items-center rounded-lg border border-primary px-5 text-sm font-semibold text-primary transition-colors hover:bg-primary hover:text-primary-foreground"
+            href={localizePath("/#appointment-form", locale)}
+          >
+            {t(locale, "home.bookLink")}
+          </a>
+        </div>
+      </div>
+      <div class="lg:col-span-8">
+        <GoogleMap title={t(locale, "contacts.mapTitle")} />
+      </div>
+    </Container>
+  </section>
+</BaseLayout>

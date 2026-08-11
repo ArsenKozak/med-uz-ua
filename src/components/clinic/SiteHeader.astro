@@ -1,30 +1,74 @@
 ---
 import { BOOKING_HREF } from "../../lib/clinic";
 import {
+  defaultLocale,
+  localizePath,
+  t,
+  type Locale,
+} from "../../lib/i18n";
+import {
   isNavigationItemActive,
   primaryNavigation,
   programsNavigation,
 } from "../../lib/navigation";
 import Container from "../ui/Container.astro";
+import LanguageSwitcher from "./LanguageSwitcher.astro";
 
+interface Props {
+  locale?: Locale;
+}
+
+const { locale = defaultLocale } = Astro.props;
 const pathname = Astro.url.pathname;
+const currentPath = `${pathname}${Astro.url.search}`;
+const bookingHref = localizePath(BOOKING_HREF, locale);
+
+function getNavigationLabel(href: string): string {
+  switch (href) {
+    case "/services":
+      return t(locale, "nav.services");
+    case "/shop":
+      return t(locale, "nav.shop");
+    case "/about":
+      return t(locale, "nav.about");
+    case "/contacts":
+      return t(locale, "nav.contacts");
+    default:
+      return href;
+  }
+}
+
+const localizedPrimaryNavigation = primaryNavigation.map((item) => ({
+  ...item,
+  href: localizePath(item.href, locale),
+  label: getNavigationLabel(item.href),
+}));
+const localizedProgramsNavigation = {
+  ...programsNavigation,
+  href: localizePath(programsNavigation.href, locale),
+  label: t(locale, "nav.programs"),
+};
+const initialCartLabel = t(locale, "a11y.openCartMany").replace(
+  "{count}",
+  "0",
+);
 ---
 
 <header class="relative z-30 border-b border-border bg-background">
   <Container class="flex h-20 items-center justify-between gap-3">
     <a
       class="focus-ring-primary inline-flex min-h-11 shrink-0 items-center font-serif text-2xl font-medium tracking-tight text-primary"
-      href="/"
-      aria-label="Med.uz.ua home"
+      href={localizePath("/", locale)}
+      aria-label={t(locale, "a11y.home")}
     >
       Med.uz.ua
     </a>
 
     <div class="flex min-w-0 items-center gap-2 lg:gap-3">
-      <nav class="hidden lg:block" aria-label="Primary navigation">
+      <nav class="hidden lg:block" aria-label={t(locale, "a11y.primaryNavigation")}>
         <ul class="flex items-center gap-1 xl:gap-2">
           {
-            primaryNavigation.map((item) => {
+            localizedPrimaryNavigation.map((item) => {
               const isActive = isNavigationItemActive(pathname, item);
 
               return (
@@ -50,19 +94,23 @@ const pathname = Astro.url.pathname;
 
       <a
         class="focus-ring-primary hidden min-h-11 items-center justify-center rounded-lg bg-primary px-3 text-center text-sm font-semibold text-primary-foreground transition-colors duration-200 hover:bg-primary/90 lg:inline-flex xl:px-5"
-        href={BOOKING_HREF}
+        href={bookingHref}
       >
-        <span class="xl:hidden">Book</span>
-        <span class="hidden xl:inline">Book consultation</span>
+        <span class="xl:hidden">{t(locale, "actions.bookShort")}</span>
+        <span class="hidden xl:inline">{t(locale, "actions.bookConsultation")}</span>
       </a>
+
+      <LanguageSwitcher locale={locale} currentPath={currentPath} />
 
       <button
         class="focus-ring-primary relative inline-flex size-11 shrink-0 items-center justify-center rounded-lg border border-border bg-card text-primary transition-colors duration-200 hover:bg-muted"
         type="button"
-        aria-label="Open cart, 0 items"
+        aria-label={initialCartLabel}
         aria-haspopup="dialog"
         aria-controls="cart-dialog"
         data-cart-trigger
+        data-cart-label-one={t(locale, "a11y.openCartOne")}
+        data-cart-label-many={t(locale, "a11y.openCartMany")}
       >
         <svg
           class="size-5"
@@ -89,7 +137,7 @@ const pathname = Astro.url.pathname;
         <summary
           class="focus-ring-primary inline-flex size-11 cursor-pointer list-none items-center justify-center rounded-lg border border-border bg-card text-primary transition-colors duration-200 hover:bg-muted [&::-webkit-details-marker]:hidden"
         >
-          <span class="sr-only">Toggle navigation menu</span>
+          <span class="sr-only">{t(locale, "a11y.toggleNavigation")}</span>
           <svg
             class="size-5 group-open:hidden"
             viewBox="0 0 24 24"
@@ -119,10 +167,10 @@ const pathname = Astro.url.pathname;
         <div
           class="absolute right-0 top-[calc(100%+0.75rem)] w-[min(20rem,calc(100vw-2.5rem))] border border-border bg-card p-3 shadow-concierge"
         >
-          <nav aria-label="Mobile navigation">
+          <nav aria-label={t(locale, "a11y.mobileNavigation")}>
             <ul class="space-y-1">
               {
-                primaryNavigation.map((item) => {
+                localizedPrimaryNavigation.map((item) => {
                   const isActive = isNavigationItemActive(pathname, item);
 
                   return (
@@ -146,9 +194,9 @@ const pathname = Astro.url.pathname;
               <li class="border-t border-border pt-1">
                 <a
                   class="focus-ring-primary flex min-h-12 items-center border-l-2 border-transparent px-4 text-sm font-medium text-foreground/75 transition-colors duration-200 hover:bg-muted hover:text-primary"
-                  href={programsNavigation.href}
+                  href={localizedProgramsNavigation.href}
                 >
-                  {programsNavigation.label}
+                  {localizedProgramsNavigation.label}
                 </a>
               </li>
             </ul>
@@ -156,9 +204,9 @@ const pathname = Astro.url.pathname;
 
           <a
             class="focus-ring-primary mt-3 inline-flex min-h-12 w-full items-center justify-center rounded-lg bg-primary px-5 text-center text-sm font-semibold text-primary-foreground transition-colors duration-200 hover:bg-primary/90"
-            href={BOOKING_HREF}
+            href={bookingHref}
           >
-            Book a consultation
+            {t(locale, "actions.bookConsultation")}
           </a>
         </div>
       </details>
@@ -182,9 +230,18 @@ const pathname = Astro.url.pathname;
     }
 
     for (const trigger of cartTriggers) {
+      const labelTemplate =
+        count === 1
+          ? trigger.dataset.cartLabelOne
+          : trigger.dataset.cartLabelMany;
+
+      if (labelTemplate === undefined) {
+        continue;
+      }
+
       trigger.setAttribute(
         "aria-label",
-        `Open cart, ${count} ${count === 1 ? "item" : "items"}`,
+        labelTemplate.replace("{count}", String(count)),
       );
     }
   });

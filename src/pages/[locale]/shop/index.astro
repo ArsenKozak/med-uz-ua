@@ -1,0 +1,29 @@
+---
+import type { GetStaticPaths } from "astro";
+import ShopPage from "../../../components/pages/ShopPage.astro";
+import { getAllActiveProducts } from "../../../lib/cms";
+import {
+  localizedLocales,
+  type Locale,
+} from "../../../lib/i18n";
+
+export const prerender = true;
+
+export const getStaticPaths = (async () => {
+  const products = await getAllActiveProducts();
+
+  return localizedLocales.map((locale) => ({
+    params: { locale },
+    props: { locale, products },
+  }));
+}) satisfies GetStaticPaths;
+
+interface Props {
+  locale: Locale;
+  products: Awaited<ReturnType<typeof getAllActiveProducts>>;
+}
+
+const { locale, products } = Astro.props;
+---
+
+<ShopPage locale={locale} products={products} />

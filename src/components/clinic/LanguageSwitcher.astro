@@ -1,0 +1,96 @@
+---
+import {
+  localeLabels,
+  localeShortLabels,
+  locales,
+  localizePath,
+  t,
+  type Locale,
+} from "../../lib/i18n";
+
+interface Props {
+  locale: Locale;
+  currentPath?: string;
+  class?: string;
+}
+
+const { locale, currentPath, class: className } = Astro.props;
+const routePath = currentPath ?? Astro.url.pathname;
+const pathWithSearch = /[?#]/.test(routePath)
+  ? routePath
+  : `${routePath}${Astro.url.search}`;
+const localeOptions = locales.map((candidateLocale) => ({
+  locale: candidateLocale,
+  href: localizePath(pathWithSearch, candidateLocale),
+  isCurrent: candidateLocale === locale,
+}));
+---
+
+<nav
+  class:list={["shrink-0", className]}
+  aria-label={t(locale, "a11y.languageSwitcher")}
+>
+  <span class="sr-only">
+    {t(locale, "a11y.currentLanguage")}: {localeLabels[locale]}
+  </span>
+
+  <details class="group relative sm:hidden">
+    <summary
+      class="focus-ring-primary inline-flex min-h-11 min-w-11 cursor-pointer list-none items-center justify-center rounded-lg border border-border bg-card px-2 text-[0.65rem] font-semibold tracking-[0.08em] text-primary transition-colors hover:bg-muted [&::-webkit-details-marker]:hidden"
+    >
+      <span aria-hidden="true">{localeShortLabels[locale]}</span>
+      <span class="sr-only">
+        {t(locale, "a11y.currentLanguage")}: {localeLabels[locale]}
+      </span>
+    </summary>
+    <div class="absolute right-0 top-[calc(100%+0.5rem)] z-50 min-w-40 border border-border bg-card p-1 shadow-concierge">
+      <ul>
+        {
+          localeOptions.map((option) => (
+            <li>
+              <a
+                class:list={[
+                  "focus-ring-primary flex min-h-11 items-center px-3 text-sm font-medium transition-colors",
+                  option.isCurrent
+                    ? "bg-primary text-primary-foreground"
+                    : "text-muted-foreground hover:bg-muted hover:text-primary",
+                ]}
+                href={option.href}
+                lang={option.locale}
+                hreflang={option.locale}
+                aria-current={option.isCurrent ? "page" : undefined}
+              >
+                {localeLabels[option.locale]}
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+  </details>
+
+  <ul class="hidden items-center rounded-lg border border-border bg-card p-0.5 sm:flex">
+    {
+      localeOptions.map((option) => (
+        <li>
+          <a
+            class:list={[
+              "focus-ring-primary inline-flex min-h-10 min-w-10 items-center justify-center rounded-md px-2 text-[0.65rem] font-semibold tracking-[0.08em] transition-colors",
+              option.isCurrent
+                ? "bg-primary text-primary-foreground"
+                : "text-muted-foreground hover:bg-muted hover:text-primary",
+            ]}
+            href={option.href}
+            lang={option.locale}
+            hreflang={option.locale}
+            aria-current={option.isCurrent ? "page" : undefined}
+            title={localeLabels[option.locale]}
+          >
+            <span aria-hidden="true">{localeShortLabels[option.locale]}</span>
+            <span class="sr-only">{localeLabels[option.locale]}</span>
+          </a>
+        </li>
+      ))
+    }
+  </ul>
+</nav>

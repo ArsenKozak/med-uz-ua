@@ -4,18 +4,24 @@ import type {
   ProductSummary,
 } from "../../lib/cms";
 import { formatMoneyMinor } from "../../lib/commerce/money";
+import {
+  defaultLocale,
+  t,
+  type Locale,
+} from "../../lib/i18n";
 
 interface Props {
   product: ProductSummary;
+  locale?: Locale;
 }
 
-const { product } = Astro.props;
+const { product, locale = defaultLocale } = Astro.props;
 
 const categoryLabels: Record<ProductCategory, string> = {
-  lenses: "Contact lenses",
-  frames: "Optical frames",
-  sunglasses: "Sunglasses",
-  care: "Lens care",
+  lenses: t(locale, "product.categories.lenses"),
+  frames: t(locale, "product.categories.frames"),
+  sunglasses: t(locale, "product.categories.sunglasses"),
+  care: t(locale, "product.categories.care"),
 };
 
 const isPending =
@@ -23,6 +29,11 @@ const isPending =
 const formattedPrice = formatMoneyMinor(
   product.priceMinor,
   product.currency,
+  locale,
+);
+const addToCartLabel = t(locale, "a11y.addProduct").replace(
+  "{product}",
+  product.title,
 );
 ---
 
@@ -106,9 +117,11 @@ const formattedPrice = formatMoneyMinor(
       {
         isPending ? (
           <div class="border-l-2 border-accent pl-3">
-            <p class="text-sm font-semibold text-foreground">Price pending</p>
+            <p class="text-sm font-semibold text-foreground">
+              {t(locale, "product.pricePending")}
+            </p>
             <p class="mt-1 text-xs leading-5 text-muted-foreground">
-              Product data and pricing await clinic confirmation.
+              {t(locale, "product.pendingDescription")}
             </p>
           </div>
         ) : (
@@ -121,15 +134,16 @@ const formattedPrice = formatMoneyMinor(
       <button
         class="focus-ring-primary mt-6 inline-flex min-h-12 w-full items-center justify-between border border-primary bg-primary px-5 text-sm font-semibold text-primary-foreground transition-colors hover:bg-primary/90"
         type="button"
-        aria-label={`Add ${product.title} to cart`}
+        aria-label={addToCartLabel}
         data-add-to-cart
         data-product-id={product.id}
         data-product-title={product.title}
         data-product-price-minor={String(product.priceMinor)}
         data-product-currency={product.currency}
         data-product-verification-status={product.verificationStatus}
+        data-added-message={t(locale, "product.addedToCart")}
       >
-        <span>Add to cart</span>
+        <span>{t(locale, "actions.addToCart")}</span>
         <span aria-hidden="true">＋</span>
       </button>
       <p
@@ -196,8 +210,9 @@ const formattedPrice = formatMoneyMinor(
     element.dataset.cartBound = "true";
     element.addEventListener("click", () => {
       const product = readProduct(element);
+      const addedMessage = element.dataset.addedMessage;
 
-      if (product === null) {
+      if (product === null || addedMessage === undefined) {
         return;
       }
 
@@ -209,7 +224,10 @@ const formattedPrice = formatMoneyMinor(
       if (status instanceof HTMLElement) {
         status.textContent = "";
         queueMicrotask(() => {
-          status.textContent = `${product.title} added to your cart.`;
+          status.textContent = addedMessage.replace(
+            "{product}",
+            product.title,
+          );
         });
       }
     });

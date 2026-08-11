@@ -1,86 +1,11 @@
 ---
-import ProductCard from "../../components/commerce/ProductCard.astro";
-import Container from "../../components/ui/Container.astro";
-import BaseLayout from "../../layouts/BaseLayout.astro";
+import ShopPage from "../../components/pages/ShopPage.astro";
 import { getAllActiveProducts } from "../../lib/cms";
+import { defaultLocale } from "../../lib/i18n";
 
 export const prerender = true;
 
 const products = await getAllActiveProducts();
-const hasPendingProducts = products.some(
-  (product) =>
-    product.verificationStatus === "pending-clinic-confirmation",
-);
 ---
 
-<BaseLayout
-  title="Optical Shop — Med.uz.ua"
-  description="Explore the Med.uz.ua optical catalog preview. Product details and pricing are published only after clinic confirmation."
->
-  <section class="border-b border-border bg-background py-16 sm:py-20 lg:py-28" aria-labelledby="shop-heading">
-    <Container class="grid gap-10 lg:grid-cols-12 lg:items-end">
-      <div class="lg:col-span-8">
-        <p class="text-xs font-semibold uppercase tracking-[0.24em] text-primary">
-          Optical shop
-        </p>
-        <h1
-          id="shop-heading"
-          class="mt-6 max-w-[13ch] text-balance text-5xl font-medium leading-[0.98] tracking-[-0.035em] text-foreground sm:text-6xl lg:text-7xl"
-        >
-          Optical essentials, presented with clarity.
-        </h1>
-      </div>
-      <div class="lg:col-span-4">
-        <p class="max-w-lg text-base leading-7 text-muted-foreground">
-          A considered catalog preview for optical products. Confirmed product
-          specifications, pricing, and availability will be published by the
-          clinic team.
-        </p>
-      </div>
-    </Container>
-  </section>
-
-  <section class="bg-background py-16 sm:py-20 lg:py-28" aria-labelledby="catalog-heading">
-    <Container>
-      <div class="flex flex-col gap-5 border-b border-border pb-7 sm:flex-row sm:items-end sm:justify-between">
-        <div>
-          <p class="text-xs font-semibold uppercase tracking-[0.2em] text-primary">
-            Collection preview
-          </p>
-          <h2 id="catalog-heading" class="mt-3 text-3xl font-medium tracking-tight sm:text-4xl">
-            The optical catalog
-          </h2>
-        </div>
-        {
-          hasPendingProducts && (
-            <p class="max-w-md border-l-2 border-accent pl-4 text-xs leading-5 text-muted-foreground">
-              Visible catalog entries are placeholders pending clinic
-              confirmation. No price or availability is confirmed.
-            </p>
-          )
-        }
-      </div>
-
-      {
-        products.length > 0 ? (
-          <ul class="mt-10 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 lg:gap-6">
-            {products.map((product) => (
-              <li class="min-w-0">
-                <ProductCard product={product} />
-              </li>
-            ))}
-          </ul>
-        ) : (
-          <div class="mt-10 border border-border bg-card px-6 py-14 text-center">
-            <p class="font-serif text-2xl text-foreground">
-              Catalog pending clinic confirmation.
-            </p>
-            <p class="mt-3 text-sm text-muted-foreground">
-              No active optical products are published yet.
-            </p>
-          </div>
-        )
-      }
-    </Container>
-  </section>
-</BaseLayout>
+<ShopPage locale={defaultLocale} products={products} />
