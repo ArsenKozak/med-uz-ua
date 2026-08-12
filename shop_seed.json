@@ -1,7 +1,4 @@
 [
-  /* ========================================================= */
-  /* CATEGORY 1: CONTACT LENSES (15 ITEMS) */
-  /* ========================================================= */
   {
     "id": "lens-air-optix-night-day-1",
     "title": "Air Optix Night & Day Aqua (3 шт.)",
@@ -83,14 +80,14 @@
     "description": "Місячні лінзи з подвійною технологією зволоження HydraGlyde."
   },
   {
-    "id": "lens-proclear-9",
-    "title": "Proclear CooperVision (6 шт.)",
+    "id": "lens-air-optix-astigmatism-9",
+    "title": "Air Optix for Astigmatism (3 шт.)",
     "category": "lenses",
-    "brand": "CooperVision",
+    "brand": "Alcon",
     "price": 1050,
-    "inStock": false,
-    "image": "/images/shop/lenses/proclear.jpg",
-    "description": "Лінзи з технологією PC, рекомендовані при синдромі сухого ока."
+    "inStock": true,
+    "image": "/images/shop/lenses/air-optix-astigmatism.jpg",
+    "description": "Торичні лінзи для корекції астигматизму з технологією HydraGlyde."
   },
   {
     "id": "lens-purevision-2-10",
@@ -152,10 +149,6 @@
     "image": "/images/shop/lenses/acuvue-vita.jpg",
     "description": "Місячні лінзи з технологією HydraMax для комфорту протягом усього місяця."
   },
-
-  /* ========================================================= */
-  /* CATEGORY 2: EYE CARE & SOLUTIONS (15 ITEMS) */
-  /* ========================================================= */
   {
     "id": "care-biotrue-solution-1",
     "title": "Універсальний розчин Biotrue 300 мл",
@@ -227,14 +220,14 @@
     "description": "Зволожуючі краплі спеціально для користувачів контактних лінз."
   },
   {
-    "id": "care-complete-revitalens-8",
-    "title": "Розчин Complete RevitaLens 360 мл",
+    "id": "care-avizor-unica-8",
+    "title": "Розчин Avizor Unica Sensitive 350 мл",
     "category": "care",
-    "brand": "Johnson & Johnson",
+    "brand": "Avizor",
     "price": 390,
     "inStock": true,
-    "image": "/images/shop/care/complete-revitalens.jpg",
-    "description": "Багатофункціональний розчин з подвійною дезінфекцією та зволоженням."
+    "image": "/images/shop/care/avizor-unica.jpg",
+    "description": "Багатофункціональний розчин з гіалуроновою кислотою для чутливих очей."
   },
   {
     "id": "care-hylo-dual-9",
@@ -247,14 +240,14 @@
     "description": "Безконсервантні краплі з гіалуроновою кислотою та ектоїном проти алергії."
   },
   {
-    "id": "care-opti-free-replenish-10",
-    "title": "Розчин Opti-Free RepleniSH 300 мл",
+    "id": "care-hilens-optical-10",
+    "title": "Розчин Hilens Optical Care 360 мл",
     "category": "care",
-    "brand": "Alcon",
+    "brand": "Hilens",
     "price": 370,
-    "inStock": false,
-    "image": "/images/shop/care/opti-free-replenish.jpg",
-    "description": "Розчин з технологією TearGlyde для тривалого зволоження лінз."
+    "inStock": true,
+    "image": "/images/shop/care/hilens-care.jpg",
+    "description": "Професійний розчин для глибокого очищення та зберігання контактних лінз."
   },
   {
     "id": "care-systane-balance-11",
@@ -306,312 +299,304 @@
     "image": "/images/shop/care/thealoz-duo.jpg",
     "description": "Безконсервантні краплі з трегалозою та гіалуроновою кислотою."
   },
-
-  /* ========================================================= */
-  /* CATEGORY 3: OPTICAL FRAMES (15 ITEMS) */
-  /* ========================================================= */
   {
-    "id": "frame-rayban-clubmaster-1",
-    "title": "Оправа Ray-Ban Clubmaster Optics RX5154",
+    "id": "frame-owlet-classic-1",
+    "title": "Оправа Owlet Classic Acetate",
     "category": "frames",
-    "brand": "Ray-Ban",
-    "price": 4200,
-    "inStock": true,
-    "image": "/images/shop/frames/rayban-rx5154.jpg",
-    "description": "Легендарна броулайнер-оправа з поєднання преміального ацетату та металу."
-  },
-  {
-    "id": "frame-vogue-eyewear-2",
-    "title": "Оправа Vogue VO5354",
-    "category": "frames",
-    "brand": "Vogue",
-    "price": 2800,
-    "inStock": true,
-    "image": "/images/shop/frames/vogue-vo5354.jpg",
-    "description": "Витончена жіноча оправа формату «котяче око» у глибокому черепаховому відтінку."
-  },
-  {
-    "id": "frame-silhouette-minimal-3",
-    "title": "Титанова безобідкова оправа Silhouette TMA Must",
-    "category": "frames",
-    "brand": "Silhouette",
-    "price": 9500,
-    "inStock": true,
-    "image": "/images/shop/frames/silhouette-tma.jpg",
-    "description": "Ультралегка австрійська оправа з високоочищеного титану без гвинтів та шарнірів."
-  },
-  {
-    "id": "frame-tom-ford-4",
-    "title": "Оправа Tom Ford TF5398",
-    "category": "frames",
-    "brand": "Tom Ford",
-    "price": 12500,
-    "inStock": true,
-    "image": "/images/shop/frames/tom-ford-tf5398.jpg",
-    "description": "Преміальна чоловіча оправа з італійського ацетату в класичному прямокутному дизайні."
-  },
-  {
-    "id": "frame-carrera-5",
-    "title": "Оправа Carrera 1134/G",
-    "category": "frames",
-    "brand": "Carrera",
-    "price": 3100,
-    "inStock": true,
-    "image": "/images/shop/frames/carrera-1134.jpg",
-    "description": "Спортивно-елегантна оправа з металевими елементами та регульованими носоупорами."
-  },
-  {
-    "id": "frame-polaroid-6",
-    "title": "Оправа Polaroid PLD D424",
-    "category": "frames",
-    "brand": "Polaroid",
-    "price": 1950,
-    "inStock": true,
-    "image": "/images/shop/frames/polaroid-d424.jpg",
-    "description": "Легка пластикова оправа в ретро-стилі з гнучкими завушниками."
-  },
-  {
-    "id": "frame-rayban-wayfarer-7",
-    "title": "Оправа Ray-Ban Wayfarer Optics RX5121",
-    "category": "frames",
-    "brand": "Ray-Ban",
-    "price": 3900,
-    "inStock": true,
-    "image": "/images/shop/frames/rayban-rx5121.jpg",
-    "description": "Культова оправа Wayfarer з товстим ацетатом і класичною формою."
-  },
-  {
-    "id": "frame-vogue-round-8",
-    "title": "Оправа Vogue VO5167",
-    "category": "frames",
-    "brand": "Vogue",
-    "price": 2450,
-    "inStock": false,
-    "image": "/images/shop/frames/vogue-vo5167.jpg",
-    "description": "Кругла жіноча оправа в стилі 70-х з м’якими лініями та легким ацетатом."
-  },
-  {
-    "id": "frame-silhouette-titan-9",
-    "title": "Оправа Silhouette Titan Minimal Art",
-    "category": "frames",
-    "brand": "Silhouette",
-    "price": 8900,
-    "inStock": true,
-    "image": "/images/shop/frames/silhouette-titan.jpg",
-    "description": "Безобідкова титанова оправа вагою менше 2 грамів з гнучкими завушниками."
-  },
-  {
-    "id": "frame-tom-ford-cat-10",
-    "title": "Оправа Tom Ford TF5634-B",
-    "category": "frames",
-    "brand": "Tom Ford",
-    "price": 11200,
-    "inStock": true,
-    "image": "/images/shop/frames/tom-ford-tf5634.jpg",
-    "description": "Жіноча оправа «котяче око» з преміального ацетату та золотими деталями."
-  },
-  {
-    "id": "frame-carrera-metal-11",
-    "title": "Оправа Carrera 2020/T",
-    "category": "frames",
-    "brand": "Carrera",
-    "price": 2750,
-    "inStock": true,
-    "image": "/images/shop/frames/carrera-2020.jpg",
-    "description": "Тонка металева оправа з гнучкими завушниками та силіконовими носоупорами."
-  },
-  {
-    "id": "frame-polaroid-acetate-12",
-    "title": "Оправа Polaroid PLD D380",
-    "category": "frames",
-    "brand": "Polaroid",
+    "brand": "Owlet",
     "price": 2100,
     "inStock": true,
-    "image": "/images/shop/frames/polaroid-d380.jpg",
-    "description": "Сучасна ацетатна оправа прямокутної форми з матовим покриттям."
+    "image": "/images/shop/frames/owlet-classic.jpg",
+    "description": "Елегантна жіноча оправа з легкого ацетату в класичному дизайні."
   },
   {
-    "id": "frame-rayban-hexagonal-13",
-    "title": "Оправа Ray-Ban Hexagonal Optics RX6448",
+    "id": "frame-polo-club-elegant-2",
+    "title": "Оправа Polo Club Elegant Metal",
     "category": "frames",
-    "brand": "Ray-Ban",
-    "price": 4500,
+    "brand": "Polo Club",
+    "price": 2800,
     "inStock": true,
-    "image": "/images/shop/frames/rayban-rx6448.jpg",
-    "description": "Гексагональна металева оправа з тонкими оправами та класичним дизайном."
+    "image": "/images/shop/frames/polo-club-elegant.jpg",
+    "description": "Тонка металева оправа з гнучкими завушниками та класичною формою."
   },
   {
-    "id": "frame-vogue-oversized-14",
-    "title": "Оправа Vogue VO5334",
+    "id": "frame-oliver-black-premium-3",
+    "title": "Оправа Oliver Black Premium",
     "category": "frames",
-    "brand": "Vogue",
-    "price": 2650,
+    "brand": "Oliver Black",
+    "price": 3200,
     "inStock": true,
-    "image": "/images/shop/frames/vogue-vo5334.jpg",
-    "description": "Велика жіноча оправа з товстим ацетатом і модним oversized-силуетом."
+    "image": "/images/shop/frames/oliver-black-premium.jpg",
+    "description": "Преміальна оправа стриманого дизайну з високоякісного гіпоалергенного матеріалу."
   },
   {
-    "id": "frame-silhouette-spirit-15",
-    "title": "Оправа Silhouette Spirit 2936",
+    "id": "frame-maxima-titanium-4",
+    "title": "Оправа Maxima & Co Titanium",
     "category": "frames",
-    "brand": "Silhouette",
-    "price": 7800,
-    "inStock": true,
-    "image": "/images/shop/frames/silhouette-spirit.jpg",
-    "description": "Легка титанова оправа з мінімалістичним дизайном і високою гнучкістю."
-  },
-
-  /* ========================================================= */
-  /* CATEGORY 4: SUNGLASSES (15 ITEMS) */
-  /* ========================================================= */
-  {
-    "id": "sunglass-polaroid-classic-1",
-    "title": "Сонцезахисні окуляри Polaroid PLD 2086/S",
-    "category": "sunglasses",
-    "brand": "Polaroid",
+    "brand": "Maxima & Co",
     "price": 2400,
     "inStock": true,
-    "image": "/images/shop/sunglasses/polaroid-pld2086.jpg",
-    "description": "Поляризовані лінзи UltraSight для 100% захисту від UV400 та відблисків."
+    "image": "/images/shop/frames/maxima-titanium.jpg",
+    "description": "Ультралегка титанова оправа для комфортного щоденного носіння."
   },
   {
-    "id": "sunglass-rayban-aviator-2",
-    "title": "Окуляри Ray-Ban Aviator Classic RB3025",
-    "category": "sunglasses",
-    "brand": "Ray-Ban",
-    "price": 5400,
+    "id": "frame-twenty-retro-5",
+    "title": "Оправа Twenty Retro Square",
+    "category": "frames",
+    "brand": "Twenty",
+    "price": 1900,
     "inStock": true,
-    "image": "/images/shop/sunglasses/rayban-rb3025.jpg",
-    "description": "Культові авіатори з позолоченою металевою оправою та мінеральним склом G-15."
+    "image": "/images/shop/frames/twenty-retro.jpg",
+    "description": "Квадратна оправа в ретро-стилі з виразними лініями."
   },
   {
-    "id": "sunglass-oakley-holbrook-3",
-    "title": "Окуляри Oakley Holbrook Prizm",
-    "category": "sunglasses",
-    "brand": "Oakley",
-    "price": 6100,
+    "id": "frame-shadow-minimalist-6",
+    "title": "Оправа Shadow Minimalist",
+    "category": "frames",
+    "brand": "Shadow",
+    "price": 1750,
     "inStock": true,
-    "image": "/images/shop/sunglasses/oakley-holbrook.jpg",
-    "description": "Спортивно-міський стиль із лінзами Prizm для максимальної контрастності."
+    "image": "/images/shop/frames/shadow-minimalist.jpg",
+    "description": "Мінімалістична безобідкова оправа, що майже непомітна на обличчі."
   },
   {
-    "id": "sunglass-rayban-wayfarer-4",
-    "title": "Окуляри Ray-Ban Wayfarer Classic RB2140",
-    "category": "sunglasses",
-    "brand": "Ray-Ban",
-    "price": 4900,
+    "id": "frame-dacchi-square-7",
+    "title": "Оправа Dacchi Classic Square",
+    "category": "frames",
+    "brand": "Dacchi",
+    "price": 1500,
     "inStock": true,
-    "image": "/images/shop/sunglasses/rayban-rb2140.jpg",
-    "description": "Легендарні Wayfarer з товстим ацетатом і класичними лінзами G-15."
+    "image": "/images/shop/frames/dacchi-square.jpg",
+    "description": "Надійна пластикова оправа прямокутної форми для офісу та читання."
   },
   {
-    "id": "sunglass-polaroid-aviator-5",
-    "title": "Окуляри Polaroid PLD 6010/N",
-    "category": "sunglasses",
-    "brand": "Polaroid",
-    "price": 1950,
-    "inStock": true,
-    "image": "/images/shop/sunglasses/polaroid-pld6010.jpg",
-    "description": "Поляризовані авіатори з легкою металевою оправою та UV400 захистом."
-  },
-  {
-    "id": "sunglass-oakley-radar-6",
-    "title": "Окуляри Oakley Radar EV Path Prizm",
-    "category": "sunglasses",
-    "brand": "Oakley",
-    "price": 7200,
-    "inStock": true,
-    "image": "/images/shop/sunglasses/oakley-radar.jpg",
-    "description": "Спортивні окуляри з технологією Prizm для активного відпочинку та велоспорту."
-  },
-  {
-    "id": "sunglass-hugo-boss-7",
-    "title": "Окуляри Hugo Boss BOSS 1045/S",
-    "category": "sunglasses",
-    "brand": "Hugo Boss",
-    "price": 4800,
-    "inStock": true,
-    "image": "/images/shop/sunglasses/hugo-boss-1045.jpg",
-    "description": "Елегантні чоловічі окуляри з поляризованими лінзами та металевою оправою."
-  },
-  {
-    "id": "sunglass-furla-8",
-    "title": "Окуляри Furla SFU239",
-    "category": "sunglasses",
-    "brand": "Furla",
-    "price": 3900,
-    "inStock": true,
-    "image": "/images/shop/sunglasses/furla-sfu239.jpg",
-    "description": "Жіночі сонцезахисні окуляри в стилі «котяче око» з градієнтними лінзами."
-  },
-  {
-    "id": "sunglass-rayban-round-9",
-    "title": "Окуляри Ray-Ban Round Metal RB3447",
-    "category": "sunglasses",
-    "brand": "Ray-Ban",
-    "price": 5100,
-    "inStock": true,
-    "image": "/images/shop/sunglasses/rayban-rb3447.jpg",
-    "description": "Круглі металеві окуляри в ретро-стилі з зеленими лінзами G-15."
-  },
-  {
-    "id": "sunglass-polaroid-square-10",
-    "title": "Окуляри Polaroid PLD 6126/S",
-    "category": "sunglasses",
-    "brand": "Polaroid",
-    "price": 2200,
+    "id": "frame-vido-round-8",
+    "title": "Оправа Vido Vintage Round",
+    "category": "frames",
+    "brand": "Vido",
+    "price": 1600,
     "inStock": false,
-    "image": "/images/shop/sunglasses/polaroid-pld6126.jpg",
-    "description": "Прямокутні поляризовані окуляри з ацетатною оправою та дзеркальними лінзами."
+    "image": "/images/shop/frames/vido-round.jpg",
+    "description": "Кругла оправа у вінтажному стилі з тонкими металевими елементами."
   },
   {
-    "id": "sunglass-oakley-frogskins-11",
-    "title": "Окуляри Oakley Frogskins Prizm",
-    "category": "sunglasses",
-    "brand": "Oakley",
-    "price": 5800,
+    "id": "frame-seiko-precision-9",
+    "title": "Оправа SEIKO Precision Titanium",
+    "category": "frames",
+    "brand": "SEIKO",
+    "price": 6500,
     "inStock": true,
-    "image": "/images/shop/sunglasses/oakley-frogskins.jpg",
-    "description": "Культові окуляри 80-х років з сучасними лінзами Prizm і гнучкою оправою."
+    "image": "/images/shop/frames/seiko-precision.jpg",
+    "description": "Бездоганна японська якість: титанова оправа високої міцності."
   },
   {
-    "id": "sunglass-hugo-boss-round-12",
-    "title": "Окуляри Hugo Boss BOSS 1296/S",
-    "category": "sunglasses",
-    "brand": "Hugo Boss",
-    "price": 4500,
+    "id": "frame-alvaro-sport-10",
+    "title": "Оправа Alvaro Sport Flex",
+    "category": "frames",
+    "brand": "Alvaro",
+    "price": 1650,
     "inStock": true,
-    "image": "/images/shop/sunglasses/hugo-boss-1296.jpg",
-    "description": "Круглі чоловічі окуляри з тонкими металевими оправами та поляризацією."
+    "image": "/images/shop/frames/alvaro-sport.jpg",
+    "description": "Легка оправа з гнучкого пластику для активного способу життя."
   },
   {
-    "id": "sunglass-furla-oversized-13",
-    "title": "Окуляри Furla SFU350",
-    "category": "sunglasses",
-    "brand": "Furla",
-    "price": 4200,
+    "id": "frame-pro-lightweight-11",
+    "title": "Оправа Pro Lightweight",
+    "category": "frames",
+    "brand": "Pro",
+    "price": 1400,
     "inStock": true,
-    "image": "/images/shop/sunglasses/furla-sfu350.jpg",
-    "description": "Великі жіночі окуляри oversized з градієнтними лінзами та ацетатною оправою."
+    "image": "/images/shop/frames/pro-lightweight.jpg",
+    "description": "Бюджетна, але надзвичайно легка комбінована оправа."
   },
   {
-    "id": "sunglass-rayban-clubmaster-14",
-    "title": "Окуляри Ray-Ban Clubmaster RB3016",
-    "category": "sunglasses",
-    "brand": "Ray-Ban",
-    "price": 5600,
+    "id": "frame-owlet-cateye-12",
+    "title": "Оправа Owlet Cat-Eye",
+    "category": "frames",
+    "brand": "Owlet",
+    "price": 2200,
     "inStock": true,
-    "image": "/images/shop/sunglasses/rayban-rb3016.jpg",
-    "description": "Класичні Clubmaster з комбінованою оправою ацетат + метал і лінзами G-15."
+    "image": "/images/shop/frames/owlet-cateye.jpg",
+    "description": "Витончена форма «котяче око» у глибокому відтінку."
   },
   {
-    "id": "sunglass-polaroid-sport-15",
-    "title": "Окуляри Polaroid PLD 7033/S",
-    "category": "sunglasses",
-    "brand": "Polaroid",
-    "price": 2650,
+    "id": "frame-polo-club-wayfarer-13",
+    "title": "Оправа Polo Club Wayfarer Style",
+    "category": "frames",
+    "brand": "Polo Club",
+    "price": 2900,
     "inStock": true,
-    "image": "/images/shop/sunglasses/polaroid-pld7033.jpg",
-    "description": "Спортивні поляризовані окуляри з обтічною формою та 100% UV-захистом."
+    "image": "/images/shop/frames/polo-club-wayfarer.jpg",
+    "description": "Класичний силует з надійними шарнірами та товстим ацетатом."
+  },
+  {
+    "id": "frame-oliver-black-gold-14",
+    "title": "Оправа Oliver Black Gold Edition",
+    "category": "frames",
+    "brand": "Oliver Black",
+    "price": 3400,
+    "inStock": true,
+    "image": "/images/shop/frames/oliver-black-gold.jpg",
+    "description": "Металева оправа з елегантним золотим напиленням та тонкими завушниками."
+  },
+  {
+    "id": "frame-maxima-acetate-15",
+    "title": "Оправа Maxima Acetate",
+    "category": "frames",
+    "brand": "Maxima",
+    "price": 1800,
+    "inStock": true,
+    "image": "/images/shop/frames/maxima-acetate.jpg",
+    "description": "Стильна пластикова оправа для повсякденного комфорту."
+  },
+  {
+    "id": "sunglass-polo-club-aviator-1",
+    "title": "Сонцезахисні окуляри Polo Club Aviator",
+    "category": "sunglasses",
+    "brand": "Polo Club",
+    "price": 2800,
+    "inStock": true,
+    "image": "/images/shop/sunglasses/polo-club-aviator.jpg",
+    "description": "Класичні авіатори з поляризованими лінзами та 100% захистом від UV."
+  },
+  {
+    "id": "sunglass-owlet-cateye-2",
+    "title": "Сонцезахисні окуляри Owlet Sun Cat-Eye",
+    "category": "sunglasses",
+    "brand": "Owlet",
+    "price": 2400,
+    "inStock": true,
+    "image": "/images/shop/sunglasses/owlet-sun-cateye.jpg",
+    "description": "Жіночі сонцезахисні окуляри з градієнтними лінзами у стилі «котяче око»."
+  },
+  {
+    "id": "sunglass-maxima-oversize-3",
+    "title": "Сонцезахисні окуляри Maxima Oversize",
+    "category": "sunglasses",
+    "brand": "Maxima",
+    "price": 2100,
+    "inStock": true,
+    "image": "/images/shop/sunglasses/maxima-oversize.jpg",
+    "description": "Великі сонцезахисні окуляри для максимального захисту та стильного образу."
+  },
+  {
+    "id": "sunglass-oliver-black-classic-4",
+    "title": "Сонцезахисні окуляри Oliver Black Classic",
+    "category": "sunglasses",
+    "brand": "Oliver Black",
+    "price": 3100,
+    "inStock": true,
+    "image": "/images/shop/sunglasses/oliver-black-classic.jpg",
+    "description": "Преміальні сонцезахисні окуляри стриманого дизайну з антибліковим покриттям."
+  },
+  {
+    "id": "sunglass-twenty-sport-5",
+    "title": "Сонцезахисні окуляри Twenty Sport",
+    "category": "sunglasses",
+    "brand": "Twenty",
+    "price": 1800,
+    "inStock": true,
+    "image": "/images/shop/sunglasses/twenty-sport.jpg",
+    "description": "Спортивні сонцезахисні окуляри з обтічною формою для активного відпочинку."
+  },
+  {
+    "id": "sunglass-shadow-retro-6",
+    "title": "Сонцезахисні окуляри Shadow Retro",
+    "category": "sunglasses",
+    "brand": "Shadow",
+    "price": 1900,
+    "inStock": true,
+    "image": "/images/shop/sunglasses/shadow-retro.jpg",
+    "description": "Вінтажна оправа та круглі затемнені лінзи у стилі 70-х."
+  },
+  {
+    "id": "sunglass-dacchi-square-7",
+    "title": "Сонцезахисні окуляри Dacchi Square",
+    "category": "sunglasses",
+    "brand": "Dacchi",
+    "price": 1600,
+    "inStock": true,
+    "image": "/images/shop/sunglasses/dacchi-square.jpg",
+    "description": "Класичні квадратні сонцезахисні окуляри з надійного матеріалу."
+  },
+  {
+    "id": "sunglass-vido-round-8",
+    "title": "Сонцезахисні окуляри Vido Round",
+    "category": "sunglasses",
+    "brand": "Vido",
+    "price": 1700,
+    "inStock": false,
+    "image": "/images/shop/sunglasses/vido-round.jpg",
+    "description": "Круглі сонцезахисні окуляри з тонкими металевими дужками."
+  },
+  {
+    "id": "sunglass-alvaro-gradient-9",
+    "title": "Сонцезахисні окуляри Alvaro Gradient",
+    "category": "sunglasses",
+    "brand": "Alvaro",
+    "price": 1650,
+    "inStock": true,
+    "image": "/images/shop/sunglasses/alvaro-gradient.jpg",
+    "description": "Окуляри з градієнтним затемненням для комфортного водіння."
+  },
+  {
+    "id": "sunglass-polo-club-wayfarer-10",
+    "title": "Сонцезахисні окуляри Polo Club Wayfarer",
+    "category": "sunglasses",
+    "brand": "Polo Club",
+    "price": 2700,
+    "inStock": true,
+    "image": "/images/shop/sunglasses/polo-club-wayfarer.jpg",
+    "description": "Стиль Wayfarer з дзеркальними поляризованими лінзами."
+  },
+  {
+    "id": "sunglass-owlet-fashion-11",
+    "title": "Сонцезахисні окуляри Owlet Fashion",
+    "category": "sunglasses",
+    "brand": "Owlet",
+    "price": 2300,
+    "inStock": true,
+    "image": "/images/shop/sunglasses/owlet-fashion.jpg",
+    "description": "Модні сонцезахисні окуляри з унікальною геометрією оправи."
+  },
+  {
+    "id": "sunglass-maxima-polarized-12",
+    "title": "Сонцезахисні окуляри Maxima Polarized",
+    "category": "sunglasses",
+    "brand": "Maxima",
+    "price": 2200,
+    "inStock": true,
+    "image": "/images/shop/sunglasses/maxima-polarized.jpg",
+    "description": "Надійний захист від відблисків завдяки високоякісному поляризаційному фільтру."
+  },
+  {
+    "id": "sunglass-oliver-black-premium-13",
+    "title": "Сонцезахисні окуляри Oliver Black Premium",
+    "category": "sunglasses",
+    "brand": "Oliver Black",
+    "price": 3500,
+    "inStock": true,
+    "image": "/images/shop/sunglasses/oliver-black-premium.jpg",
+    "description": "Ексклюзивний дизайн та максимальний комфорт від преміум-бренду."
+  },
+  {
+    "id": "sunglass-twenty-metal-14",
+    "title": "Сонцезахисні окуляри Twenty Metal",
+    "category": "sunglasses",
+    "brand": "Twenty",
+    "price": 2000,
+    "inStock": true,
+    "image": "/images/shop/sunglasses/twenty-metal.jpg",
+    "description": "Стильні сонцезахисні окуляри у легкій металевій оправі."
+  },
+  {
+    "id": "sunglass-shadow-elegant-15",
+    "title": "Сонцезахисні окуляри Shadow Elegant",
+    "category": "sunglasses",
+    "brand": "Shadow",
+    "price": 1850,
+    "inStock": true,
+    "image": "/images/shop/sunglasses/shadow-elegant.jpg",
+    "description": "Елегантна модель для щоденного захисту ваших очей."
   }
 ]
