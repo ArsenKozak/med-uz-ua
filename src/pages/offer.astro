@@ -1,0 +1,8 @@
+---
+import LegalPage from "../components/pages/LegalPage.astro";
+import { defaultLocale } from "../lib/i18n";
+
+export const prerender = true;
+---
+
+<LegalPage locale={defaultLocale} kind="offer" />

@@ -2,6 +2,7 @@
 import AppointmentForm from "../clinic/AppointmentForm.astro";
 import ServiceCard from "../clinic/ServiceCard.astro";
 import Wayfinding from "../clinic/Wayfinding.astro";
+import SocialLinks from "../clinic/SocialLinks.astro";
 import Container from "../ui/Container.astro";
 import BaseLayout from "../../layouts/BaseLayout.astro";
 import { siteImageAssets } from "../../lib/assets";
@@ -9,10 +10,10 @@ import {
   clinicContact,
   OPHTHALMOLOGY_SINCE,
   PATIENT_TRUST_COUNT,
-  socialChannels,
 } from "../../lib/clinic";
 import type { ServiceDetail } from "../../lib/cms";
 import { localizePath, t, type Locale } from "../../lib/i18n";
+import { getAppointmentHref } from "../../lib/navigation";
 import { localizeServiceDetail } from "./localize-service";
 
 interface Props {
@@ -24,6 +25,14 @@ const { locale, services } = Astro.props;
 const localizedServices = services
   .map((service) => localizeServiceDetail(service, locale))
   .slice(0, 3);
+const appointmentHref = getAppointmentHref(Astro.url.pathname, locale);
+const worldLabels = {
+  uk: { clinic: "Клініка", shop: "Оптика" },
+  en: { clinic: "Clinic", shop: "Optical shop" },
+  sk: { clinic: "Klinika", shop: "Optika" },
+  hu: { clinic: "Klinika", shop: "Optika" },
+} as const;
+const worldLabel = worldLabels[locale];
 ---
 
 <BaseLayout
@@ -31,16 +40,16 @@ const localizedServices = services
   description={t(locale, "seo.home.description")}
   locale={locale}
 >
-  <header class="relative overflow-x-hidden bg-primary text-primary-foreground">
+  <header class="relative min-w-0 bg-primary text-primary-foreground">
     <Container class="grid min-h-[calc(100svh-5rem)] grid-cols-1 lg:grid-cols-12">
       <div
-        class="relative z-10 flex flex-col justify-center py-16 sm:py-20 lg:col-span-7 lg:py-24 lg:pr-14 xl:pr-20"
+        class="relative z-10 flex min-w-0 flex-col justify-center py-16 sm:py-20 lg:col-span-7 lg:py-24 lg:pr-14 xl:pr-20"
         data-reveal
       >
         <p class="text-xs font-semibold uppercase tracking-[0.24em] text-accent">
           {t(locale, "home.heroEyebrow")}
         </p>
-        <h1 class="mt-6 max-w-[12ch] text-balance font-serif text-[clamp(3.25rem,7vw,6.75rem)] font-medium leading-[0.91] tracking-[-0.045em]">
+        <h1 class="mt-6 max-w-[12ch] break-words text-balance font-serif text-[clamp(2.6rem,12.5vw,6.75rem)] font-medium leading-[0.94] tracking-[-0.035em] sm:text-[clamp(3.25rem,7vw,6.75rem)] sm:leading-[0.91] sm:tracking-[-0.045em]">
           {t(locale, "home.heroTitle")}
         </h1>
         <p class="mt-7 max-w-xl text-base font-light leading-7 text-primary-foreground/72 sm:text-lg sm:leading-8">
@@ -50,7 +59,7 @@ const localizedServices = services
         <div class="mt-10 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
           <a
             class="inline-flex min-h-13 items-center justify-center bg-primary-foreground px-6 text-sm font-semibold text-primary transition-colors hover:bg-accent hover:text-foreground"
-            href={localizePath("/#appointment-form", locale)}
+            href={appointmentHref}
             data-pointer-depth
           >
             {t(locale, "actions.bookConsultation")}
@@ -127,7 +136,7 @@ const localizedServices = services
      </Container>
    </section>
 
-  <section class="overflow-x-hidden bg-background py-20 sm:py-24 lg:py-32" aria-labelledby="two-worlds-heading">
+  <section class="min-w-0 bg-background py-20 sm:py-24 lg:py-32" aria-labelledby="two-worlds-heading">
     <Container>
       <div class="grid gap-8 lg:grid-cols-12 lg:items-end" data-reveal>
         <div class="lg:col-span-8">
@@ -137,14 +146,14 @@ const localizedServices = services
               href={localizePath("/services", locale)}
               class="transition-colors hover:text-accent hover:underline"
             >
-              Клініка
+              {worldLabel.clinic}
             </a>
             <span class="mx-1.5 text-muted-foreground/50">|</span>
             <a
               href={localizePath("/shop", locale)}
               class="transition-colors hover:text-accent hover:underline"
             >
-              Оптика
+              {worldLabel.shop}
             </a>
           </p>
 
@@ -157,8 +166,6 @@ const localizedServices = services
           {t(locale, "home.worldsIntro")}
         </p>
       </div>
-
-      <!-- Решта блоку з картками без змін -->
 
       <div
         class="relative mt-12 grid border border-border md:grid-cols-2 lg:mt-16"
@@ -213,7 +220,7 @@ const localizedServices = services
     </Container>
   </section>
 
-  <section class="overflow-x-hidden bg-muted py-20 sm:py-24 lg:py-32" aria-labelledby="services-heading">
+  <section class="min-w-0 bg-muted py-20 sm:py-24 lg:py-32" aria-labelledby="services-heading">
     <Container>
       <div class="grid gap-8 lg:grid-cols-12 lg:items-end" data-reveal>
         <div class="lg:col-span-8">
@@ -232,12 +239,12 @@ const localizedServices = services
       {
         localizedServices.length > 0 ? (
           <ul
-            class="mt-12 grid gap-px border border-border bg-border lg:mt-16 lg:grid-cols-3"
+            class="mt-12 grid min-w-0 gap-px border border-border bg-border lg:mt-16 lg:grid-cols-3"
             data-reveal
             data-reveal-sequence
           >
             {localizedServices.map((service, index) => (
-              <li>
+              <li class="min-w-0">
                 <ServiceCard
                   service={service}
                   number={String(index + 1).padStart(2, "0")}
@@ -256,7 +263,7 @@ const localizedServices = services
     </Container>
   </section>
 
-  <section class="overflow-x-hidden bg-background py-20 sm:py-24 lg:py-32" aria-labelledby="founder-heading">
+  <section class="min-w-0 bg-background py-20 sm:py-24 lg:py-32" aria-labelledby="founder-heading">
     <Container class="grid gap-10 lg:grid-cols-12 lg:items-stretch lg:gap-0">
       <figure class="relative min-h-[28rem] overflow-hidden bg-muted lg:col-span-6 lg:min-h-[42rem]">
         <img
@@ -293,11 +300,11 @@ const localizedServices = services
     </Container>
   </section>
 
-  <section class="overflow-x-hidden bg-primary py-20 text-primary-foreground sm:py-24 lg:py-32" aria-labelledby="social-heading">
+  <section class="min-w-0 bg-primary py-20 text-primary-foreground sm:py-24 lg:py-32" aria-labelledby="social-heading">
     <Container class="grid gap-12 lg:grid-cols-12 lg:items-end">
       <div class="lg:col-span-7">
         <p class="text-xs font-semibold uppercase tracking-[0.22em] text-accent">
-          {t(locale, "home.socialEyebrow")}
+          {locale === "uk" ? "Соціальні мережі" : locale === "en" ? "Social networks" : locale === "sk" ? "Sociálne siete" : "Közösségi oldalak"}
         </p>
         <h2 id="social-heading" class="mt-5 max-w-3xl text-balance text-4xl font-medium leading-tight tracking-tight sm:text-5xl">
           {t(locale, "home.socialTitle")}
@@ -307,28 +314,13 @@ const localizedServices = services
         </p>
       </div>
 
-      <ul class="divide-y divide-primary-foreground/20 border-y border-primary-foreground/20 lg:col-span-5">
-        {
-          socialChannels.map((channel) => (
-            <li>
-              <a
-                class="group flex min-h-16 items-center justify-between text-sm font-semibold transition-colors hover:text-accent"
-                href={channel.href}
-                target="_blank"
-                rel="noreferrer"
-                aria-label={t(locale, "home.socialOpenAria", { channel: channel.label })}
-              >
-                {channel.label}
-                <span class="transition-transform group-hover:translate-x-1" aria-hidden="true">↗</span>
-              </a>
-            </li>
-          ))
-        }
-      </ul>
+      <div class="lg:col-span-5">
+        <SocialLinks locale={locale} tone="light" />
+      </div>
     </Container>
   </section>
 
-  <section class="overflow-x-hidden bg-background py-20 sm:py-24 lg:py-32" aria-labelledby="location-heading">
+  <section class="min-w-0 bg-background py-20 sm:py-24 lg:py-32" aria-labelledby="location-heading">
     <Container>
       <div class="grid gap-8 lg:grid-cols-12 lg:items-end">
         <div class="lg:col-span-8">
@@ -360,7 +352,7 @@ const localizedServices = services
     </Container>
   </section>
 
-  <section class="overflow-x-hidden border-t border-border bg-muted py-20 sm:py-24 lg:py-32" aria-labelledby="final-action-heading">
+  <section class="min-w-0 border-t border-border bg-muted py-20 sm:py-24 lg:py-32" aria-labelledby="final-action-heading">
     <Container
       class="grid gap-12 lg:grid-cols-12 lg:items-start lg:gap-16"
       data-reveal

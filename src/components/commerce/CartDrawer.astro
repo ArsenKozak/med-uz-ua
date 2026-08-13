@@ -17,6 +17,25 @@ const initialCountLabel = t(locale, "cart.countMany").replace(
   "{count}",
   "0",
 );
+const changeCopy = {
+  uk: {
+    removed: "{product} видалено з кошика.",
+    quantity: "Кількість {product}: {count}.",
+  },
+  en: {
+    removed: "{product} removed from the cart.",
+    quantity: "Quantity for {product}: {count}.",
+  },
+  sk: {
+    removed: "Produkt {product} bol odstránený z košíka.",
+    quantity: "Množstvo pre {product}: {count}.",
+  },
+  hu: {
+    removed: "A(z) {product} eltávolítva a kosárból.",
+    quantity: "A(z) {product} mennyisége: {count}.",
+  },
+} as const;
+const localizedChangeCopy = changeCopy[locale];
 ---
 
 <cart-drawer
@@ -34,6 +53,8 @@ const initialCountLabel = t(locale, "cart.countMany").replace(
   data-decrease-product-message={t(locale, "a11y.decreaseProduct")}
   data-increase-product-message={t(locale, "a11y.increaseProduct")}
   data-quantity-product-message={t(locale, "a11y.quantityProduct")}
+  data-removed-confirmation-message={localizedChangeCopy.removed}
+  data-quantity-confirmation-message={localizedChangeCopy.quantity}
 >
   <dialog
     id="cart-dialog"
@@ -92,9 +113,10 @@ const initialCountLabel = t(locale, "cart.countMany").replace(
           data-cart-items
           aria-label={t(locale, "a11y.cartItems")}
         ></ul>
+        <p class="sr-only" role="status" aria-live="polite" aria-atomic="true" data-cart-live></p>
       </div>
 
-      <footer class="border-t border-border bg-background px-5 py-5 sm:px-7" data-cart-summary hidden>
+      <footer class="cart-summary border-t border-border bg-background px-5 pt-5 sm:px-7" data-cart-summary hidden>
         <div class="flex items-end justify-between gap-5">
           <div>
             <p class="text-xs uppercase tracking-[0.16em] text-muted-foreground">
@@ -115,19 +137,12 @@ const initialCountLabel = t(locale, "cart.countMany").replace(
           {t(locale, "cart.pendingPriceNote")}
         </p>
 
-        <button
-          class="focus-ring-primary mt-5 inline-flex min-h-12 w-full items-center justify-center border border-primary bg-primary px-5 text-sm font-semibold text-primary-foreground transition-colors hover:bg-primary/90"
-          type="button"
-          data-cart-checkout
-        >
-          {t(locale, "cart.checkoutPending")}
-        </button>
-        <p
-          class="mt-3 min-h-5 text-xs font-medium text-primary"
-          role="status"
-          aria-live="polite"
-          data-checkout-status
-        ></p>
+        <div class="mt-5 border border-border bg-muted px-5 py-4" data-checkout-unavailable>
+          <p class="text-sm font-semibold text-primary">{t(locale, "cart.checkoutPending")}</p>
+          <p class="mt-2 text-xs leading-5 text-muted-foreground" data-checkout-status>
+            {t(locale, "cart.checkoutStatus")}
+          </p>
+        </div>
       </footer>
     </div>
   </dialog>
@@ -149,6 +164,10 @@ const initialCountLabel = t(locale, "cart.countMany").replace(
 
   .cart-dialog[open] {
     animation: cart-drawer-enter 220ms ease-out;
+  }
+
+  .cart-summary {
+    padding-bottom: calc(1.25rem + env(safe-area-inset-bottom));
   }
 
   .cart-dialog::backdrop {
@@ -188,6 +207,7 @@ const initialCountLabel = t(locale, "cart.countMany").replace(
     type CartCatalogProduct,
     type ResolvedCartLine,
   } from "../../lib/commerce/cart-catalog";
+  import { trackViewCart } from "../../lib/analytics";
   import { formatMoneyMinor } from "../../lib/commerce/money";
   import { isLocale, type Locale } from "../../lib/i18n";
 
@@ -208,6 +228,8 @@ const initialCountLabel = t(locale, "cart.countMany").replace(
     readonly decreaseProduct: string;
     readonly increaseProduct: string;
     readonly quantityProduct: string;
+    readonly removedConfirmation: string;
+    readonly quantityConfirmation: string;
   }
 
   function readCartMessages(element: HTMLElement): CartMessages | null {
@@ -224,6 +246,8 @@ const initialCountLabel = t(locale, "cart.countMany").replace(
     const decreaseProduct = element.dataset.decreaseProductMessage;
     const increaseProduct = element.dataset.increaseProductMessage;
     const quantityProduct = element.dataset.quantityProductMessage;
+    const removedConfirmation = element.dataset.removedConfirmationMessage;
+    const quantityConfirmation = element.dataset.quantityConfirmationMessage;
 
     if (
       !isLocale(locale) ||
@@ -238,7 +262,9 @@ const initialCountLabel = t(locale, "cart.countMany").replace(
       removeProduct === undefined ||
       decreaseProduct === undefined ||
       increaseProduct === undefined ||
-      quantityProduct === undefined
+      quantityProduct === undefined ||
+      removedConfirmation === undefined ||
+      quantityConfirmation === undefined
     ) {
       return null;
     }
@@ -257,6 +283,8 @@ const initialCountLabel = t(locale, "cart.countMany").replace(
       decreaseProduct,
       increaseProduct,
       quantityProduct,
+      removedConfirmation,
+      quantityConfirmation,
     };
   }
 
@@ -305,12 +333,13 @@ const initialCountLabel = t(locale, "cart.countMany").replace(
     #countElement: HTMLElement | null = null;
     #subtotalElement: HTMLElement | null = null;
     #pricingNoteElement: HTMLElement | null = null;
-    #checkoutStatusElement: HTMLElement | null = null;
+    #liveElement: HTMLElement | null = null;
     #items: readonly CartItem[] = [];
     #catalog: ReadonlyMap<string, CartCatalogProduct> = new Map();
     #unsubscribers: Array<() => void> = [];
     #openingTrigger: HTMLButtonElement | null = null;
     #previousBodyOverflow: string | null = null;
+    #previousBodyPaddingRight: string | null = null;
     #pendingLineFocus: PendingCartLineFocus | null = null;
     #lineFocusRestoreScheduled = false;
     #isConnected = false;
@@ -329,6 +358,7 @@ const initialCountLabel = t(locale, "cart.countMany").replace(
       const subtotalElement = this.querySelector("[data-cart-subtotal]");
       const pricingNoteElement = this.querySelector("[data-cart-pricing-note]");
       const checkoutStatusElement = this.querySelector("[data-checkout-status]");
+      const liveElement = this.querySelector("[data-cart-live]");
       const messages = readCartMessages(this);
 
       if (
@@ -340,6 +370,7 @@ const initialCountLabel = t(locale, "cart.countMany").replace(
         !(subtotalElement instanceof HTMLElement) ||
         !(pricingNoteElement instanceof HTMLElement) ||
         !(checkoutStatusElement instanceof HTMLElement) ||
+        !(liveElement instanceof HTMLElement) ||
         messages === null
       ) {
         return;
@@ -352,7 +383,7 @@ const initialCountLabel = t(locale, "cart.countMany").replace(
       this.#countElement = countElement;
       this.#subtotalElement = subtotalElement;
       this.#pricingNoteElement = pricingNoteElement;
-      this.#checkoutStatusElement = checkoutStatusElement;
+      this.#liveElement = liveElement;
       this.#messages = messages;
       this.#catalog = createCartCatalogIndex(
         decodeCartCatalog(this.dataset.cartCatalog),
@@ -428,15 +459,6 @@ const initialCountLabel = t(locale, "cart.countMany").replace(
         return;
       }
 
-      if (target.closest("[data-cart-checkout]")) {
-        if (
-          this.#checkoutStatusElement !== null &&
-          this.#messages !== null
-        ) {
-          this.#checkoutStatusElement.textContent =
-            this.#messages.checkoutStatus;
-        }
-      }
     };
 
     #handleDocumentKeydown = (event: KeyboardEvent): void => {
@@ -468,11 +490,15 @@ const initialCountLabel = t(locale, "cart.countMany").replace(
       }
 
       this.#openingTrigger = trigger;
-      if (this.#checkoutStatusElement !== null) {
-        this.#checkoutStatusElement.textContent = "";
-      }
       this.#lockBodyScroll();
       this.#dialog.showModal();
+
+      const resolvedCart = resolveCart(this.#items, this.#catalog);
+      trackViewCart({
+        subtotalMinor: resolvedCart.subtotalMinor,
+        currency: resolvedCart.currency,
+        itemCount: resolvedCart.count,
+      });
 
       const closeButton = this.#dialog.querySelector("[data-cart-close]");
       if (closeButton instanceof HTMLButtonElement) {
@@ -481,8 +507,28 @@ const initialCountLabel = t(locale, "cart.countMany").replace(
     }
 
     #close(): void {
-      if (this.#dialog?.open) {
-        this.#dialog.close();
+      const dialog = this.#dialog;
+      if (dialog?.open) {
+        if (
+          window.matchMedia("(prefers-reduced-motion: reduce)").matches ||
+          dialog.dataset.closing === "true"
+        ) {
+          if (dialog.dataset.closing !== "true") dialog.close();
+          return;
+        }
+
+        dialog.dataset.closing = "true";
+        const animation = dialog.animate(
+          [
+            { opacity: 1, transform: "translateX(0)" },
+            { opacity: 0, transform: "translateX(1.5rem)" },
+          ],
+          { duration: 160, easing: "ease-in" },
+        );
+        void animation.finished.finally(() => {
+          delete dialog.dataset.closing;
+          if (dialog.open) dialog.close();
+        });
       }
     }
 
@@ -492,6 +538,14 @@ const initialCountLabel = t(locale, "cart.countMany").replace(
       }
 
       this.#previousBodyOverflow = document.body.style.overflow;
+      this.#previousBodyPaddingRight = document.body.style.paddingRight;
+      const scrollbarWidth = Math.max(
+        0,
+        window.innerWidth - document.documentElement.clientWidth,
+      );
+      if (scrollbarWidth > 0) {
+        document.body.style.paddingRight = `${scrollbarWidth}px`;
+      }
       document.body.style.overflow = "hidden";
     }
 
@@ -501,7 +555,9 @@ const initialCountLabel = t(locale, "cart.countMany").replace(
       }
 
       document.body.style.overflow = this.#previousBodyOverflow;
+      document.body.style.paddingRight = this.#previousBodyPaddingRight ?? "";
       this.#previousBodyOverflow = null;
+      this.#previousBodyPaddingRight = null;
     }
 
     #render(): void {
@@ -544,9 +600,6 @@ const initialCountLabel = t(locale, "cart.countMany").replace(
       this.#summaryElement.hidden = isEmpty;
 
       if (isEmpty) {
-        if (this.#checkoutStatusElement !== null) {
-          this.#checkoutStatusElement.textContent = "";
-        }
         this.#scheduleLineFocusRestore();
         return;
       }
@@ -680,7 +733,13 @@ const initialCountLabel = t(locale, "cart.countMany").replace(
       removeButton.dataset.cartProductId = item.productId;
       removeButton.dataset.cartLineAction = "remove";
       removeButton.addEventListener("click", () => {
-        removeFromCart(item.productId);
+        if (removeFromCart(item.productId)) {
+          this.#announce(
+            formatMessage(messages.removedConfirmation, {
+              product: item.title,
+            }),
+          );
+        }
       });
 
       headingRow.append(headingGroup, removeButton);
@@ -721,7 +780,19 @@ const initialCountLabel = t(locale, "cart.countMany").replace(
       decrementButton.dataset.cartProductId = item.productId;
       decrementButton.dataset.cartLineAction = "decrement";
       decrementButton.addEventListener("click", () => {
-        setCartItemQuantity(item.productId, item.quantity - 1);
+        const nextQuantity = item.quantity - 1;
+        if (setCartItemQuantity(item.productId, nextQuantity)) {
+          this.#announce(
+            nextQuantity > 0
+              ? formatMessage(messages.quantityConfirmation, {
+                  product: item.title,
+                  count: nextQuantity,
+                })
+              : formatMessage(messages.removedConfirmation, {
+                  product: item.title,
+                }),
+          );
+        }
       });
 
       const quantity = createTextElement(
@@ -750,7 +821,15 @@ const initialCountLabel = t(locale, "cart.countMany").replace(
       incrementButton.dataset.cartProductId = item.productId;
       incrementButton.dataset.cartLineAction = "increment";
       incrementButton.addEventListener("click", () => {
-        setCartItemQuantity(item.productId, item.quantity + 1);
+        const nextQuantity = item.quantity + 1;
+        if (setCartItemQuantity(item.productId, nextQuantity)) {
+          this.#announce(
+            formatMessage(messages.quantityConfirmation, {
+              product: item.title,
+              count: nextQuantity,
+            }),
+          );
+        }
       });
 
       controls.append(decrementButton, quantity, incrementButton);
@@ -758,6 +837,14 @@ const initialCountLabel = t(locale, "cart.countMany").replace(
       listItem.append(headingRow, quantityRow);
 
       return listItem;
+    }
+
+    #announce(message: string): void {
+      if (this.#liveElement === null) return;
+      this.#liveElement.textContent = "";
+      queueMicrotask(() => {
+        if (this.#liveElement !== null) this.#liveElement.textContent = message;
+      });
     }
   }
 

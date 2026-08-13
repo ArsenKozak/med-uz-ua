@@ -39,10 +39,6 @@ const medicalPriceGroupDefinitions = [
     titleKey: "services.groupProcedures",
   },
   {
-    category: "injections-therapy",
-    titleKey: "services.groupTherapy",
-  },
-  {
     category: "laboratory",
     titleKey: "services.groupLaboratory",
   },
@@ -88,10 +84,6 @@ export const MEDICAL_SERVICE_TRANSLATIONS: Readonly<
   31: {},
   32: {},
   33: {},
-  34: {},
-  35: {},
-  36: {},
-  37: {},
   38: {},
   39: {},
   40: {},

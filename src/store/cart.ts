@@ -5,6 +5,7 @@ export const CART_STORAGE_KEY = "meduzua:cart:v1";
 const MAX_CART_LINES = 100;
 const MAX_PRODUCT_ID_LENGTH = 200;
 const MAX_TITLE_LENGTH = 240;
+const MAX_QUANTITY_PER_LINE = 99;
 const CURRENCY_PATTERN = /^[A-Z]{3}$/;
 const CONTROL_CHARACTER_PATTERN = /[\u0000-\u001f\u007f]/;
 
@@ -100,7 +101,8 @@ function isPositiveSafeInteger(value: unknown): value is number {
   return (
     typeof value === "number" &&
     Number.isSafeInteger(value) &&
-    value > 0
+    value > 0 &&
+    value <= MAX_QUANTITY_PER_LINE
   );
 }
 
@@ -246,17 +248,20 @@ export const $cartHasPendingPricing = computed($cart, (items) =>
   ),
 );
 
-function commitCart(items: readonly CartItem[]): void {
+function commitCart(items: readonly CartItem[]): boolean {
   const result = decodeCart(items);
 
   if (result.ok) {
     $persistedCart.set(result.value);
+    return true;
   }
+
+  return false;
 }
 
-export function addToCart(product: AddToCartInput): void {
+export function addToCart(product: AddToCartInput): boolean {
   if (!isValidAddToCartInput(product)) {
-    return;
+    return false;
   }
 
   const items = $cart.get();
@@ -264,11 +269,11 @@ export function addToCart(product: AddToCartInput): void {
   const currentCurrency = items[0]?.currency;
 
   if (currentCurrency !== undefined && currentCurrency !== product.currency) {
-    return;
+    return false;
   }
 
   if (existingItem === undefined) {
-    commitCart([
+    return commitCart([
       ...items,
       {
         productId: product.id,
@@ -279,16 +284,15 @@ export function addToCart(product: AddToCartInput): void {
         verificationStatusSnapshot: product.verificationStatus,
       },
     ]);
-    return;
   }
 
   const nextQuantity = existingItem.quantity + 1;
 
-  if (!Number.isSafeInteger(nextQuantity)) {
-    return;
+  if (!isPositiveSafeInteger(nextQuantity)) {
+    return false;
   }
 
-  commitCart(
+  return commitCart(
     items.map((item) =>
       item.productId === product.id
         ? {
@@ -304,44 +308,53 @@ export function addToCart(product: AddToCartInput): void {
   );
 }
 
-export function removeFromCart(productId: string): void {
+export function removeFromCart(productId: string): boolean {
   if (!isValidProductId(productId)) {
-    return;
+    return false;
   }
 
-  commitCart($cart.get().filter((item) => item.productId !== productId));
+  const items = $cart.get();
+  if (!items.some((item) => item.productId === productId)) {
+    return false;
+  }
+
+  return commitCart(items.filter((item) => item.productId !== productId));
 }
 
 export function setCartItemQuantity(
   productId: string,
   quantity: number,
-): void {
+): boolean {
   if (!isValidProductId(productId) || !Number.isFinite(quantity)) {
-    return;
+    return false;
   }
 
   if (quantity <= 0) {
-    removeFromCart(productId);
-    return;
+    return removeFromCart(productId);
   }
 
   if (!isPositiveSafeInteger(quantity)) {
-    return;
+    return false;
   }
 
   const items = $cart.get();
 
   if (!items.some((item) => item.productId === productId)) {
-    return;
+    return false;
   }
 
-  commitCart(
+  return commitCart(
     items.map((item) =>
       item.productId === productId ? { ...item, quantity } : item,
     ),
   );
 }
 
-export function clearCart(): void {
+export function clearCart(): boolean {
+  if ($cart.get().length === 0) {
+    return false;
+  }
+
   $persistedCart.set(EMPTY_CART);
+  return true;
 }

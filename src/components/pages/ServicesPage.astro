@@ -5,8 +5,11 @@ import {
   MEDICAL_PRICE_ITEMS,
   MEDICAL_PRICE_LIST_META,
 } from "../../data/medical-prices";
-import { clinicContact } from "../../lib/clinic";
+import { getSpecializations } from "../../data/specializations";
+import { clinicImageAssets } from "../../lib/assets";
+import { chiefPhysician, clinicContact } from "../../lib/clinic";
 import { localizePath, t, type Locale } from "../../lib/i18n";
+import { getAppointmentHref } from "../../lib/navigation";
 import {
   createMedicalPriceGroups,
   formatMedicalPrice,
@@ -27,6 +30,67 @@ const callAriaLabel = t(locale, "services.callAria").replace(
 const medicalPriceGroups = createMedicalPriceGroups(MEDICAL_PRICE_ITEMS);
 const approvedOnDisplay = formatMedicalPriceApprovalDate(locale);
 const showTranslationFallback = usesOfficialUkrainianNameFallback(locale);
+const appointmentHref = getAppointmentHref(Astro.url.pathname, locale);
+const specializations = getSpecializations(locale);
+
+const specializationCopy = {
+  uk: {
+    eyebrow: "Три напрямки",
+    title: "Клінічна увага на кожному етапі.",
+    intro:
+      "Це навігаційний огляд підтверджених напрямків, а не обіцянка результату чи заміна індивідуальної консультації.",
+  },
+  en: {
+    eyebrow: "Three areas",
+    title: "Clinical attention at every stage.",
+    intro:
+      "This is a navigational overview of confirmed areas, not an outcome promise or a substitute for individual consultation.",
+  },
+  sk: {
+    eyebrow: "Tri oblasti",
+    title: "Klinická pozornosť v každej fáze.",
+    intro:
+      "Ide o navigačný prehľad potvrdených oblastí, nie o sľub výsledku ani náhradu individuálnej konzultácie.",
+  },
+  hu: {
+    eyebrow: "Három terület",
+    title: "Klinikai figyelem minden szakaszban.",
+    intro:
+      "Ez a megerősített területek navigációs áttekintése, nem eredményígéret és nem helyettesíti az egyéni konzultációt.",
+  },
+} as const;
+const specializationHeading = specializationCopy[locale];
+const physicianCollageCopy = {
+  uk: {
+    eyebrow: "Клінічна присутність",
+    title: chiefPhysician.name,
+    body: "Засновниця та головна лікарка. Публікуємо лише підтверджену роль і фотографії, надані власником клініки.",
+    portraitAlt: `${chiefPhysician.name}, портрет`,
+    contextAlt: "Офтальмологічне обстеження в клінічному кабінеті",
+  },
+  en: {
+    eyebrow: "Clinical presence",
+    title: chiefPhysician.name,
+    body: "Founder and Chief Physician. Only the confirmed role and photographs supplied by the clinic owner are presented here.",
+    portraitAlt: `${chiefPhysician.name}, portrait`,
+    contextAlt: "An ophthalmic examination in a clinical office",
+  },
+  sk: {
+    eyebrow: "Klinická prítomnosť",
+    title: chiefPhysician.name,
+    body: "Zakladateľka a hlavná lekárka. Uvádzame iba potvrdenú úlohu a fotografie poskytnuté majiteľom kliniky.",
+    portraitAlt: `${chiefPhysician.name}, portrét`,
+    contextAlt: "Oftalmologické vyšetrenie v klinickej ambulancii",
+  },
+  hu: {
+    eyebrow: "Klinikai jelenlét",
+    title: chiefPhysician.name,
+    body: "Alapító és főorvos. Itt kizárólag a megerősített szerepkör és a klinika tulajdonosa által biztosított fényképek láthatók.",
+    portraitAlt: `${chiefPhysician.name}, portré`,
+    contextAlt: "Szemészeti vizsgálat egy klinikai rendelőben",
+  },
+} as const;
+const physicianCopy = physicianCollageCopy[locale];
 ---
 
 <BaseLayout
@@ -34,16 +98,16 @@ const showTranslationFallback = usesOfficialUkrainianNameFallback(locale);
   description={t(locale, "seo.services.description")}
   locale={locale}
 >
-  <header class="overflow-x-hidden border-b border-border bg-background py-16 sm:py-20 lg:py-28">
+  <header class="border-b border-border bg-background py-16 sm:py-20 lg:py-28">
     <Container
       class="grid gap-10 lg:grid-cols-12 lg:items-end lg:gap-16"
       data-reveal
     >
-      <div class="lg:col-span-8">
+      <div class="min-w-0 lg:col-span-8">
         <p class="text-xs font-semibold uppercase tracking-[0.24em] text-primary">
           {t(locale, "services.heroEyebrow")}
         </p>
-        <h1 class="mt-6 max-w-[14ch] text-balance text-5xl font-medium leading-[0.98] tracking-[-0.035em] text-foreground sm:text-6xl lg:text-7xl">
+        <h1 class="mt-6 max-w-[14ch] min-w-0 break-words text-balance text-[clamp(2.5rem,12vw,4.5rem)] font-medium leading-[0.98] tracking-[-0.035em] text-foreground">
           {t(locale, "services.heroTitle")}
         </h1>
       </div>
@@ -63,7 +127,112 @@ const showTranslationFallback = usesOfficialUkrainianNameFallback(locale);
   </header>
 
   <section
-    class="overflow-x-hidden bg-background py-16 sm:py-20 lg:py-28"
+    class="border-b border-border bg-background py-16 sm:py-20 lg:py-28"
+    aria-labelledby="specializations-heading"
+  >
+    <Container>
+      <div class="grid min-w-0 gap-8 lg:grid-cols-12 lg:items-end lg:gap-14">
+        <div class="min-w-0 lg:col-span-8">
+          <p class="text-xs font-semibold uppercase tracking-[0.22em] text-primary">
+            {specializationHeading.eyebrow}
+          </p>
+          <h2
+            id="specializations-heading"
+            class="mt-5 max-w-3xl break-words text-balance text-4xl font-medium leading-tight tracking-[-0.025em] sm:text-5xl"
+          >
+            {specializationHeading.title}
+          </h2>
+        </div>
+        <p class="min-w-0 max-w-xl text-sm leading-7 text-muted-foreground sm:text-base lg:col-span-4">
+          {specializationHeading.intro}
+        </p>
+      </div>
+
+      <div class="mt-10 grid min-w-0 gap-px bg-border lg:mt-14 lg:grid-cols-3">
+        {
+          specializations.map((specialization, index) => (
+            <article class="group min-w-0 bg-card">
+              <figure class="overflow-hidden bg-muted">
+                <img
+                  class="aspect-[4/3] h-auto w-full object-cover transition-transform duration-500 motion-safe:group-hover:scale-[1.015]"
+                  src={specialization.image.src}
+                  width={specialization.image.width}
+                  height={specialization.image.height}
+                  alt={specialization.imageAlt}
+                  loading="lazy"
+                  decoding="async"
+                  sizes="(min-width: 1024px) 31vw, 100vw"
+                />
+              </figure>
+              <div class="min-w-0 p-6 sm:p-8">
+                <div class="flex items-center gap-3 text-primary" aria-hidden="true">
+                  <span class="text-xs font-semibold tabular-nums tracking-[0.18em] text-primary/70">
+                    {String(index + 1).padStart(2, "0")}
+                  </span>
+                  <svg class="size-7" viewBox="0 0 32 32" fill="none">
+                    <circle cx="16" cy="16" r="10.5" stroke="currentColor" stroke-width="1.25" />
+                    <path d="M6 16h20M16 6c3.2 3.2 4.8 6.5 4.8 10S19.2 22.8 16 26c-3.2-3.2-4.8-6.5-4.8-10S12.8 9.2 16 6Z" stroke="currentColor" stroke-width="1.25" />
+                  </svg>
+                </div>
+                <h3 class="mt-4 min-w-0 break-words text-2xl font-medium leading-tight text-card-foreground">
+                  {specialization.title}
+                </h3>
+                <p class="mt-4 text-sm leading-7 text-muted-foreground">
+                  {specialization.description}
+                </p>
+              </div>
+            </article>
+          ))
+        }
+      </div>
+    </Container>
+  </section>
+
+  <section class="border-b border-border bg-muted py-16 sm:py-20 lg:py-28" aria-labelledby="services-physician-heading">
+    <Container class="grid min-w-0 gap-10 lg:grid-cols-12 lg:items-center lg:gap-14">
+      <div class="grid min-w-0 grid-cols-12 items-end gap-3 sm:gap-5 lg:col-span-7">
+        <figure class="col-span-7 min-w-0 overflow-hidden bg-card">
+          <img
+            class="aspect-[4/5] h-auto w-full object-cover object-center"
+            src={clinicImageAssets.doctorPortrait.src}
+            width={clinicImageAssets.doctorPortrait.width}
+            height={clinicImageAssets.doctorPortrait.height}
+            alt={physicianCopy.portraitAlt}
+            loading="lazy"
+            decoding="async"
+            sizes="(min-width: 1024px) 35vw, 58vw"
+          />
+        </figure>
+        <figure class="col-span-5 min-w-0 overflow-hidden bg-card pb-5 sm:pb-10">
+          <img
+            class="aspect-square h-auto w-full object-cover object-center"
+            src={clinicImageAssets.doctorInCabinet.src}
+            width={clinicImageAssets.doctorInCabinet.width}
+            height={clinicImageAssets.doctorInCabinet.height}
+            alt={physicianCopy.contextAlt}
+            loading="lazy"
+            decoding="async"
+            sizes="(min-width: 1024px) 24vw, 38vw"
+          />
+        </figure>
+      </div>
+
+      <div class="min-w-0 lg:col-span-5">
+        <p class="text-xs font-semibold uppercase tracking-[0.22em] text-primary">
+          {physicianCopy.eyebrow}
+        </p>
+        <h2 id="services-physician-heading" class="mt-5 min-w-0 break-words text-balance text-4xl font-medium leading-tight tracking-[-0.025em] sm:text-5xl">
+          {physicianCopy.title}
+        </h2>
+        <p class="mt-6 max-w-lg text-sm leading-7 text-muted-foreground sm:text-base">
+          {physicianCopy.body}
+        </p>
+      </div>
+    </Container>
+  </section>
+
+  <section
+    class="bg-background py-16 sm:py-20 lg:py-28"
     aria-labelledby="price-list-heading"
   >
     <Container>
@@ -216,7 +385,7 @@ const showTranslationFallback = usesOfficialUkrainianNameFallback(locale);
     </Container>
   </section>
 
-  <section class="overflow-x-hidden border-y border-border bg-muted py-16 sm:py-20" aria-labelledby="programs-heading">
+  <section class="border-y border-border bg-muted py-16 sm:py-20" aria-labelledby="programs-heading">
     <Container class="grid gap-8 lg:grid-cols-12 lg:items-center lg:gap-16">
       <div class="lg:col-span-8">
         <p class="text-xs font-semibold uppercase tracking-[0.22em] text-primary">
@@ -240,7 +409,7 @@ const showTranslationFallback = usesOfficialUkrainianNameFallback(locale);
     </Container>
   </section>
 
-  <section class="overflow-x-hidden bg-primary py-16 text-primary-foreground sm:py-20" aria-labelledby="services-action-heading">
+  <section class="bg-primary py-16 text-primary-foreground sm:py-20" aria-labelledby="services-action-heading">
     <Container class="grid gap-10 lg:grid-cols-12 lg:items-end lg:gap-16">
       <div class="lg:col-span-7">
         <p class="text-xs font-semibold uppercase tracking-[0.22em] text-accent">
@@ -266,7 +435,7 @@ const showTranslationFallback = usesOfficialUkrainianNameFallback(locale);
       <div class="flex flex-col gap-3 sm:flex-row sm:flex-wrap lg:col-span-5 lg:justify-end">
         <a
           class="focus-ring-primary inline-flex min-h-12 items-center justify-center bg-primary-foreground px-6 text-sm font-semibold text-primary transition-colors hover:bg-accent hover:text-foreground"
-          href={localizePath("/#appointment-form", locale)}
+          href={appointmentHref}
         >
           {t(locale, "services.book")}
         </a>

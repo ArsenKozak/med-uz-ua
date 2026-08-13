@@ -1,27 +1,30 @@
+import { createHash } from "node:crypto";
 import fs from "node:fs";
 import path from "node:path";
+import { fileURLToPath } from "node:url";
 import { z } from "astro/zod";
 import {
+  PRODUCT_CATEGORIES,
   productSchema,
   type ProductCategory,
   type ProductContent,
   type ProductImageKind,
 } from "../src/schemas/product.ts";
 
-const PROJECT_ROOT = process.cwd();
+const SCRIPT_DIR = path.dirname(fileURLToPath(import.meta.url));
+const PROJECT_ROOT = path.resolve(SCRIPT_DIR, "..");
 const SEED_FILE = path.join(PROJECT_ROOT, "shop_seed.json");
 const TARGET_DIR = path.join(PROJECT_ROOT, "src", "content", "products");
-const MANIFEST_FILE = path.join(
+const MANIFEST_FILE = path.join(SCRIPT_DIR, "seed-products.manifest.json");
+const PROVENANCE_FILE = path.join(
   PROJECT_ROOT,
-  "scripts",
-  "seed-products.manifest.json",
+  "public",
+  "images",
+  "shop",
+  "image-sources.tsv",
 );
 const PUBLIC_DIR = path.join(PROJECT_ROOT, "public");
-
-const LEGACY_CATEGORY_MAP = {
-  contacts: "lenses",
-  glasses: "frames",
-} as const satisfies Record<string, ProductCategory>;
+const EXPECTED_SEED_COUNT = 60;
 
 const EDITORIAL_IMAGE_BY_CATEGORY = {
   lenses: "/images/artificial/macro-lens-hydration.jpg",
@@ -30,57 +33,89 @@ const EDITORIAL_IMAGE_BY_CATEGORY = {
   sunglasses: "/images/artificial/shop-editorial-eyewear.jpg",
 } as const satisfies Record<ProductCategory, string>;
 
-const VERIFIED_PRODUCT_IMAGE_BY_ID: Readonly<Record<string, string>> = {
-  "lens-air-optix-night-day-1": "/images/shop/lenses/lens-product-19.jpg",
-  "lens-biofinity-2": "/images/shop/lenses/lens-product-11.jpg",
-  "lens-dailies-total-1-4": "/images/shop/lenses/lens-product-03.jpg",
-  "lens-ultra-bausch-lomb-5": "/images/shop/lenses/lens-product-22.jpg",
-  "lens-air-optix-plus-8": "/images/shop/lenses/lens-product-20.jpg",
-  "care-biotrue-solution-1": "/images/shop/care/care-solution-01.jpg",
-  "care-renu-multiplus-5": "/images/shop/care/care-solution-03.jpg",
-  "care-ao-sept-plus-6": "/images/shop/lenses/lens-product-15.jpg",
-  "sunglass-polaroid-classic-1":
-    "/images/shop/sunglasses/sunglass-polaroid-classic-02.jpg",
-  "sunglass-rayban-aviator-2":
-    "/images/shop/sunglasses/sunglass-rayban-aviator-01.jpg",
-};
-
-const sourceCategorySchema = z.enum([
-  "lenses",
-  "frames",
-  "sunglasses",
-  "care",
-  "contacts",
-  "glasses",
-]);
-
 const sourceProductSchema = z
   .object({
-    id: z.string().trim().min(1),
+    id: z
+      .string()
+      .trim()
+      .min(1)
+      .regex(/^[a-z0-9]+(?:-[a-z0-9]+)*$/, "ID must already be a URL-safe slug."),
     title: z.string().trim().min(1),
-    category: sourceCategorySchema,
+    category: z.enum(PRODUCT_CATEGORIES),
     brand: z.string().trim().min(1),
     price: z
       .number()
       .int()
-      .nonnegative()
+      .positive()
       .refine(Number.isSafeInteger, "Price must be a safe integer."),
     inStock: z.boolean(),
-    image: z.string().startsWith("/images/"),
+    image: z
+      .string()
+      .regex(
+        /^\/images\/shop\/(?:lenses|frames|sunglasses|care)\/[a-z0-9][a-z0-9._-]*\.(?:jpe?g|png|webp|avif)$/i,
+        "Image must be a local shop raster path.",
+      )
+      .refine(
+        (value) => !value.includes("..") && !value.includes("\\"),
+        "Image path traversal is forbidden.",
+      ),
     description: z.string().trim().min(1),
   })
   .strict();
 
-const sourceCatalogSchema = z.array(sourceProductSchema).min(1);
+const sourceCatalogSchema = z
+  .array(sourceProductSchema)
+  .length(
+    EXPECTED_SEED_COUNT,
+    `shop_seed.json must contain exactly ${EXPECTED_SEED_COUNT} products.`,
+  );
 
 const manifestSchema = z
   .object({
     version: z.literal(1),
-    generatedFiles: z.array(z.string().regex(/^[a-z0-9]+(?:-[a-z0-9]+)*\.json$/)),
+    generatedFiles: z.array(
+      z.string().regex(/^[a-z0-9]+(?:-[a-z0-9]+)*\.json$/),
+    ),
   })
   .strict();
 
 type SourceProduct = z.infer<typeof sourceProductSchema>;
+
+interface ApprovedImageEvidence {
+  readonly image: string;
+  readonly sha256: string;
+}
+
+interface ImageResolution {
+  readonly image: string;
+  readonly imageKind: ProductImageKind;
+  readonly requestedImageExists: boolean;
+  readonly usedApprovedExactImage: boolean;
+  readonly usedEditorialFallback: boolean;
+}
+
+interface NormalizedProduct {
+  readonly id: string;
+  readonly product: ProductContent;
+  readonly imageResolution: ImageResolution;
+}
+
+interface CompilerStats {
+  readonly expectedSeedRecordCount: number;
+  readonly sourceRecordCount: number;
+  readonly validRecordCount: number;
+  readonly uniqueRecordCount: number;
+  readonly generatedRecordCount: number;
+  readonly requestedImageExistsCount: number;
+  readonly requestedImageMissingCount: number;
+  readonly approvedExactImageCount: number;
+  readonly editorialImageFallbackCount: number;
+  readonly invalidGeneratedImageCount: number;
+  readonly filesCreatedOrUpdated: number;
+  readonly filesUnchanged: number;
+  readonly staleGeneratedFilesRemoved: number;
+  readonly categoryCounts: Readonly<Record<ProductCategory, number>>;
+}
 
 function formatZodError(error: z.ZodError): string {
   return error.issues
@@ -89,30 +124,6 @@ function formatZodError(error: z.ZodError): string {
       return `${pathLabel}: ${issue.message}`;
     })
     .join("\n");
-}
-
-interface ImageResolution {
-  readonly image: string;
-  readonly imageKind: ProductImageKind;
-  readonly sourceImageMissing: boolean;
-  readonly usedVerifiedOverride: boolean;
-  readonly usedEditorialFallback: boolean;
-}
-
-interface CompilerStats {
-  readonly sourceRecordCount: number;
-  readonly validRecordCount: number;
-  readonly uniqueRecordCount: number;
-  readonly generatedRecordCount: number;
-  readonly duplicateCollisionCount: number;
-  readonly sourceImageMissingCount: number;
-  readonly verifiedImageOverrideCount: number;
-  readonly editorialImageFallbackCount: number;
-  readonly normalizedMissingImageCount: number;
-  readonly filesCreatedOrUpdated: number;
-  readonly filesUnchanged: number;
-  readonly staleGeneratedFilesRemoved: number;
-  readonly categoryCounts: Readonly<Record<ProductCategory, number>>;
 }
 
 function stripJsonComments(input: string): string {
@@ -146,7 +157,6 @@ function stripJsonComments(input: string): string {
 
     if (inString) {
       output += character;
-
       if (escaped) {
         escaped = false;
       } else if (character === "\\") {
@@ -187,7 +197,7 @@ function stripJsonComments(input: string): string {
 
 function parseJsonUnknown(rawJson: string, sourceName: string): unknown {
   try {
-    return JSON.parse(rawJson);
+    return JSON.parse(rawJson) as unknown;
   } catch (error) {
     const message = error instanceof Error ? error.message : "Unknown JSON error";
     throw new Error(`${sourceName} is not valid JSON: ${message}`);
@@ -207,33 +217,15 @@ function readSourceCatalog(): readonly SourceProduct[] {
     throw new Error(`Invalid product seed:\n${formatZodError(result.error)}`);
   }
 
+  for (const product of result.data) {
+    if (!product.image.startsWith(`/images/shop/${product.category}/`)) {
+      throw new Error(
+        `Seed image category does not match ${product.id}: ${product.image}`,
+      );
+    }
+  }
+
   return result.data;
-}
-
-function normalizeProductCategory(
-  category: SourceProduct["category"],
-): ProductCategory {
-  if (category === "contacts" || category === "glasses") {
-    return LEGACY_CATEGORY_MAP[category];
-  }
-
-  return category;
-}
-
-function deriveCanonicalId(sourceId: string): string {
-  const canonicalId = sourceId
-    .normalize("NFKD")
-    .replace(/[\u0300-\u036f]/g, "")
-    .toLowerCase()
-    .replace(/[^a-z0-9]+/g, "-")
-    .replace(/^-+|-+$/g, "")
-    .replace(/-{2,}/g, "-");
-
-  if (canonicalId.length === 0) {
-    throw new Error(`Product ID cannot be normalized: ${sourceId}`);
-  }
-
-  return canonicalId;
 }
 
 function resolvePublicFile(imageUrl: string): string | null {
@@ -253,24 +245,26 @@ function isDecodableRasterImage(filePath: string): boolean {
   }
 
   const bytes = fs.readFileSync(filePath);
+  if (bytes.length < 512) return false;
 
   const isJpeg =
     bytes.length >= 3 &&
     bytes[0] === 0xff &&
     bytes[1] === 0xd8 &&
     bytes[2] === 0xff;
-  const isPng =
-    bytes.length >= 8 &&
-    bytes[0] === 0x89 &&
-    bytes[1] === 0x50 &&
-    bytes[2] === 0x4e &&
-    bytes[3] === 0x47;
+  const isPng = bytes.subarray(0, 8).equals(
+    Buffer.from([0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a]),
+  );
   const isWebp =
     bytes.length >= 12 &&
     bytes.toString("ascii", 0, 4) === "RIFF" &&
     bytes.toString("ascii", 8, 12) === "WEBP";
+  const isAvif =
+    bytes.length >= 12 &&
+    bytes.toString("ascii", 4, 8) === "ftyp" &&
+    ["avif", "avis"].includes(bytes.toString("ascii", 8, 12));
 
-  return isJpeg || isPng || isWebp;
+  return isJpeg || isPng || isWebp || isAvif;
 }
 
 function isValidPublicImage(imageUrl: string): boolean {
@@ -278,68 +272,132 @@ function isValidPublicImage(imageUrl: string): boolean {
   return filePath !== null && isDecodableRasterImage(filePath);
 }
 
+function hashFile(filePath: string): string {
+  return createHash("sha256").update(fs.readFileSync(filePath)).digest("hex");
+}
+
+function parseTsv(filePath: string): readonly Readonly<Record<string, string>>[] {
+  if (!fs.existsSync(filePath)) return [];
+
+  const lines = fs
+    .readFileSync(filePath, "utf8")
+    .split(/\r?\n/)
+    .filter((line) => line.length > 0);
+  if (lines.length === 0) return [];
+
+  const headers = (lines[0] ?? "").split("\t");
+  return lines.slice(1).map((line) => {
+    const values = line.split("\t");
+    return Object.freeze(
+      Object.fromEntries(headers.map((header, index) => [header, values[index] ?? ""])),
+    );
+  });
+}
+
+function readApprovedExactImages(): ReadonlyMap<string, ApprovedImageEvidence> {
+  const approved = new Map<string, ApprovedImageEvidence>();
+
+  for (const row of parseTsv(PROVENANCE_FILE)) {
+    if (
+      row.usage_rights !== "approved-for-site" ||
+      row.exact_match_confidence !== "exact"
+    ) {
+      continue;
+    }
+
+    const productId = row.product_id ?? "";
+    const category = row.category ?? "";
+    const filename = row.file ?? "";
+    const sourcePage = row.source_page ?? "";
+    const sourceAsset = row.source_asset ?? "";
+    const expectedSha = row.sha256 ?? "";
+
+    if (
+      !/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(productId) ||
+      !PRODUCT_CATEGORIES.includes(category as ProductCategory) ||
+      path.basename(filename) !== filename ||
+      !/^https:\/\//.test(sourcePage) ||
+      !/^https:\/\//.test(sourceAsset) ||
+      !/^[a-f0-9]{64}$/.test(expectedSha)
+    ) {
+      throw new Error(
+        `Approved provenance row for ${productId || "unknown product"} is incomplete or unsafe.`,
+      );
+    }
+
+    const image = `/images/shop/${category}/${filename}`;
+    const filePath = resolvePublicFile(image);
+    if (
+      filePath === null ||
+      !isDecodableRasterImage(filePath) ||
+      hashFile(filePath) !== expectedSha
+    ) {
+      throw new Error(`Approved image evidence does not match bytes for ${productId}.`);
+    }
+
+    if (approved.has(productId)) {
+      throw new Error(`Multiple approved exact images are recorded for ${productId}.`);
+    }
+
+    approved.set(productId, Object.freeze({ image, sha256: expectedSha }));
+  }
+
+  return approved;
+}
+
 function resolveProductImage(
   sourceProduct: SourceProduct,
-  category: ProductCategory,
-  canonicalId: string,
+  approvedImages: ReadonlyMap<string, ApprovedImageEvidence>,
 ): ImageResolution {
-  if (isValidPublicImage(sourceProduct.image)) {
+  const requestedImageExists = isValidPublicImage(sourceProduct.image);
+  const approvedImage = approvedImages.get(sourceProduct.id);
+
+  if (approvedImage !== undefined) {
+    if (!approvedImage.image.startsWith(`/images/shop/${sourceProduct.category}/`)) {
+      throw new Error(
+        `Approved image category does not match ${sourceProduct.id}: ${approvedImage.image}`,
+      );
+    }
     return {
-      image: sourceProduct.image,
+      image: approvedImage.image,
       imageKind: "product",
-      sourceImageMissing: false,
-      usedVerifiedOverride: false,
+      requestedImageExists,
+      usedApprovedExactImage: true,
       usedEditorialFallback: false,
     };
   }
 
-  const verifiedImage = VERIFIED_PRODUCT_IMAGE_BY_ID[canonicalId];
-
-  if (verifiedImage !== undefined && isValidPublicImage(verifiedImage)) {
-    return {
-      image: verifiedImage,
-      imageKind: "product",
-      sourceImageMissing: true,
-      usedVerifiedOverride: true,
-      usedEditorialFallback: false,
-    };
-  }
-
-  const editorialImage = EDITORIAL_IMAGE_BY_CATEGORY[category];
-
+  const editorialImage = EDITORIAL_IMAGE_BY_CATEGORY[sourceProduct.category];
   if (!isValidPublicImage(editorialImage)) {
     throw new Error(
-      `No valid image is available for ${canonicalId}: ${editorialImage}`,
+      `No valid editorial fallback is available for ${sourceProduct.id}: ${editorialImage}`,
     );
   }
 
   return {
     image: editorialImage,
     imageKind: "editorial",
-    sourceImageMissing: true,
-    usedVerifiedOverride: false,
+    requestedImageExists,
+    usedApprovedExactImage: false,
     usedEditorialFallback: true,
   };
 }
 
-function normalizeProduct(sourceProduct: SourceProduct): {
-  readonly id: string;
-  readonly product: ProductContent;
-  readonly imageResolution: ImageResolution;
-} {
-  const id = deriveCanonicalId(sourceProduct.id);
-  const category = normalizeProductCategory(sourceProduct.category);
-  const imageResolution = resolveProductImage(sourceProduct, category, id);
+function normalizeProduct(
+  sourceProduct: SourceProduct,
+  approvedImages: ReadonlyMap<string, ApprovedImageEvidence>,
+): NormalizedProduct {
+  const imageResolution = resolveProductImage(sourceProduct, approvedImages);
   const priceMinor = sourceProduct.price * 100;
 
   if (!Number.isSafeInteger(priceMinor)) {
-    throw new Error(`Unsafe price for product ${id}.`);
+    throw new Error(`Unsafe price for product ${sourceProduct.id}.`);
   }
 
   const result = productSchema.safeParse({
     title: sourceProduct.title,
     description: sourceProduct.description,
-    category,
+    category: sourceProduct.category,
     brand: sourceProduct.brand,
     priceMinor,
     currency: "UAH",
@@ -352,11 +410,11 @@ function normalizeProduct(sourceProduct: SourceProduct): {
 
   if (!result.success) {
     throw new Error(
-      `Normalized product ${id} is invalid:\n${formatZodError(result.error)}`,
+      `Normalized product ${sourceProduct.id} is invalid:\n${formatZodError(result.error)}`,
     );
   }
 
-  return { id, product: result.data, imageResolution };
+  return { id: sourceProduct.id, product: result.data, imageResolution };
 }
 
 function readOwnedGeneratedFiles(): ReadonlySet<string> {
@@ -364,8 +422,10 @@ function readOwnedGeneratedFiles(): ReadonlySet<string> {
     return new Set<string>();
   }
 
-  const rawManifest = fs.readFileSync(MANIFEST_FILE, "utf8");
-  const parsedManifest = parseJsonUnknown(rawManifest, MANIFEST_FILE);
+  const parsedManifest = parseJsonUnknown(
+    fs.readFileSync(MANIFEST_FILE, "utf8"),
+    MANIFEST_FILE,
+  );
   const result = manifestSchema.safeParse(parsedManifest);
 
   if (!result.success) {
@@ -377,6 +437,27 @@ function readOwnedGeneratedFiles(): ReadonlySet<string> {
 
 function serializeJson(value: unknown): string {
   return `${JSON.stringify(value, null, 2)}\n`;
+}
+
+function writeAtomicIfChanged(filePath: string, content: string): boolean {
+  if (fs.existsSync(filePath) && fs.readFileSync(filePath, "utf8") === content) {
+    return false;
+  }
+
+  fs.mkdirSync(path.dirname(filePath), { recursive: true });
+  const temporary = path.join(
+    path.dirname(filePath),
+    `.${path.basename(filePath)}.${process.pid}.tmp`,
+  );
+
+  try {
+    fs.writeFileSync(temporary, content, { encoding: "utf8", mode: 0o644 });
+    fs.renameSync(temporary, filePath);
+  } finally {
+    if (fs.existsSync(temporary)) fs.unlinkSync(temporary);
+  }
+
+  return true;
 }
 
 function verifyWrittenCatalog(generatedFiles: readonly string[]): void {
@@ -403,31 +484,35 @@ function verifyWrittenCatalog(generatedFiles: readonly string[]): void {
 }
 
 function compileProducts(): CompilerStats {
+  const cliArguments = process.argv.slice(2);
+  if (cliArguments.length > 0) {
+    throw new Error(
+      `Unsupported seed argument(s): ${cliArguments.join(" ")}. Missing exact images are handled only by labeled editorial fallbacks, never by an allow-missing flag.`,
+    );
+  }
+
   const sourceProducts = readSourceCatalog();
-  const normalizedProducts = sourceProducts.map(normalizeProduct);
-  const productsById = new Map<string, (typeof normalizedProducts)[number]>();
+  const approvedImages = readApprovedExactImages();
+  const normalizedProducts = sourceProducts.map((product) =>
+    normalizeProduct(product, approvedImages),
+  );
+  const productsById = new Map<string, NormalizedProduct>();
 
   for (const normalizedProduct of normalizedProducts) {
     if (productsById.has(normalizedProduct.id)) {
-      throw new Error(
-        `Duplicate canonical product ID: ${normalizedProduct.id}`,
-      );
+      throw new Error(`Duplicate canonical product ID: ${normalizedProduct.id}`);
     }
-
     productsById.set(normalizedProduct.id, normalizedProduct);
   }
 
   const sortedProducts = [...productsById.values()].sort((left, right) =>
-    left.id < right.id ? -1 : left.id > right.id ? 1 : 0,
+    left.id.localeCompare(right.id),
   );
   const generatedFiles = sortedProducts.map(({ id }) => `${id}.json`);
   const ownedGeneratedFiles = readOwnedGeneratedFiles();
 
-  fs.mkdirSync(TARGET_DIR, { recursive: true });
-
   for (const filename of generatedFiles) {
     const filePath = path.join(TARGET_DIR, filename);
-
     if (fs.existsSync(filePath) && !ownedGeneratedFiles.has(filename)) {
       throw new Error(
         `Seed output would overwrite a non-seed-owned file: ${filePath}`,
@@ -439,43 +524,30 @@ function compileProducts(): CompilerStats {
   let filesUnchanged = 0;
 
   for (const { id, product } of sortedProducts) {
-    const filePath = path.join(TARGET_DIR, `${id}.json`);
-    const serializedProduct = serializeJson(product);
-
-    if (
-      fs.existsSync(filePath) &&
-      fs.readFileSync(filePath, "utf8") === serializedProduct
-    ) {
-      filesUnchanged += 1;
-      continue;
-    }
-
-    fs.writeFileSync(filePath, serializedProduct, "utf8");
-    filesCreatedOrUpdated += 1;
+    const changed = writeAtomicIfChanged(
+      path.join(TARGET_DIR, `${id}.json`),
+      serializeJson(product),
+    );
+    if (changed) filesCreatedOrUpdated += 1;
+    else filesUnchanged += 1;
   }
 
   const nextGeneratedFileSet = new Set(generatedFiles);
   let staleGeneratedFilesRemoved = 0;
-
   for (const staleFilename of ownedGeneratedFiles) {
-    if (nextGeneratedFileSet.has(staleFilename)) {
-      continue;
-    }
+    if (nextGeneratedFileSet.has(staleFilename)) continue;
 
     const staleFilePath = path.join(TARGET_DIR, staleFilename);
-
     if (fs.existsSync(staleFilePath)) {
       fs.unlinkSync(staleFilePath);
       staleGeneratedFilesRemoved += 1;
     }
   }
 
-  fs.writeFileSync(
+  writeAtomicIfChanged(
     MANIFEST_FILE,
     serializeJson({ version: 1, generatedFiles }),
-    "utf8",
   );
-
   verifyWrittenCatalog(generatedFiles);
 
   const categoryCounts: Record<ProductCategory, number> = {
@@ -484,27 +556,30 @@ function compileProducts(): CompilerStats {
     sunglasses: 0,
     care: 0,
   };
-
   for (const { product } of sortedProducts) {
     categoryCounts[product.category] += 1;
   }
 
+  const requestedImageExistsCount = normalizedProducts.filter(
+    ({ imageResolution }) => imageResolution.requestedImageExists,
+  ).length;
+
   return {
+    expectedSeedRecordCount: EXPECTED_SEED_COUNT,
     sourceRecordCount: sourceProducts.length,
     validRecordCount: normalizedProducts.length,
     uniqueRecordCount: productsById.size,
     generatedRecordCount: generatedFiles.length,
-    duplicateCollisionCount: 0,
-    sourceImageMissingCount: normalizedProducts.filter(
-      ({ imageResolution }) => imageResolution.sourceImageMissing,
-    ).length,
-    verifiedImageOverrideCount: normalizedProducts.filter(
-      ({ imageResolution }) => imageResolution.usedVerifiedOverride,
+    requestedImageExistsCount,
+    requestedImageMissingCount:
+      normalizedProducts.length - requestedImageExistsCount,
+    approvedExactImageCount: normalizedProducts.filter(
+      ({ imageResolution }) => imageResolution.usedApprovedExactImage,
     ).length,
     editorialImageFallbackCount: normalizedProducts.filter(
       ({ imageResolution }) => imageResolution.usedEditorialFallback,
     ).length,
-    normalizedMissingImageCount: 0,
+    invalidGeneratedImageCount: 0,
     filesCreatedOrUpdated,
     filesUnchanged,
     staleGeneratedFilesRemoved,

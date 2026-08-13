@@ -1,0 +1,13 @@
+{
+  "title": "Оправа Shadow Minimalist",
+  "description": "Мінімалістична безобідкова оправа, що майже непомітна на обличчі.",
+  "category": "frames",
+  "brand": "Shadow",
+  "priceMinor": 175000,
+  "currency": "UAH",
+  "image": "/images/artificial/shop-editorial-eyewear.jpg",
+  "imageKind": "editorial",
+  "inStock": true,
+  "status": "active",
+  "verificationStatus": "verified"
+}

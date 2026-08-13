@@ -5,8 +5,8 @@
   "brand": "Bausch & Lomb",
   "priceMinor": 38000,
   "currency": "UAH",
-  "image": "/images/shop/care/care-solution-01.jpg",
-  "imageKind": "product",
+  "image": "/images/artificial/macro-lens-hydration.jpg",
+  "imageKind": "editorial",
   "inStock": true,
   "status": "active",
   "verificationStatus": "verified"

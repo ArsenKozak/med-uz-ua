@@ -1,16 +1,31 @@
 ---
 import GoogleMap from "../clinic/GoogleMap.astro";
 import Wayfinding from "../clinic/Wayfinding.astro";
+import ReviewsPanel from "../clinic/ReviewsPanel.astro";
 import Container from "../ui/Container.astro";
 import BaseLayout from "../../layouts/BaseLayout.astro";
 import { clinicContact } from "../../lib/clinic";
-import { localizePath, t, type Locale } from "../../lib/i18n";
+import { t, type Locale } from "../../lib/i18n";
+import { getAppointmentHref } from "../../lib/navigation";
 
 interface Props {
   locale: Locale;
 }
 
 const { locale } = Astro.props;
+const appointmentHref = getAppointmentHref(Astro.url.pathname, locale);
+const mapOpenLabels = {
+  uk: "Відкрити маршрут у Google Maps",
+  en: "Open route in Google Maps",
+  sk: "Otvoriť trasu v Mapách Google",
+  hu: "Útvonal megnyitása a Google Térképen",
+} as const;
+const mapFrameTitles = {
+  uk: "Мапа адреси European Ophthalmological Clinic в Ужгороді",
+  en: "Map of the European Ophthalmological Clinic address in Uzhhorod",
+  sk: "Mapa adresy European Ophthalmological Clinic v Užhorode",
+  hu: "A European Ophthalmological Clinic ungvári címének térképe",
+} as const;
 ---
 
 <BaseLayout
@@ -102,7 +117,7 @@ const { locale } = Astro.props;
         </a>
         <a
           class="focus-ring-primary inline-flex min-h-14 items-center justify-center rounded-lg border border-primary px-7 text-center text-sm font-semibold text-primary transition-colors hover:bg-primary hover:text-primary-foreground"
-          href={localizePath("/#appointment-form", locale)}
+          href={appointmentHref}
         >
           {t(locale, "contacts.book")}
         </a>
@@ -154,8 +169,17 @@ const { locale } = Astro.props;
         </address>
       </div>
       <div class="lg:col-span-8">
-        <GoogleMap title={t(locale, "contacts.mapFrameTitle")} />
+        <GoogleMap
+          title={mapFrameTitles[locale]}
+          openLabel={mapOpenLabels[locale]}
+        />
       </div>
+    </Container>
+  </section>
+
+  <section class="border-t border-border bg-background py-20 sm:py-24 lg:py-28">
+    <Container>
+      <ReviewsPanel locale={locale} />
     </Container>
   </section>
 </BaseLayout>

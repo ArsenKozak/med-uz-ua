@@ -1,0 +1,13 @@
+{
+  "title": "Сонцезахисні окуляри Alvaro Gradient",
+  "description": "Окуляри з градієнтним затемненням для комфортного водіння.",
+  "category": "sunglasses",
+  "brand": "Alvaro",
+  "priceMinor": 165000,
+  "currency": "UAH",
+  "image": "/images/artificial/shop-editorial-eyewear.jpg",
+  "imageKind": "editorial",
+  "inStock": true,
+  "status": "active",
+  "verificationStatus": "verified"
+}

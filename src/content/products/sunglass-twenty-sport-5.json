@@ -1,0 +1,13 @@
+{
+  "title": "Сонцезахисні окуляри Twenty Sport",
+  "description": "Спортивні сонцезахисні окуляри з обтічною формою для активного відпочинку.",
+  "category": "sunglasses",
+  "brand": "Twenty",
+  "priceMinor": 180000,
+  "currency": "UAH",
+  "image": "/images/artificial/shop-editorial-eyewear.jpg",
+  "imageKind": "editorial",
+  "inStock": true,
+  "status": "active",
+  "verificationStatus": "verified"
+}

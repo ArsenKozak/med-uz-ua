@@ -5,8 +5,8 @@
   "brand": "Alcon",
   "priceMinor": 85000,
   "currency": "UAH",
-  "image": "/images/shop/lenses/lens-product-19.jpg",
-  "imageKind": "product",
+  "image": "/images/artificial/macro-lens-hydration.jpg",
+  "imageKind": "editorial",
   "inStock": true,
   "status": "active",
   "verificationStatus": "verified"

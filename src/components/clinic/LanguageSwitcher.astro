@@ -29,6 +29,7 @@ const localeOptions = locales.map((candidateLocale) => ({
 <nav
   class:list={["shrink-0", className]}
   aria-label={t(locale, "a11y.languageSwitcher")}
+  data-language-switcher
 >
   <span class="sr-only">
     {t(locale, "a11y.currentLanguage")}: {localeLabels[locale]}
@@ -56,6 +57,7 @@ const localeOptions = locales.map((candidateLocale) => ({
                     : "text-muted-foreground hover:bg-muted hover:text-primary",
                 ]}
                 href={option.href}
+                data-locale-base-href={option.href.split("#", 1)[0]}
                 lang={option.locale}
                 hreflang={option.locale}
                 aria-current={option.isCurrent ? "page" : undefined}
@@ -81,6 +83,7 @@ const localeOptions = locales.map((candidateLocale) => ({
                 : "text-muted-foreground hover:bg-muted hover:text-primary",
             ]}
             href={option.href}
+            data-locale-base-href={option.href.split("#", 1)[0]}
             lang={option.locale}
             hreflang={option.locale}
             aria-current={option.isCurrent ? "page" : undefined}
@@ -94,3 +97,31 @@ const localeOptions = locales.map((candidateLocale) => ({
     }
   </ul>
 </nav>
+
+<script>
+  for (const switcher of document.querySelectorAll<HTMLElement>(
+    "[data-language-switcher]",
+  )) {
+    if (switcher.dataset.hashSyncBound === "true") {
+      continue;
+    }
+
+    switcher.dataset.hashSyncBound = "true";
+    const links = switcher.querySelectorAll<HTMLAnchorElement>(
+      "a[data-locale-base-href]",
+    );
+
+    const synchronizeHash = (): void => {
+      for (const link of links) {
+        const baseHref = link.dataset.localeBaseHref;
+
+        if (baseHref !== undefined) {
+          link.setAttribute("href", `${baseHref}${window.location.hash}`);
+        }
+      }
+    };
+
+    synchronizeHash();
+    window.addEventListener("hashchange", synchronizeHash);
+  }
+</script>

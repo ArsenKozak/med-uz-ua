@@ -10,7 +10,6 @@ export const medicalUiCategorySchema = z.enum([
   "diagnostics",
   "optical-selection",
   "procedures",
-  "injections-therapy",
   "laboratory",
 ]);
 

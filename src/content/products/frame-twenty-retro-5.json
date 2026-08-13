@@ -1,0 +1,13 @@
+{
+  "title": "Оправа Twenty Retro Square",
+  "description": "Квадратна оправа в ретро-стилі з виразними лініями.",
+  "category": "frames",
+  "brand": "Twenty",
+  "priceMinor": 190000,
+  "currency": "UAH",
+  "image": "/images/artificial/shop-editorial-eyewear.jpg",
+  "imageKind": "editorial",
+  "inStock": true,
+  "status": "active",
+  "verificationStatus": "verified"
+}

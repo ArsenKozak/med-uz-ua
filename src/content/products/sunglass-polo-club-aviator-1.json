@@ -1,0 +1,13 @@
+{
+  "title": "Сонцезахисні окуляри Polo Club Aviator",
+  "description": "Класичні авіатори з поляризованими лінзами та 100% захистом від UV.",
+  "category": "sunglasses",
+  "brand": "Polo Club",
+  "priceMinor": 280000,
+  "currency": "UAH",
+  "image": "/images/artificial/shop-editorial-eyewear.jpg",
+  "imageKind": "editorial",
+  "inStock": true,
+  "status": "active",
+  "verificationStatus": "verified"
+}

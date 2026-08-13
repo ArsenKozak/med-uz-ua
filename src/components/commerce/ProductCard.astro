@@ -51,6 +51,12 @@ const productActionLabel = product.inStock
 const productActionAriaLabel = product.inStock
   ? addToCartLabel
   : `${product.title} — ${productActionLabel}`;
+const unavailableImageCopy = {
+  uk: "Зображення недоступне. Показано нейтральний заповнювач, а не фото товару.",
+  en: "Image unavailable. A neutral placeholder is shown, not a product photo.",
+  sk: "Obrázok nie je dostupný. Zobrazuje sa neutrálny zástupný prvok, nie fotografia produktu.",
+  hu: "A kép nem érhető el. Semleges helyőrző látható, nem termékfotó.",
+} as const;
 ---
 
 <article
@@ -75,7 +81,22 @@ const productActionAriaLabel = product.inStock
       loading="lazy"
       decoding="async"
       fetchpriority="low"
+      data-product-image
     />
+    <div
+      class="absolute inset-0 hidden place-items-center bg-muted p-6 text-center text-primary"
+      data-product-image-fallback
+      role="img"
+      aria-label={unavailableImageCopy[locale]}
+    >
+      <div>
+        <svg class="mx-auto size-12" viewBox="0 0 48 48" fill="none" aria-hidden="true">
+          <circle cx="24" cy="24" r="18" stroke="currentColor" stroke-width="1.5"></circle>
+          <path d="M11 24h26M24 11c5 5.4 7.5 9.7 7.5 13S29 31.6 24 37c-5-5.4-7.5-9.7-7.5-13S19 16.4 24 11Z" stroke="currentColor" stroke-width="1.5"></path>
+        </svg>
+        <p class="mt-4 text-xs leading-5 text-muted-foreground">{unavailableImageCopy[locale]}</p>
+      </div>
+    </div>
     <span
       class="absolute bottom-3 left-3 max-w-[calc(100%_-_1.5rem)] bg-background/95 px-2.5 py-1.5 text-[0.625rem] font-semibold uppercase tracking-[0.12em] text-muted-foreground"
     >
@@ -122,6 +143,7 @@ const productActionAriaLabel = product.inStock
         data-product-price-minor={String(product.priceMinor)}
         data-product-currency={product.currency}
         data-product-verification-status={product.verificationStatus}
+        data-product-category={product.category}
         data-added-message={t(locale, "product.addedToCart")}
         disabled={!product.inStock}
       >
@@ -144,6 +166,28 @@ const productActionAriaLabel = product.inStock
     type AddToCartInput,
     type CartVerificationStatus,
   } from "../../store/cart";
+  import { trackAddToCart } from "../../lib/analytics";
+
+  function showImageFallback(image: HTMLImageElement): void {
+    const wrapper = image.parentElement;
+    const fallback = wrapper?.querySelector("[data-product-image-fallback]");
+
+    if (!(fallback instanceof HTMLElement)) return;
+    image.hidden = true;
+    fallback.classList.remove("hidden");
+    fallback.classList.add("grid");
+  }
+
+  for (const image of document.querySelectorAll<HTMLImageElement>(
+    "img[data-product-image]",
+  )) {
+    if (image.dataset.fallbackBound === "true") continue;
+    image.dataset.fallbackBound = "true";
+    image.addEventListener("error", () => showImageFallback(image), {
+      once: true,
+    });
+    if (image.complete && image.naturalWidth === 0) showImageFallback(image);
+  }
 
   function isVerificationStatus(
     value: string | undefined,
@@ -198,7 +242,31 @@ const productActionAriaLabel = product.inStock
         return;
       }
 
-      addToCart(product);
+      const didAdd = addToCart(product);
+
+      if (!didAdd) {
+        return;
+      }
+
+      const category = element.dataset.productCategory;
+      if (category !== undefined) {
+        trackAddToCart({
+          id: product.id,
+          category,
+          priceMinor: product.priceMinor,
+        });
+      }
+
+      if (!window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+        element.animate(
+          [
+            { transform: "scale(1)" },
+            { transform: "scale(0.985)" },
+            { transform: "scale(1)" },
+          ],
+          { duration: 220, easing: "ease-out" },
+        );
+      }
 
       const card = element.closest("article");
       const status = card?.querySelector("[data-add-status]");

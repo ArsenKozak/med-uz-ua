@@ -2,10 +2,10 @@
 import type { ServiceDetail } from "../../lib/cms";
 import {
   defaultLocale,
-  localizePath,
   t,
   type Locale,
 } from "../../lib/i18n";
+import { getAppointmentHref } from "../../lib/navigation";
 
 interface Props {
   service: ServiceDetail;
@@ -20,10 +20,7 @@ const {
   locale = defaultLocale,
   class: className,
 } = Astro.props;
-const serviceUrl = localizePath(
-  `/services/${service.slug}#appointment-form`,
-  locale,
-);
+const appointmentHref = getAppointmentHref(Astro.url.pathname, locale);
 ---
 
 <article
@@ -48,7 +45,7 @@ const serviceUrl = localizePath(
     </p>
     <a
       class="mt-8 inline-flex min-h-11 items-center gap-3 text-sm font-semibold text-primary underline-offset-4 hover:underline"
-      href={serviceUrl}
+      href={appointmentHref}
     >
       {t(locale, "actions.requestConsultation")}
       <span class="transition-transform duration-200 motion-safe:group-hover:translate-x-1" aria-hidden="true">→</span>

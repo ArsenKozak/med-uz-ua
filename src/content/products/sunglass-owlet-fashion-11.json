@@ -1,0 +1,13 @@
+{
+  "title": "Сонцезахисні окуляри Owlet Fashion",
+  "description": "Модні сонцезахисні окуляри з унікальною геометрією оправи.",
+  "category": "sunglasses",
+  "brand": "Owlet",
+  "priceMinor": 230000,
+  "currency": "UAH",
+  "image": "/images/artificial/shop-editorial-eyewear.jpg",
+  "imageKind": "editorial",
+  "inStock": true,
+  "status": "active",
+  "verificationStatus": "verified"
+}

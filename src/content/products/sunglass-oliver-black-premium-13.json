@@ -1,0 +1,13 @@
+{
+  "title": "Сонцезахисні окуляри Oliver Black Premium",
+  "description": "Ексклюзивний дизайн та максимальний комфорт від преміум-бренду.",
+  "category": "sunglasses",
+  "brand": "Oliver Black",
+  "priceMinor": 350000,
+  "currency": "UAH",
+  "image": "/images/artificial/shop-editorial-eyewear.jpg",
+  "imageKind": "editorial",
+  "inStock": true,
+  "status": "active",
+  "verificationStatus": "verified"
+}

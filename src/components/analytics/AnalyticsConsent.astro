@@ -1,0 +1,184 @@
+---
+import type { Locale } from "../../lib/i18n";
+
+interface Props {
+  readonly locale: Locale;
+}
+
+const { locale } = Astro.props;
+const rawContainerId = import.meta.env.PUBLIC_GTM_CONTAINER_ID;
+const containerId = /^GTM-[A-Z0-9]+$/.test(rawContainerId ?? "")
+  ? rawContainerId
+  : "";
+const copy = {
+  uk: {
+    title: "Налаштування аналітики",
+    body: "За вашою згодою ми завантажимо Google Tag Manager для неперсональних подій взаємодії. Ім’я, телефон, адреса та вільний текст не передаються.",
+    accept: "Дозволити аналітику",
+    decline: "Лише необхідне",
+  },
+  en: {
+    title: "Analytics settings",
+    body: "With your permission, Google Tag Manager will load for non-personal interaction events. Names, phone numbers, addresses and free text are not sent.",
+    accept: "Allow analytics",
+    decline: "Necessary only",
+  },
+  sk: {
+    title: "Nastavenia analytiky",
+    body: "S vaším súhlasom načítame Google Tag Manager pre neosobné udalosti interakcie. Meno, telefón, adresa ani voľný text sa neposielajú.",
+    accept: "Povoliť analytiku",
+    decline: "Len nevyhnutné",
+  },
+  hu: {
+    title: "Analitikai beállítások",
+    body: "Engedélyével a Google Tag Manager nem személyes interakciós eseményekhez töltődik be. Név, telefonszám, cím és szabad szöveg nem kerül továbbításra.",
+    accept: "Analitika engedélyezése",
+    decline: "Csak szükséges",
+  },
+} as const;
+const localized = copy[locale];
+---
+
+<analytics-consent
+  data-container-id={containerId}
+  data-enabled={containerId.length > 0 ? "true" : "false"}
+>
+  <aside
+    class="fixed inset-x-3 bottom-[calc(5.5rem+env(safe-area-inset-bottom))] z-40 mx-auto max-w-2xl border border-border bg-card p-5 text-card-foreground shadow-concierge md:bottom-5 md:p-6"
+    aria-labelledby="analytics-consent-title"
+    aria-live="polite"
+    data-consent-panel
+    hidden
+  >
+    <h2 id="analytics-consent-title" class="text-xl font-medium text-primary">
+      {localized.title}
+    </h2>
+    <p class="mt-2 text-sm leading-6 text-muted-foreground">
+      {localized.body}
+    </p>
+    <div class="mt-5 flex flex-col gap-2 sm:flex-row sm:justify-end">
+      <button
+        class="focus-ring-primary inline-flex min-h-11 items-center justify-center border border-primary px-5 text-sm font-semibold text-primary transition-colors hover:bg-muted"
+        type="button"
+        data-consent-decline
+      >
+        {localized.decline}
+      </button>
+      <button
+        class="focus-ring-primary inline-flex min-h-11 items-center justify-center bg-primary px-5 text-sm font-semibold text-primary-foreground transition-colors hover:bg-primary/90"
+        type="button"
+        data-consent-accept
+      >
+        {localized.accept}
+      </button>
+    </div>
+  </aside>
+</analytics-consent>
+
+<script>
+  import {
+    getAnalyticsConsent,
+    setAnalyticsConsent,
+    trackPhoneClick,
+    type PhonePlacement,
+  } from "../../lib/analytics";
+
+  function phonePlacement(link: HTMLAnchorElement): PhonePlacement {
+    if (link.closest("[data-site-header]")) return "header";
+    if (link.closest("[data-mobile-action-bar]")) return "mobile_action_bar";
+    if (link.closest("footer")) return "footer";
+    return "content";
+  }
+
+  class AnalyticsConsentElement extends HTMLElement {
+    #panel: HTMLElement | null = null;
+    #containerId = "";
+
+    connectedCallback(): void {
+      const panel = this.querySelector("[data-consent-panel]");
+      if (!(panel instanceof HTMLElement) || this.dataset.bound === "true") {
+        return;
+      }
+
+      this.dataset.bound = "true";
+      this.#panel = panel;
+      this.#containerId = this.dataset.containerId ?? "";
+      this.addEventListener("click", this.#handleClick);
+      document.addEventListener("click", this.#handleDocumentClick);
+
+      if (this.dataset.enabled !== "true") {
+        panel.hidden = true;
+        return;
+      }
+
+      const consent = getAnalyticsConsent();
+      panel.hidden = consent !== null;
+      if (consent === "granted") this.#loadGtm();
+    }
+
+    disconnectedCallback(): void {
+      this.removeEventListener("click", this.#handleClick);
+      document.removeEventListener("click", this.#handleDocumentClick);
+      this.dataset.bound = "false";
+    }
+
+    #handleClick = (event: Event): void => {
+      const target = event.target;
+      if (!(target instanceof Element)) return;
+
+      if (target.closest("[data-consent-accept]")) {
+        setAnalyticsConsent("granted");
+        if (getAnalyticsConsent() === "granted") this.#loadGtm();
+        if (this.#panel) this.#panel.hidden = true;
+      } else if (target.closest("[data-consent-decline]")) {
+        const wasGranted = getAnalyticsConsent() === "granted";
+        setAnalyticsConsent("denied");
+        if (this.#panel) this.#panel.hidden = true;
+        if (wasGranted) window.location.reload();
+      }
+    };
+
+    #handleDocumentClick = (event: MouseEvent): void => {
+      const target = event.target;
+      if (!(target instanceof Element)) return;
+
+      const settingsButton = target.closest("[data-analytics-settings]");
+      if (settingsButton instanceof HTMLButtonElement) {
+        if (this.#panel) {
+          this.#panel.hidden = false;
+          this.#panel.querySelector<HTMLButtonElement>("button")?.focus();
+        }
+        return;
+      }
+
+      const phoneLink = target.closest('a[href^="tel:"]');
+      if (phoneLink instanceof HTMLAnchorElement) {
+        trackPhoneClick(phonePlacement(phoneLink));
+      }
+    };
+
+    #loadGtm(): void {
+      if (
+        this.#containerId.length === 0 ||
+        document.querySelector("script[data-gtm-loader]") !== null
+      ) {
+        return;
+      }
+
+      window.dataLayer ??= [];
+      window.dataLayer.push({
+        "gtm.start": Date.now(),
+        event: "gtm.js",
+      });
+      const script = document.createElement("script");
+      script.async = true;
+      script.dataset.gtmLoader = "true";
+      script.src = `https://www.googletagmanager.com/gtm.js?id=${encodeURIComponent(this.#containerId)}`;
+      document.head.append(script);
+    }
+  }
+
+  if (!customElements.get("analytics-consent")) {
+    customElements.define("analytics-consent", AnalyticsConsentElement);
+  }
+</script>

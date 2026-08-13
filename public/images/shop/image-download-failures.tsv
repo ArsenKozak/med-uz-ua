@@ -1,2 +1,45 @@
-category	file	source_page	reason
-lenses	alcon-air-optix-night-day-aqua	https://www.cz.alcon.com/content/rada-dailiesr	image-download-failed
+product_id	category	requested_file	source_page	provider	reason
+lens-air-optix-astigmatism-9	lenses	lens-air-optix-astigmatism-9	https://www.myalcon.com/contact-lenses/monthly/air-optix-plus-hydraglyde-for-astigmatism/	Alcon	page-download-failed
+lens-dailies-total-1-4	lenses	lens-dailies-total-1-4	https://www.myalcon.com/contact-lenses/daily/dailies-total1/	Alcon	page-download-failed
+lens-acuvue-vita-15	lenses	lens-acuvue-vita-15	https://www.acuvue.com/en-us/products/acuvue-vita/	ACUVUE	image-download-failed
+care-renu-multiplus-5	care	care-renu-multiplus-5	https://www.renu.com/	Bausch + Lomb	qualified-https-image-not-found
+care-ao-sept-plus-6	care	care-ao-sept-plus-6	https://www.myalcon.com/contact-lenses/contact-lens-solutions/aosept-plus-hydraglyde/	Alcon	page-download-failed
+care-hylo-comod-4	care	care-hylo-comod-4	https://hylo.de/en/products/hylo-comod	URSAPHARM	qualified-https-image-not-found
+care-hylo-dual-9	care	care-hylo-dual-9	https://hylo.de/en/products/hylo-dual	URSAPHARM	qualified-https-image-not-found
+lens-menicon-z-11	lenses	/images/shop/lenses/menicon-z.jpg		Menicon	not-attempted-no-documented-official-source-or-exact-model-id
+lens-rodenstock-cxl-13	lenses	/images/shop/lenses/rodenstock-cxl.jpg		Rodenstock	not-attempted-no-documented-official-source-or-exact-model-id
+care-hilens-optical-10	care	/images/shop/care/hilens-care.jpg		Hilens	not-attempted-no-documented-official-source-or-exact-model-id
+care-lens-case-12	care	/images/shop/care/lens-case.jpg		Bausch & Lomb	not-attempted-no-documented-official-source-or-exact-model-id
+care-tweezers-13	care	/images/shop/care/tweezers.jpg		SEED	not-attempted-no-documented-official-source-or-exact-model-id
+care-peroxide-neutralizer-14	care	/images/shop/care/peroxide-neutralizer.jpg		Menicon	not-attempted-no-documented-official-source-or-exact-model-id
+care-artificial-tears-15	care	/images/shop/care/thealoz-duo.jpg		Thea	not-attempted-no-documented-official-source-or-exact-model-id
+frame-owlet-classic-1	frames	/images/shop/frames/owlet-classic.jpg		Owlet	not-attempted-no-documented-official-source-or-exact-model-id
+frame-polo-club-elegant-2	frames	/images/shop/frames/polo-club-elegant.jpg		Polo Club	not-attempted-no-documented-official-source-or-exact-model-id
+frame-oliver-black-premium-3	frames	/images/shop/frames/oliver-black-premium.jpg		Oliver Black	not-attempted-no-documented-official-source-or-exact-model-id
+frame-maxima-titanium-4	frames	/images/shop/frames/maxima-titanium.jpg		Maxima & Co	not-attempted-no-documented-official-source-or-exact-model-id
+frame-twenty-retro-5	frames	/images/shop/frames/twenty-retro.jpg		Twenty	not-attempted-no-documented-official-source-or-exact-model-id
+frame-shadow-minimalist-6	frames	/images/shop/frames/shadow-minimalist.jpg		Shadow	not-attempted-no-documented-official-source-or-exact-model-id
+frame-dacchi-square-7	frames	/images/shop/frames/dacchi-square.jpg		Dacchi	not-attempted-no-documented-official-source-or-exact-model-id
+frame-vido-round-8	frames	/images/shop/frames/vido-round.jpg		Vido	not-attempted-no-documented-official-source-or-exact-model-id
+frame-seiko-precision-9	frames	/images/shop/frames/seiko-precision.jpg		SEIKO	not-attempted-no-documented-official-source-or-exact-model-id
+frame-alvaro-sport-10	frames	/images/shop/frames/alvaro-sport.jpg		Alvaro	not-attempted-no-documented-official-source-or-exact-model-id
+frame-pro-lightweight-11	frames	/images/shop/frames/pro-lightweight.jpg		Pro	not-attempted-no-documented-official-source-or-exact-model-id
+frame-owlet-cateye-12	frames	/images/shop/frames/owlet-cateye.jpg		Owlet	not-attempted-no-documented-official-source-or-exact-model-id
+frame-polo-club-wayfarer-13	frames	/images/shop/frames/polo-club-wayfarer.jpg		Polo Club	not-attempted-no-documented-official-source-or-exact-model-id
+frame-oliver-black-gold-14	frames	/images/shop/frames/oliver-black-gold.jpg		Oliver Black	not-attempted-no-documented-official-source-or-exact-model-id
+frame-maxima-acetate-15	frames	/images/shop/frames/maxima-acetate.jpg		Maxima	not-attempted-no-documented-official-source-or-exact-model-id
+sunglass-polo-club-aviator-1	sunglasses	/images/shop/sunglasses/polo-club-aviator.jpg		Polo Club	not-attempted-no-documented-official-source-or-exact-model-id
+sunglass-owlet-cateye-2	sunglasses	/images/shop/sunglasses/owlet-sun-cateye.jpg		Owlet	not-attempted-no-documented-official-source-or-exact-model-id
+sunglass-maxima-oversize-3	sunglasses	/images/shop/sunglasses/maxima-oversize.jpg		Maxima	not-attempted-no-documented-official-source-or-exact-model-id
+sunglass-oliver-black-classic-4	sunglasses	/images/shop/sunglasses/oliver-black-classic.jpg		Oliver Black	not-attempted-no-documented-official-source-or-exact-model-id
+sunglass-twenty-sport-5	sunglasses	/images/shop/sunglasses/twenty-sport.jpg		Twenty	not-attempted-no-documented-official-source-or-exact-model-id
+sunglass-shadow-retro-6	sunglasses	/images/shop/sunglasses/shadow-retro.jpg		Shadow	not-attempted-no-documented-official-source-or-exact-model-id
+sunglass-dacchi-square-7	sunglasses	/images/shop/sunglasses/dacchi-square.jpg		Dacchi	not-attempted-no-documented-official-source-or-exact-model-id
+sunglass-vido-round-8	sunglasses	/images/shop/sunglasses/vido-round.jpg		Vido	not-attempted-no-documented-official-source-or-exact-model-id
+sunglass-alvaro-gradient-9	sunglasses	/images/shop/sunglasses/alvaro-gradient.jpg		Alvaro	not-attempted-no-documented-official-source-or-exact-model-id
+sunglass-polo-club-wayfarer-10	sunglasses	/images/shop/sunglasses/polo-club-wayfarer.jpg		Polo Club	not-attempted-no-documented-official-source-or-exact-model-id
+sunglass-owlet-fashion-11	sunglasses	/images/shop/sunglasses/owlet-fashion.jpg		Owlet	not-attempted-no-documented-official-source-or-exact-model-id
+sunglass-maxima-polarized-12	sunglasses	/images/shop/sunglasses/maxima-polarized.jpg		Maxima	not-attempted-no-documented-official-source-or-exact-model-id
+sunglass-oliver-black-premium-13	sunglasses	/images/shop/sunglasses/oliver-black-premium.jpg		Oliver Black	not-attempted-no-documented-official-source-or-exact-model-id
+sunglass-twenty-metal-14	sunglasses	/images/shop/sunglasses/twenty-metal.jpg		Twenty	not-attempted-no-documented-official-source-or-exact-model-id
+sunglass-shadow-elegant-15	sunglasses	/images/shop/sunglasses/shadow-elegant.jpg		Shadow	not-attempted-no-documented-official-source-or-exact-model-id

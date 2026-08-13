@@ -1,0 +1,13 @@
+{
+  "title": "Сонцезахисні окуляри Shadow Retro",
+  "description": "Вінтажна оправа та круглі затемнені лінзи у стилі 70-х.",
+  "category": "sunglasses",
+  "brand": "Shadow",
+  "priceMinor": 190000,
+  "currency": "UAH",
+  "image": "/images/artificial/shop-editorial-eyewear.jpg",
+  "imageKind": "editorial",
+  "inStock": true,
+  "status": "active",
+  "verificationStatus": "verified"
+}

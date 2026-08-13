@@ -1,6 +1,5 @@
 ---
-import { BOOKING_HREF, clinicContact } from "../../lib/clinic";
-import { brandImageAssets } from "../../lib/assets";
+import { clinicContact } from "../../lib/clinic";
 import {
   defaultLocale,
   localizePath,
@@ -8,11 +7,13 @@ import {
   type Locale,
 } from "../../lib/i18n";
 import {
+  getAppointmentHref,
   isNavigationItemActive,
   normalizePathname,
   type NavigationItem,
 } from "../../lib/navigation";
 import Container from "../ui/Container.astro";
+import ClinicWordmark from "./ClinicWordmark.astro";
 import LanguageSwitcher from "./LanguageSwitcher.astro";
 
 interface Props {
@@ -22,7 +23,13 @@ interface Props {
 const { locale = defaultLocale } = Astro.props;
 const pathname = Astro.url.pathname;
 const currentPath = `${pathname}${Astro.url.search}`;
-const bookingHref = localizePath(BOOKING_HREF, locale);
+const bookingHref = getAppointmentHref(pathname, locale);
+const brandHomeLabel = {
+  uk: "European Ophthalmological Clinic — головна",
+  en: "European Ophthalmological Clinic home",
+  sk: "European Ophthalmological Clinic — domov",
+  hu: "European Ophthalmological Clinic — kezdőlap",
+} as const;
 
 const headerNavigation: readonly NavigationItem[] = [
   {
@@ -71,30 +78,15 @@ const initialCartLabel = t(locale, "a11y.openCartMany").replace(
 >
   <Container class="flex h-20 items-center justify-between gap-2 transition-[height] duration-200 group-data-[scrolled=true]:h-16 xl:gap-4">
     <a
-      class="focus-ring-primary inline-flex min-h-11 shrink-0 items-center font-serif text-[1.35rem] font-medium tracking-[-0.02em] text-primary sm:text-2xl"
+      class="focus-ring-primary inline-flex min-h-11 min-w-0 shrink items-center text-primary"
       href={localizePath("/", locale)}
-      aria-label={t(locale, "a11y.home")}
+      aria-label={brandHomeLabel[locale]}
       data-logo-mark
     >
-      <span
-        class="inline-flex h-9 w-[3.7rem] shrink-0 sm:h-10 sm:w-[4.1rem]"
-        data-logo-lens
-      >
-        <img
-          class="size-full object-contain"
-          src={brandImageAssets.legacyClinicMark.src}
-          width={brandImageAssets.legacyClinicMark.width}
-          height={brandImageAssets.legacyClinicMark.height}
-          alt=""
-          loading="eager"
-          decoding="async"
-        />
-      </span>
-      <span class="hidden sm:inline">Med.uz.ua</span>
-      <span class="sm:hidden">Med</span>
+      <ClinicWordmark compact />
     </a>
 
-    <div class="flex min-w-0 items-center gap-2 xl:gap-3">
+    <div class="flex min-w-0 shrink-0 items-center gap-1.5 sm:gap-2 xl:gap-3">
       <nav class="hidden xl:block" aria-label={t(locale, "a11y.primaryNavigation")}>
         <ul class="flex items-center gap-0.5">
           {
@@ -301,7 +293,24 @@ const initialCartLabel = t(locale, "a11y.openCartMany").replace(
 
   $cartCount.subscribe((count) => {
     for (const element of countElements) {
+      const previousCount = element.dataset.cartCountValue;
       element.textContent = String(count);
+      element.dataset.cartCountValue = String(count);
+
+      if (
+        previousCount !== undefined &&
+        previousCount !== String(count) &&
+        !window.matchMedia("(prefers-reduced-motion: reduce)").matches
+      ) {
+        element.animate(
+          [
+            { transform: "scale(1)" },
+            { transform: "scale(1.18)" },
+            { transform: "scale(1)" },
+          ],
+          { duration: 220, easing: "ease-out" },
+        );
+      }
     }
 
     for (const trigger of cartTriggers) {
@@ -351,5 +360,26 @@ const initialCartLabel = t(locale, "a11y.openCartMany").replace(
         menu.open = false;
       }
     });
+  }
+
+  const appointmentFormHash = "#appointment-form";
+
+  const focusAppointmentTarget = (): void => {
+    if (window.location.hash !== appointmentFormHash) {
+      return;
+    }
+
+    window.requestAnimationFrame(() => {
+      const target = document.getElementById(appointmentFormHash.slice(1));
+
+      target?.scrollIntoView({ block: "start" });
+      target?.focus({ preventScroll: true });
+    });
+  };
+
+  if (document.documentElement.dataset.appointmentFocusBound !== "true") {
+    document.documentElement.dataset.appointmentFocusBound = "true";
+    window.addEventListener("hashchange", focusAppointmentTarget);
+    focusAppointmentTarget();
   }
 </script>

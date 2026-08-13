@@ -1,0 +1,88 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import {
+  getLegalDocument,
+  type LegalDocumentKind,
+} from "../../data/legal";
+import { localizePath, type Locale } from "../../lib/i18n";
+import Container from "../ui/Container.astro";
+
+interface Props {
+  readonly locale: Locale;
+  readonly kind: LegalDocumentKind;
+}
+
+const { locale, kind } = Astro.props;
+const document = getLegalDocument(locale, kind);
+---
+
+<BaseLayout
+  title={document.title}
+  description={document.description}
+  locale={locale}
+  robots="noindex, nofollow"
+>
+  <article class="min-w-0 bg-background">
+    <header class="border-b border-border bg-primary text-primary-foreground">
+      <Container class="py-16 sm:py-20 lg:py-24">
+        <p class="text-xs font-semibold uppercase tracking-[0.22em] text-accent">
+          {document.eyebrow}
+        </p>
+        <h1 class="mt-5 max-w-4xl text-balance text-4xl font-medium leading-tight tracking-[-0.03em] sm:text-5xl lg:text-6xl">
+          {document.title}
+        </h1>
+        <p class="mt-6 max-w-3xl text-base leading-8 text-primary-foreground/75">
+          {document.description}
+        </p>
+      </Container>
+    </header>
+
+    <Container class="py-14 sm:py-18 lg:py-24">
+      <aside
+        class="border-l-4 border-accent bg-card p-6 shadow-sm sm:p-8"
+        aria-labelledby="legal-status-heading"
+      >
+        <h2 id="legal-status-heading" class="text-2xl font-medium text-primary">
+          {document.statusTitle}
+        </h2>
+        <p class="mt-3 max-w-4xl text-sm leading-7 text-muted-foreground sm:text-base">
+          {document.statusBody}
+        </p>
+        {
+          document.informationalNotice && document.controllingHref ? (
+            <p class="mt-4 text-sm leading-7 text-foreground">
+              {document.informationalNotice}{" "}
+              <a
+                class="focus-ring-primary font-semibold text-primary underline decoration-accent decoration-2 underline-offset-4"
+                href={localizePath(document.controllingHref, "uk")}
+                hreflang="uk"
+              >
+                Українська версія
+              </a>
+            </p>
+          ) : null
+        }
+      </aside>
+
+      <div class="mt-12 grid gap-0 border-t border-border lg:mt-16">
+        {
+          document.sections.map((section) => (
+            <section class="grid min-w-0 gap-5 border-b border-border py-9 sm:py-11 lg:grid-cols-12 lg:gap-12">
+              <h2 class="min-w-0 break-words text-2xl font-medium leading-snug text-primary lg:col-span-4">
+                {section.title}
+              </h2>
+              <div class="min-w-0 space-y-4 text-sm leading-7 text-foreground/75 sm:text-base lg:col-span-8">
+                {section.paragraphs.map((paragraph) => <p>{paragraph}</p>)}
+                {section.items ? (
+                  <ul class="list-disc space-y-2 pl-5 marker:text-accent">
+                    {section.items.map((item) => <li>{item}</li>)}
+                  </ul>
+                ) : null}
+              </div>
+            </section>
+          ))
+        }
+      </div>
+    </Container>
+  </article>
+</BaseLayout>

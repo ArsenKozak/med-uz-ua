@@ -1,0 +1,24 @@
+---
+import LegalPage from "../../components/pages/LegalPage.astro";
+import {
+  localizedLocales,
+  type LocalizedLocale,
+} from "../../lib/i18n";
+
+export const prerender = true;
+
+export function getStaticPaths() {
+  return localizedLocales.map((locale) => ({
+    params: { locale },
+    props: { locale },
+  }));
+}
+
+interface Props {
+  locale: LocalizedLocale;
+}
+
+const { locale } = Astro.props;
+---
+
+<LegalPage locale={locale} kind="privacy" />

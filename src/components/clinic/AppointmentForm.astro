@@ -4,17 +4,63 @@ import {
   t,
   type Locale,
 } from "../../lib/i18n";
+import type { AppointmentFieldErrorCode } from "../../schemas/appointment";
 
 interface Props {
   locale?: Locale;
 }
 
 const { locale = defaultLocale } = Astro.props;
+
+const fieldErrorMessagesByLocale: Record<
+  Locale,
+  Record<AppointmentFieldErrorCode, string>
+> = {
+  uk: {
+    NAME_REQUIRED: "Вкажіть ім’я.",
+    NAME_LENGTH: "Ім’я має містити від 2 до 80 символів.",
+    NAME_FORMAT: "Використовуйте лише літери, пробіли, дефіси та апострофи.",
+    PHONE_REQUIRED: "Вкажіть номер телефону.",
+    PHONE_LENGTH: "Номер телефону має містити від 8 до 15 цифр.",
+    PHONE_FORMAT: "Введіть український номер або міжнародний номер, що починається з +.",
+    PHONE_REPEATED: "Перевірте номер телефону: повторювані цифри не схожі на дійсний номер.",
+  },
+  en: {
+    NAME_REQUIRED: "Enter your name.",
+    NAME_LENGTH: "Your name must contain between 2 and 80 characters.",
+    NAME_FORMAT: "Use letters, spaces, hyphens, and apostrophes only.",
+    PHONE_REQUIRED: "Enter your phone number.",
+    PHONE_LENGTH: "The phone number must contain between 8 and 15 digits.",
+    PHONE_FORMAT: "Enter a Ukrainian number or an international number beginning with +.",
+    PHONE_REPEATED: "Check the phone number: repeated digits do not look valid.",
+  },
+  hu: {
+    NAME_REQUIRED: "Adja meg a nevét.",
+    NAME_LENGTH: "A névnek 2–80 karakterből kell állnia.",
+    NAME_FORMAT: "Csak betűket, szóközöket, kötőjeleket és aposztrófokat használjon.",
+    PHONE_REQUIRED: "Adja meg a telefonszámát.",
+    PHONE_LENGTH: "A telefonszámnak 8–15 számjegyből kell állnia.",
+    PHONE_FORMAT: "Ukrán számot vagy + jellel kezdődő nemzetközi számot adjon meg.",
+    PHONE_REPEATED: "Ellenőrizze a telefonszámot: az ismétlődő számjegyek nem tűnnek érvényesnek.",
+  },
+  sk: {
+    NAME_REQUIRED: "Zadajte svoje meno.",
+    NAME_LENGTH: "Meno musí obsahovať 2 až 80 znakov.",
+    NAME_FORMAT: "Použite iba písmená, medzery, spojovníky a apostrofy.",
+    PHONE_REQUIRED: "Zadajte svoje telefónne číslo.",
+    PHONE_LENGTH: "Telefónne číslo musí obsahovať 8 až 15 číslic.",
+    PHONE_FORMAT: "Zadajte ukrajinské číslo alebo medzinárodné číslo začínajúce znakom +.",
+    PHONE_REPEATED: "Skontrolujte telefónne číslo: opakované číslice nevyzerajú ako platné číslo.",
+  },
+};
+
+const fieldErrorMessages = fieldErrorMessagesByLocale[locale];
 ---
 
 <section
   id="appointment-form"
-  class="scroll-mt-6 rounded-2xl border border-border bg-card p-6 text-card-foreground shadow-concierge sm:p-8 lg:p-10"
+  class="scroll-mt-24 rounded-2xl border border-border bg-card p-6 text-card-foreground shadow-concierge sm:scroll-mt-28 sm:p-8 lg:p-10"
+  tabindex="-1"
   aria-labelledby="appointment-panel-title"
 >
   <header class="border-b border-border pb-7">
@@ -40,7 +86,22 @@ const { locale = defaultLocale } = Astro.props;
     data-pending-message={t(locale, "appointment.pending")}
     data-success-message={t(locale, "appointment.success")}
     data-request-error-message={t(locale, "appointment.errorRequest")}
+    data-field-error-messages={JSON.stringify(fieldErrorMessages)}
   >
+    <div
+      class="pointer-events-none absolute -left-[10000px] h-px w-px overflow-hidden opacity-0"
+      aria-hidden="true"
+    >
+      <label for="appointment-website">Website</label>
+      <input
+        id="appointment-website"
+        name="website"
+        type="text"
+        tabindex="-1"
+        autocomplete="off"
+      />
+    </div>
+
     <div class="grid gap-7">
       <div class="grid gap-1.5">
         <label
@@ -58,8 +119,16 @@ const { locale = defaultLocale } = Astro.props;
           maxlength="80"
           autocomplete="name"
           placeholder={t(locale, "appointment.namePlaceholder")}
+          aria-describedby="appointment-name-error"
+          aria-invalid="false"
           required
         />
+        <p
+          id="appointment-name-error"
+          class="text-sm leading-5 text-danger"
+          data-field-error="name"
+          hidden
+        ></p>
       </div>
 
       <div class="grid gap-1.5">
@@ -74,13 +143,21 @@ const { locale = defaultLocale } = Astro.props;
           id="appointment-phone"
           name="phone"
           type="tel"
-          minlength="10"
-          maxlength="20"
+          minlength="8"
+          maxlength="40"
           autocomplete="tel"
           inputmode="tel"
           placeholder={t(locale, "appointment.phonePlaceholder")}
+          aria-describedby="appointment-phone-error"
+          aria-invalid="false"
           required
         />
+        <p
+          id="appointment-phone-error"
+          class="text-sm leading-5 text-danger"
+          data-field-error="phone"
+          hidden
+        ></p>
       </div>
 
       <button
@@ -104,83 +181,326 @@ const { locale = defaultLocale } = Astro.props;
 </section>
 
 <script>
-  import { trackAppointmentSuccess } from "../../lib/analytics";
+  import {
+    trackAppointmentError,
+    trackAppointmentSuccess,
+  } from "../../lib/analytics";
 
-  type SuccessResponse = {
-    ok: true;
-  };
+  const FIELD_ERROR_CODES = [
+    "NAME_REQUIRED",
+    "NAME_LENGTH",
+    "NAME_FORMAT",
+    "PHONE_REQUIRED",
+    "PHONE_LENGTH",
+    "PHONE_FORMAT",
+    "PHONE_REPEATED",
+  ] as const;
+  const NAME_ALLOWED_PATTERN =
+    /^(?:\p{L}\p{M}*)+(?:[ '\-’ʼ](?:\p{L}\p{M}*)+)*$/u;
+  const CONTROL_OR_FORMAT_CHARACTER_PATTERN = /[\p{Cc}\p{Cf}]/u;
+  const URL_OR_EMAIL_PATTERN = /(?:https?:\/\/|www\.|\S+@\S+)/iu;
+  const PHONE_INPUT_PATTERN = /^[+\d\s()-]+$/u;
+  const E164_PATTERN = /^\+[1-9]\d{7,14}$/;
+
+  type FieldErrorCode = (typeof FIELD_ERROR_CODES)[number];
+  type FieldName = "name" | "phone";
+  type FieldErrors = Partial<Record<FieldName, FieldErrorCode>>;
+  type SuccessResponse = { readonly ok: true };
 
   const form = document.querySelector<HTMLFormElement>(
     "#appointment-request-form",
   );
   const statusElement =
-    document.querySelector<HTMLElement>("[data-form-status]");
+    form?.querySelector<HTMLElement>("[data-form-status]") ?? null;
   const submitButton = form?.querySelector<HTMLButtonElement>(
     'button[type="submit"]',
-  );
+  ) ?? null;
+  const nameInput = form?.querySelector<HTMLInputElement>(
+    '#appointment-name',
+  ) ?? null;
+  const phoneInput = form?.querySelector<HTMLInputElement>(
+    '#appointment-phone',
+  ) ?? null;
+  const websiteInput = form?.querySelector<HTMLInputElement>(
+    '#appointment-website',
+  ) ?? null;
+  const nameError = form?.querySelector<HTMLElement>(
+    '[data-field-error="name"]',
+  ) ?? null;
+  const phoneError = form?.querySelector<HTMLElement>(
+    '[data-field-error="phone"]',
+  ) ?? null;
+
+  function isRecord(value: unknown): value is Record<string, unknown> {
+    return typeof value === "object" && value !== null && !Array.isArray(value);
+  }
+
+  function isFieldErrorCode(value: unknown): value is FieldErrorCode {
+    return (
+      typeof value === "string" &&
+      FIELD_ERROR_CODES.some((code) => code === value)
+    );
+  }
+
+  function readFieldErrorMessages(
+    serialized: string | undefined,
+  ): Record<FieldErrorCode, string> | null {
+    if (serialized === undefined) return null;
+
+    let value: unknown;
+    try {
+      value = JSON.parse(serialized) as unknown;
+    } catch {
+      return null;
+    }
+
+    if (!isRecord(value)) return null;
+    const nameRequired = value.NAME_REQUIRED;
+    const nameLength = value.NAME_LENGTH;
+    const nameFormat = value.NAME_FORMAT;
+    const phoneRequired = value.PHONE_REQUIRED;
+    const phoneLength = value.PHONE_LENGTH;
+    const phoneFormat = value.PHONE_FORMAT;
+    const phoneRepeated = value.PHONE_REPEATED;
+    if (
+      typeof nameRequired !== "string" || nameRequired.length === 0 ||
+      typeof nameLength !== "string" || nameLength.length === 0 ||
+      typeof nameFormat !== "string" || nameFormat.length === 0 ||
+      typeof phoneRequired !== "string" || phoneRequired.length === 0 ||
+      typeof phoneLength !== "string" || phoneLength.length === 0 ||
+      typeof phoneFormat !== "string" || phoneFormat.length === 0 ||
+      typeof phoneRepeated !== "string" || phoneRepeated.length === 0
+    ) return null;
+
+    return {
+      NAME_REQUIRED: nameRequired,
+      NAME_LENGTH: nameLength,
+      NAME_FORMAT: nameFormat,
+      PHONE_REQUIRED: phoneRequired,
+      PHONE_LENGTH: phoneLength,
+      PHONE_FORMAT: phoneFormat,
+      PHONE_REPEATED: phoneRepeated,
+    };
+  }
 
   function isSuccessResponse(value: unknown): value is SuccessResponse {
-    return (
-      typeof value === "object" &&
-      value !== null &&
-      "ok" in value &&
-      value.ok === true
-    );
+    return isRecord(value) && value.ok === true;
+  }
+
+  function readResponseFieldErrors(value: unknown): FieldErrors | null {
+    if (
+      !isRecord(value) ||
+      value.ok !== false ||
+      value.error !== "INVALID_INPUT" ||
+      !isRecord(value.fieldErrors)
+    ) {
+      return null;
+    }
+
+    const name = value.fieldErrors.name;
+    const phone = value.fieldErrors.phone;
+
+    if (
+      (name !== undefined && !isFieldErrorCode(name)) ||
+      (phone !== undefined && !isFieldErrorCode(phone))
+    ) {
+      return null;
+    }
+
+    return {
+      ...(name === undefined ? {} : { name }),
+      ...(phone === undefined ? {} : { phone }),
+    };
+  }
+
+  function normalizeName(value: string): string {
+    return value.normalize("NFC").trim().replace(/\s+/gu, " ");
+  }
+
+  function validateName(value: string): FieldErrorCode | null {
+    if (
+      CONTROL_OR_FORMAT_CHARACTER_PATTERN.test(value) ||
+      URL_OR_EMAIL_PATTERN.test(value)
+    ) {
+      return "NAME_FORMAT";
+    }
+
+    const normalized = normalizeName(value);
+    if (normalized.length === 0) return "NAME_REQUIRED";
+
+    const characterCount = [...normalized].length;
+    if (characterCount < 2 || characterCount > 80) return "NAME_LENGTH";
+
+    const letterCount = normalized.match(/\p{L}/gu)?.length ?? 0;
+    if (letterCount < 2 || !NAME_ALLOWED_PATTERN.test(normalized)) {
+      return "NAME_FORMAT";
+    }
+
+    return null;
+  }
+
+  function validatePhone(value: string): FieldErrorCode | null {
+    const normalized = value.normalize("NFKC").trim();
+    if (normalized.length === 0) return "PHONE_REQUIRED";
+    if (
+      [...normalized].length > 40 ||
+      CONTROL_OR_FORMAT_CHARACTER_PATTERN.test(normalized) ||
+      !PHONE_INPUT_PATTERN.test(normalized)
+    ) {
+      return "PHONE_FORMAT";
+    }
+
+    const compact = normalized.replace(/[\s()-]/gu, "");
+    let canonical: string;
+    if (/^0\d{9}$/.test(compact)) {
+      canonical = `+38${compact}`;
+    } else if (/^380\d{9}$/.test(compact)) {
+      canonical = `+${compact}`;
+    } else if (/^00\d+$/.test(compact)) {
+      canonical = `+${compact.slice(2)}`;
+    } else if (/^\+\d+$/.test(compact)) {
+      canonical = compact;
+    } else {
+      return "PHONE_FORMAT";
+    }
+
+    const digits = canonical.slice(1);
+    if (digits.length < 8 || digits.length > 15) return "PHONE_LENGTH";
+    if (canonical.startsWith("+380") && !/^\+380\d{9}$/.test(canonical)) {
+      return "PHONE_LENGTH";
+    }
+    if (!E164_PATTERN.test(canonical)) return "PHONE_FORMAT";
+    if (/^(\d)\1+$/.test(digits) || /(\d)\1{6,}$/.test(digits)) {
+      return "PHONE_REPEATED";
+    }
+
+    return null;
   }
 
   function showStatus(
     message: string,
     state: "pending" | "success" | "error",
   ): void {
-    if (!statusElement) {
-      return;
-    }
-
+    if (statusElement === null) return;
     statusElement.textContent = message;
     statusElement.dataset.state = state;
     statusElement.hidden = false;
   }
 
-  if (form && submitButton) {
-    const defaultButtonText = submitButton.textContent;
+  if (
+    form !== null &&
+    submitButton !== null &&
+    nameInput !== null &&
+    phoneInput !== null &&
+    websiteInput !== null &&
+    nameError !== null &&
+    phoneError !== null &&
+    form.dataset.appointmentBound !== "true"
+  ) {
+    form.dataset.appointmentBound = "true";
+
+    const defaultButtonText = submitButton.textContent ?? "";
     const invalidMessage = form.dataset.invalidMessage;
     const sendingMessage = form.dataset.sendingMessage;
     const pendingMessage = form.dataset.pendingMessage;
     const successMessage = form.dataset.successMessage;
     const requestErrorMessage = form.dataset.requestErrorMessage;
+    const fieldMessages = readFieldErrorMessages(
+      form.dataset.fieldErrorMessages,
+    );
+    const fieldInputs: Record<FieldName, HTMLInputElement> = {
+      name: nameInput,
+      phone: phoneInput,
+    };
+    const fieldErrorElements: Record<FieldName, HTMLElement> = {
+      name: nameError,
+      phone: phoneError,
+    };
+    let initializedAt = performance.now();
 
     if (
       invalidMessage === undefined ||
       sendingMessage === undefined ||
       pendingMessage === undefined ||
       successMessage === undefined ||
-      requestErrorMessage === undefined
+      requestErrorMessage === undefined ||
+      fieldMessages === null
     ) {
       throw new Error("APPOINTMENT_TRANSLATIONS_MISSING");
     }
 
+    const clearFieldError = (field: FieldName): void => {
+      const input = fieldInputs[field];
+      const errorElement = fieldErrorElements[field];
+      input.setAttribute("aria-invalid", "false");
+      errorElement.textContent = "";
+      errorElement.hidden = true;
+    };
+
+    const showFieldError = (
+      field: FieldName,
+      code: FieldErrorCode,
+    ): void => {
+      const input = fieldInputs[field];
+      const errorElement = fieldErrorElements[field];
+      input.setAttribute("aria-invalid", "true");
+      errorElement.textContent = fieldMessages[code];
+      errorElement.hidden = false;
+    };
+
+    const clearAllFieldErrors = (): void => {
+      clearFieldError("name");
+      clearFieldError("phone");
+    };
+
+    for (const field of ["name", "phone"] as const) {
+      fieldInputs[field].addEventListener("input", () => {
+        clearFieldError(field);
+        if (statusElement?.dataset.state === "error") {
+          statusElement.hidden = true;
+        }
+      });
+    }
+
     form.addEventListener("submit", async (event) => {
       event.preventDefault();
+      clearAllFieldErrors();
 
-      if (!form.checkValidity()) {
+      nameInput.value = normalizeName(nameInput.value);
+      const clientErrors: FieldErrors = {};
+      const nameCode = validateName(nameInput.value);
+      const phoneCode = validatePhone(phoneInput.value);
+      if (nameCode !== null) clientErrors.name = nameCode;
+      if (phoneCode !== null) clientErrors.phone = phoneCode;
+
+      const firstClientInvalidField = (["name", "phone"] as const).find(
+        (field) => clientErrors[field] !== undefined,
+      );
+      if (firstClientInvalidField !== undefined) {
+        for (const field of ["name", "phone"] as const) {
+          const code = clientErrors[field];
+          if (code !== undefined) showFieldError(field, code);
+        }
         showStatus(invalidMessage, "error");
-        form.querySelector<HTMLInputElement>("input:invalid")?.focus();
+        trackAppointmentError("invalid_input");
+        fieldInputs[firstClientInvalidField].focus();
         return;
       }
 
-      const formData = new FormData(form);
-      const name = formData.get("name");
-      const phone = formData.get("phone");
-
-      if (typeof name !== "string" || typeof phone !== "string") {
-        showStatus(invalidMessage, "error");
-        return;
-      }
+      const name = nameInput.value;
+      const phone = phoneInput.value;
+      const website = websiteInput.value;
+      const elapsedMs = Math.max(
+        0,
+        Math.round(performance.now() - initializedAt),
+      );
 
       submitButton.disabled = true;
       submitButton.textContent = sendingMessage;
       showStatus(pendingMessage, "pending");
 
+      let requestErrorCode: "request_failed" | "upstream_error" =
+        "request_failed";
       try {
         const response = await fetch("/api/appointments", {
           method: "POST",
@@ -188,24 +508,50 @@ const { locale = defaultLocale } = Astro.props;
             accept: "application/json",
             "content-type": "application/json",
           },
-          body: JSON.stringify({ name, phone }),
+          body: JSON.stringify({ name, phone, website, elapsedMs }),
         });
         const responseBody: unknown = await response.json();
 
-        if (response.status !== 200 || !isSuccessResponse(responseBody)) {
-          throw new Error("APPOINTMENT_REQUEST_FAILED");
+        if (response.status === 200 && isSuccessResponse(responseBody)) {
+          form.reset();
+          clearAllFieldErrors();
+          initializedAt = performance.now();
+          showStatus(successMessage, "success");
+          trackAppointmentSuccess();
+          return;
         }
 
-        form.reset();
-        showStatus(successMessage, "success");
-        trackAppointmentSuccess();
+        if (response.status === 400) {
+          const responseFieldErrors = readResponseFieldErrors(responseBody);
+          if (responseFieldErrors !== null) {
+            const firstServerInvalidField = (["name", "phone"] as const).find(
+              (field) => responseFieldErrors[field] !== undefined,
+            );
+            for (const field of ["name", "phone"] as const) {
+              const code = responseFieldErrors[field];
+              if (code !== undefined) showFieldError(field, code);
+            }
+            showStatus(invalidMessage, "error");
+            trackAppointmentError("invalid_input");
+            if (firstServerInvalidField !== undefined) {
+              fieldInputs[firstServerInvalidField].focus();
+            }
+            return;
+          }
+        }
+
+        if (response.status >= 500) requestErrorCode = "upstream_error";
+
+        throw new Error("APPOINTMENT_REQUEST_FAILED");
       } catch {
         showStatus(requestErrorMessage, "error");
+        trackAppointmentError(requestErrorCode);
       } finally {
         submitButton.disabled = false;
         submitButton.textContent = defaultButtonText;
       }
     });
+
   }
 </script>
 

@@ -1,18 +1,18 @@
 ---
-import { BOOKING_HREF, clinicContact } from "../../lib/clinic";
+import { clinicContact } from "../../lib/clinic";
 import {
   defaultLocale,
-  localizePath,
   t,
   type Locale,
 } from "../../lib/i18n";
+import { getAppointmentHref } from "../../lib/navigation";
 
 interface Props {
   locale?: Locale;
 }
 
 const { locale = defaultLocale } = Astro.props;
-const bookingHref = localizePath(BOOKING_HREF, locale);
+const bookingHref = getAppointmentHref(Astro.url.pathname, locale);
 const initialCartLabel = t(locale, "a11y.openCartMany").replace(
   "{count}",
   "0",
@@ -33,10 +33,10 @@ const initialCartLabel = t(locale, "a11y.openCartMany").replace(
     class="mx-auto max-w-md px-3 py-2"
     aria-label={t(locale, "mobile.actionsLabel")}
   >
-    <ul class="grid grid-cols-3 gap-2">
-      <li>
+    <ul class="grid min-w-0 grid-cols-3 gap-1.5 sm:gap-2">
+      <li class="min-w-0">
         <a
-          class="focus-ring-primary inline-flex min-h-13 w-full items-center justify-center border border-border bg-card px-2 text-center text-sm font-semibold text-primary transition-colors duration-200 hover:border-primary hover:bg-muted"
+          class="focus-ring-primary inline-flex min-h-13 w-full min-w-0 items-center justify-center border border-border bg-card px-1.5 text-center text-xs font-semibold leading-tight text-primary transition-colors duration-200 hover:border-primary hover:bg-muted sm:px-2 sm:text-sm"
           href={clinicContact.phoneHref}
           aria-label={t(locale, "a11y.callClinic", {
             phone: clinicContact.phoneDisplay,
@@ -45,17 +45,17 @@ const initialCartLabel = t(locale, "a11y.openCartMany").replace(
           {t(locale, "mobile.call")}
         </a>
       </li>
-      <li>
+      <li class="min-w-0">
         <a
-          class="focus-ring-primary inline-flex min-h-13 w-full items-center justify-center bg-primary px-2 text-center text-sm font-semibold text-primary-foreground transition-colors duration-200 hover:bg-primary/90"
+          class="focus-ring-primary inline-flex min-h-13 w-full min-w-0 items-center justify-center bg-primary px-1.5 text-center text-xs font-semibold leading-tight text-primary-foreground transition-colors duration-200 hover:bg-primary/90 sm:px-2 sm:text-sm"
           href={bookingHref}
         >
           {t(locale, "mobile.book")}
         </a>
       </li>
-      <li>
+      <li class="min-w-0">
         <button
-          class="focus-ring-primary relative inline-flex min-h-13 w-full items-center justify-center gap-2 border border-border bg-card px-2 text-center text-sm font-semibold text-primary transition-colors duration-200 hover:border-primary hover:bg-muted"
+          class="focus-ring-primary relative inline-flex min-h-13 w-full min-w-0 items-center justify-center gap-1 border border-border bg-card px-1.5 text-center text-xs font-semibold leading-tight text-primary transition-colors duration-200 hover:border-primary hover:bg-muted sm:gap-2 sm:px-2 sm:text-sm"
           type="button"
           aria-label={initialCartLabel}
           aria-haspopup="dialog"
@@ -109,7 +109,24 @@ const initialCartLabel = t(locale, "a11y.openCartMany").replace(
       }
 
       this.#unsubscribe = $cartCount.subscribe((count) => {
+        const previousCount = countElement.dataset.cartCountValue;
         countElement.textContent = String(count);
+        countElement.dataset.cartCountValue = String(count);
+
+        if (
+          previousCount !== undefined &&
+          previousCount !== String(count) &&
+          !window.matchMedia("(prefers-reduced-motion: reduce)").matches
+        ) {
+          countElement.animate(
+            [
+              { transform: "scale(1)" },
+              { transform: "scale(1.18)" },
+              { transform: "scale(1)" },
+            ],
+            { duration: 220, easing: "ease-out" },
+          );
+        }
 
         const labelTemplate =
           count === 1

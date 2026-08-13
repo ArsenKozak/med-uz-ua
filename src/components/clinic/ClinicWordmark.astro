@@ -1,0 +1,57 @@
+---
+interface Props {
+  readonly tone?: "emerald" | "ivory";
+  readonly compact?: boolean;
+  readonly class?: string;
+}
+
+const {
+  tone = "emerald",
+  compact = false,
+  class: className,
+} = Astro.props;
+---
+
+<!-- New typographic implementation; it is not represented as an official logo. -->
+<span
+  class:list={[
+    "clinic-wordmark inline-flex min-w-0 items-center",
+    tone === "ivory" ? "text-primary-foreground" : "text-primary",
+    className,
+  ]}
+  role="img"
+  aria-label="European Ophthalmological Clinic"
+>
+  <svg
+    class:list={[
+      "block h-auto max-w-full overflow-visible",
+      compact ? "w-28 sm:w-[11.5rem]" : "w-[13.5rem] sm:w-[16rem]",
+    ]}
+    width={compact ? "184" : "256"}
+    height={compact ? "42" : "58"}
+    viewBox="0 0 256 58"
+    fill="none"
+    aria-hidden="true"
+    focusable="false"
+  >
+    <path d="M1 1v56" stroke="currentColor" stroke-width="2" />
+    <text
+      x="13"
+      y="25"
+      fill="currentColor"
+      font-family="Playfair Display, Georgia, serif"
+      font-size="24"
+      font-weight="500"
+      letter-spacing="-0.4"
+    >European</text>
+    <text
+      x="13"
+      y="45"
+      fill="currentColor"
+      font-family="Inter, Arial, sans-serif"
+      font-size="10.5"
+      font-weight="600"
+      letter-spacing="1.15"
+    >OPHTHALMOLOGICAL CLINIC</text>
+  </svg>
+</span>

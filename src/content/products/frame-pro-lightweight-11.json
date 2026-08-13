@@ -1,0 +1,13 @@
+{
+  "title": "Оправа Pro Lightweight",
+  "description": "Бюджетна, але надзвичайно легка комбінована оправа.",
+  "category": "frames",
+  "brand": "Pro",
+  "priceMinor": 140000,
+  "currency": "UAH",
+  "image": "/images/artificial/shop-editorial-eyewear.jpg",
+  "imageKind": "editorial",
+  "inStock": true,
+  "status": "active",
+  "verificationStatus": "verified"
+}

@@ -9,6 +9,7 @@ import {
   type Locale,
   type TranslationKey,
 } from "../../lib/i18n";
+import { getAppointmentHref } from "../../lib/navigation";
 
 interface Props {
   locale: Locale;
@@ -20,6 +21,7 @@ interface CopyCard {
 }
 
 const { locale } = Astro.props;
+const appointmentHref = getAppointmentHref(Astro.url.pathname, locale);
 
 const philosophyThemes: readonly CopyCard[] = [
   { title: "about.theme1Title", body: "about.theme1Body" },
@@ -34,7 +36,7 @@ const philosophyThemes: readonly CopyCard[] = [
   description={t(locale, "seo.about.description")}
   locale={locale}
 >
-  <article class="overflow-x-hidden">
+  <article>
     <header class="border-b border-primary-foreground/15 bg-primary text-primary-foreground">
       <Container class="grid gap-12 py-16 sm:py-20 lg:grid-cols-12 lg:gap-16 lg:py-28">
         <div class="lg:col-span-8">
@@ -196,7 +198,7 @@ const philosophyThemes: readonly CopyCard[] = [
         <div class="flex flex-col gap-3 sm:flex-row lg:col-span-5 lg:justify-end">
           <a
             class="inline-flex min-h-13 items-center justify-center rounded-lg bg-accent px-6 text-sm font-semibold text-primary transition-colors hover:bg-accent/90"
-            href={localizePath("/#appointment-form", locale)}
+            href={appointmentHref}
           >
             {t(locale, "about.book")}
           </a>

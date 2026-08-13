@@ -1,0 +1,13 @@
+{
+  "title": "Сонцезахисні окуляри Shadow Elegant",
+  "description": "Елегантна модель для щоденного захисту ваших очей.",
+  "category": "sunglasses",
+  "brand": "Shadow",
+  "priceMinor": 185000,
+  "currency": "UAH",
+  "image": "/images/artificial/shop-editorial-eyewear.jpg",
+  "imageKind": "editorial",
+  "inStock": true,
+  "status": "active",
+  "verificationStatus": "verified"
+}

@@ -5,6 +5,7 @@ import MobileActionBar from "../components/clinic/MobileActionBar.astro";
 import SiteFooter from "../components/clinic/SiteFooter.astro";
 import SiteHeader from "../components/clinic/SiteHeader.astro";
 import InteractionController from "../components/ui/InteractionController.astro";
+import AnalyticsConsent from "../components/analytics/AnalyticsConsent.astro";
 import {
   localeFromPath,
   locales,
@@ -19,9 +20,16 @@ interface Props {
   description: string;
   canonical?: string | URL;
   locale?: Locale;
+  robots?: string;
 }
 
-const { title, description, canonical, locale: localeProp } = Astro.props;
+const {
+  title,
+  description,
+  canonical,
+  locale: localeProp,
+  robots = "index, follow",
+} = Astro.props;
 const locale = localeProp ?? localeFromPath(Astro.url.pathname);
 const canonicalUrl = new URL(
   canonical ?? Astro.url.pathname,
@@ -48,7 +56,7 @@ const defaultLocaleUrl = new URL(
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="generator" content={Astro.generator} />
     <meta name="description" content={description} />
-    <meta name="robots" content="index, follow" />
+    <meta name="robots" content={robots} />
     <title>{title}</title>
 
     <slot name="canonical">
@@ -70,28 +78,6 @@ const defaultLocaleUrl = new URL(
     <meta property="og:description" content={description} />
     <meta property="og:url" content={canonicalUrl} />
 
-    <script is:inline>
-      window.dataLayer = window.dataLayer || [];
-    </script>
-    <!-- Google Tag Manager -->
-    <script is:inline>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
-    new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
-    j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
-    'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
-    })(window,document,'script','dataLayer','GTM-K96GCCJ5');</script>
-    <!-- End Google Tag Manager -->
-
-    <!-- Google Analytics 4 (G-WWZ9XN8B0B) & Google Ads (AW-785774760) -->
-    <script is:inline async src="https://www.googletagmanager.com/gtag/js?id=G-WWZ9XN8B0B"></script>
-    <script is:inline>
-      window.dataLayer = window.dataLayer || [];
-      function gtag(){dataLayer.push(arguments);}
-      gtag('js', new Date());
-
-      gtag('config', 'G-WWZ9XN8B0B');
-      gtag('config', 'AW-785774760');
-    </script>
-
     <slot name="head" />
   </head>
   <body class="min-h-screen">
@@ -108,6 +94,7 @@ const defaultLocaleUrl = new URL(
     <SiteFooter locale={locale} />
     <MobileActionBar locale={locale} />
     <CartDrawer locale={locale} />
+    <AnalyticsConsent locale={locale} />
     <InteractionController />
   </body>
 </html>

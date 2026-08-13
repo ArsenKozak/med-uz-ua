@@ -1,6 +1,5 @@
 ---
-import { clinicContact, socialChannels } from "../../lib/clinic";
-import { brandImageAssets } from "../../lib/assets";
+import { clinicContact } from "../../lib/clinic";
 import {
   defaultLocale,
   localizePath,
@@ -15,6 +14,8 @@ import {
   type NavigationItem,
 } from "../../lib/navigation";
 import Container from "../ui/Container.astro";
+import ClinicWordmark from "./ClinicWordmark.astro";
+import SocialLinks from "./SocialLinks.astro";
 
 interface Props {
   locale?: Locale;
@@ -23,6 +24,19 @@ interface Props {
 const { locale = defaultLocale } = Astro.props;
 const currentYear = new Date().getFullYear();
 const pathname = Astro.url.pathname;
+const legalLabels = {
+  uk: { heading: "Правова інформація", offer: "Публічна оферта", privacy: "Конфіденційність", map: "Відкрити карту", analytics: "Налаштування аналітики" },
+  en: { heading: "Legal", offer: "Public Offer", privacy: "Privacy Policy", map: "Open map", analytics: "Analytics settings" },
+  sk: { heading: "Právne informácie", offer: "Verejná ponuka", privacy: "Ochrana súkromia", map: "Otvoriť mapu", analytics: "Nastavenia analytiky" },
+  hu: { heading: "Jogi információ", offer: "Nyilvános ajánlat", privacy: "Adatvédelem", map: "Térkép megnyitása", analytics: "Analitikai beállítások" },
+} as const;
+const legalLabel = legalLabels[locale];
+const brandHomeLabel = {
+  uk: "European Ophthalmological Clinic — головна",
+  en: "European Ophthalmological Clinic home",
+  sk: "European Ophthalmological Clinic — domov",
+  hu: "European Ophthalmological Clinic — kezdőlap",
+} as const;
 
 function getNavigationLabel(href: string): string {
   switch (href) {
@@ -65,23 +79,14 @@ function isFooterItemCurrent(item: NavigationItem): boolean {
 
 <footer class="bg-primary text-primary-foreground">
   <Container class="py-16 sm:py-20 lg:py-24">
-    <div class="grid gap-12 border-b border-primary-foreground/15 pb-14 md:grid-cols-12">
-      <div class="md:col-span-6 lg:col-span-4">
+    <div class="grid min-w-0 gap-10 border-b border-primary-foreground/15 pb-14 sm:grid-cols-2 lg:grid-cols-12 lg:gap-12">
+      <div class="min-w-0 sm:col-span-2 lg:col-span-4">
         <a
-          class="inline-flex min-h-11 items-center font-serif text-3xl font-medium tracking-tight"
+          class="focus-ring-primary inline-flex min-h-11 min-w-0 items-center"
           href={localizePath("/", locale)}
-          aria-label={t(locale, "a11y.home")}
+          aria-label={brandHomeLabel[locale]}
         >
-          <img
-            class="mr-3 h-12 w-[4.9rem] object-contain"
-            src={brandImageAssets.legacyClinicMark.src}
-            width={brandImageAssets.legacyClinicMark.width}
-            height={brandImageAssets.legacyClinicMark.height}
-            alt=""
-            loading="lazy"
-            decoding="async"
-          />
-          Med.uz.ua
+          <ClinicWordmark tone="ivory" />
         </a>
         <p class="mt-3 max-w-xs text-xs uppercase leading-5 tracking-[0.16em] text-primary-foreground/50">
           {t(locale, "clinic.publicName")}
@@ -91,16 +96,17 @@ function isFooterItemCurrent(item: NavigationItem): boolean {
         </p>
       </div>
 
-      <div class="md:col-span-6 lg:col-span-3">
-        <h2 class="font-sans text-xs font-semibold uppercase tracking-[0.18em] text-primary-foreground/50">
+      <div class="min-w-0 lg:col-span-2">
+        <h2 class="break-words font-sans text-xs font-semibold uppercase tracking-[0.18em] text-primary-foreground/50">
           {t(locale, "footer.contactHeading")}
         </h2>
         <address class="mt-5 text-sm not-italic leading-7 text-primary-foreground/75">
-          <span class="block">
-            {t(locale, "clinic.city")}, {t(locale, "clinic.country")}
-          </span>
+          <span class="block">{t(locale, "clinic.city")}, {t(locale, "clinic.country")}</span>
           <span class="block">{t(locale, "clinic.streetAddress")}</span>
           <span class="block">{t(locale, "clinic.floor")}</span>
+          <a class="mt-2 inline-flex min-h-11 items-center border-b border-primary-foreground/25 transition-colors hover:border-accent hover:text-accent" href={clinicContact.mapHref} target="_blank" rel="noopener noreferrer">
+            {legalLabel.map}
+          </a>
           <a
             class="mt-2 inline-flex min-h-11 items-center border-b border-primary-foreground/25 transition-colors hover:border-primary-foreground hover:text-primary-foreground"
             href={clinicContact.phoneHref}
@@ -110,8 +116,8 @@ function isFooterItemCurrent(item: NavigationItem): boolean {
         </address>
       </div>
 
-      <nav class="md:col-span-6 lg:col-span-3" aria-label={t(locale, "a11y.footerNavigation")}>
-        <h2 class="font-sans text-xs font-semibold uppercase tracking-[0.18em] text-primary-foreground/50">
+      <nav class="min-w-0 lg:col-span-2" aria-label={t(locale, "a11y.footerNavigation")}>
+        <h2 class="break-words font-sans text-xs font-semibold uppercase tracking-[0.18em] text-primary-foreground/50">
           {t(locale, "footer.explore")}
         </h2>
         <ul class="mt-5 space-y-1 text-sm text-primary-foreground/75">
@@ -141,32 +147,24 @@ function isFooterItemCurrent(item: NavigationItem): boolean {
         </ul>
       </nav>
 
-      <div class="md:col-span-6 lg:col-span-2">
-        <h2 class="font-sans text-xs font-semibold uppercase tracking-[0.18em] text-primary-foreground/50">
-          {t(locale, "footer.socialHeading")}
+      <div class="min-w-0 lg:col-span-2">
+        <SocialLinks locale={locale} tone="light" compact />
+      </div>
+
+      <nav class="min-w-0 lg:col-span-2" aria-label={legalLabel.heading}>
+        <h2 class="break-words font-sans text-xs font-semibold uppercase tracking-[0.18em] text-primary-foreground/50">
+          {legalLabel.heading}
         </h2>
         <ul class="mt-5 space-y-1 text-sm text-primary-foreground/75">
-          {
-            socialChannels.map((channel) => (
-              <li>
-                <a
-                  class="inline-flex min-h-11 items-center border-b border-transparent transition-colors hover:border-primary-foreground/40 hover:text-primary-foreground"
-                  href={channel.href}
-                  target="_blank"
-                  rel="noreferrer"
-                >
-                  {channel.label}
-                  <span class="ml-1.5 text-primary-foreground/35" aria-hidden="true">↗</span>
-                </a>
-              </li>
-            ))
-          }
+          <li><a class="inline-flex min-h-11 items-center border-b border-transparent transition-colors hover:border-accent hover:text-accent" href={localizePath("/offer", locale)}>{legalLabel.offer}</a></li>
+          <li><a class="inline-flex min-h-11 items-center border-b border-transparent transition-colors hover:border-accent hover:text-accent" href={localizePath("/privacy", locale)}>{legalLabel.privacy}</a></li>
+          <li><button class="focus-ring-primary inline-flex min-h-11 items-center border-b border-transparent text-left transition-colors hover:border-accent hover:text-accent" type="button" data-analytics-settings>{legalLabel.analytics}</button></li>
         </ul>
-      </div>
+      </nav>
     </div>
 
     <div class="flex flex-col gap-3 pt-7 text-xs text-primary-foreground/50 sm:flex-row sm:items-center sm:justify-between">
-      <p>{t(locale, "footer.copyright").replace("{year}", String(currentYear))}</p>
+      <p>&copy; {currentYear} European Ophthalmological Clinic</p>
       <p>{t(locale, "footer.closing")}</p>
     </div>
   </Container>

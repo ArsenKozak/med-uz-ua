@@ -64,13 +64,13 @@ function getFilterCount(filter: CatalogFilter): number {
       class="grid gap-10 lg:grid-cols-12 lg:items-end"
       data-reveal
     >
-      <div class="lg:col-span-8">
+      <div class="min-w-0 lg:col-span-8">
         <p class="text-xs font-semibold uppercase tracking-[0.24em] text-primary">
           {t(locale, "shop.heroEyebrow")}
         </p>
         <h1
           id="shop-heading"
-          class="mt-6 max-w-[13ch] text-balance text-5xl font-medium leading-[0.98] tracking-[-0.035em] text-foreground sm:text-6xl lg:text-7xl"
+          class="mt-6 max-w-[13ch] min-w-0 break-words text-balance text-[clamp(2.5rem,12vw,4.5rem)] font-medium leading-[0.98] tracking-[-0.035em] text-foreground"
         >
           {t(locale, "shop.heroTitle")}
         </h1>
@@ -84,7 +84,7 @@ function getFilterCount(filter: CatalogFilter): number {
   </section>
 
   <section
-    class="overflow-x-hidden bg-background py-16 sm:py-20 lg:py-28"
+    class="bg-background py-16 sm:py-20 lg:py-28"
     aria-labelledby="catalog-heading"
     data-shop-catalog
     data-filter-status-template={t(locale, "shop.filterStatus")}
@@ -94,11 +94,11 @@ function getFilterCount(filter: CatalogFilter): number {
         class="flex flex-col gap-5 border-b border-border pb-7 sm:flex-row sm:items-end sm:justify-between"
         data-reveal
       >
-        <div>
+        <div class="min-w-0">
           <p class="text-xs font-semibold uppercase tracking-[0.2em] text-primary">
             {t(locale, "shop.catalogEyebrow")}
           </p>
-          <h2 id="catalog-heading" class="mt-3 text-3xl font-medium tracking-tight sm:text-4xl">
+          <h2 id="catalog-heading" class="mt-3 min-w-0 break-words text-3xl font-medium tracking-tight sm:text-4xl">
             {t(locale, "shop.catalogTitle")}
           </h2>
         </div>
@@ -194,7 +194,7 @@ function getFilterCount(filter: CatalogFilter): number {
           <p class="text-xs font-semibold uppercase tracking-[0.2em] text-primary">
             {t(locale, "shop.prescriptionEyebrow")}
           </p>
-          <h2 class="mt-3 text-balance text-3xl font-medium tracking-tight text-foreground sm:text-4xl">
+          <h2 class="mt-3 min-w-0 break-words text-balance text-3xl font-medium tracking-tight text-foreground sm:text-4xl">
             {t(locale, "shop.prescriptionTitle")}
           </h2>
           <p class="mt-4 max-w-2xl text-sm leading-7 text-muted-foreground sm:text-base">

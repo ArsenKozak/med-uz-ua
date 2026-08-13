@@ -1,5 +1,6 @@
 ---
 import { t, type Locale, type TranslationKey } from "../../lib/i18n";
+import { wayfindingAssets } from "../../lib/assets";
 
 interface Props {
   locale: Locale;
@@ -29,24 +30,94 @@ const steps: readonly WayfindingStep[] = [
     bodyKey: "wayfinding.clinicBody",
   },
 ];
+const images = wayfindingAssets.slice(0, 2);
+const localizedImageCopy = {
+  uk: {
+    alt: [
+      "Вхід до будівлі поруч із вивіскою супермаркету АТБ",
+      "Орієнтир біля АТБ із нанесеними на фото стрілками до входу",
+    ],
+    caption: [
+      "Фото орієнтира, надане власником: вивіска АТБ та сусідній вхід.",
+      "Друге фото, надане власником, містить нанесені українською підказки до входу.",
+    ],
+  },
+  en: {
+    alt: [
+      "Building entrance beside an ATB supermarket sign",
+      "ATB landmark with directional arrows overlaid on the photograph",
+    ],
+    caption: [
+      "Owner-supplied landmark photograph: the ATB sign and the adjacent entrance.",
+      "A second owner-supplied photograph includes Ukrainian directional labels to the entrance.",
+    ],
+  },
+  sk: {
+    alt: [
+      "Vstup do budovy vedľa označenia supermarketu ATB",
+      "Orientačný bod ATB so smerovými šípkami priamo na fotografii",
+    ],
+    caption: [
+      "Fotografia orientačného bodu dodaná vlastníkom: označenie ATB a susedný vstup.",
+      "Druhá fotografia dodaná vlastníkom obsahuje ukrajinské smerové označenia ku vchodu.",
+    ],
+  },
+  hu: {
+    alt: [
+      "Épületbejárat az ATB szupermarket táblája mellett",
+      "ATB tájékozódási pont iránymutató nyilakkal a fényképen",
+    ],
+    caption: [
+      "A tulajdonos által biztosított tájékozódási fotó: az ATB tábla és a mellette lévő bejárat.",
+      "A második, tulajdonostól származó fényképen ukrán nyelvű iránymutatás látható a bejárathoz.",
+    ],
+  },
+} as const;
+const imageCopy = localizedImageCopy[locale];
 ---
 
-<ol class="grid border-y border-border md:grid-cols-4">
+<div class="grid min-w-0 gap-8 lg:grid-cols-[minmax(0,0.82fr)_minmax(0,1.18fr)] lg:items-stretch">
   {
-    steps.map((step, index) => (
-      <li class="relative grid min-h-44 grid-cols-[3.25rem_1fr] border-b border-border py-7 last:border-b-0 md:min-h-56 md:grid-cols-1 md:border-b-0 md:border-r md:px-7 md:py-8 md:last:border-r-0 lg:min-h-60 lg:px-8">
-        <span class="font-serif text-2xl tabular-nums text-primary/70 md:text-3xl">
-          {String(index + 1).padStart(2, "0")}
-        </span>
-        <div class="md:self-end">
-          <h3 class="text-xl font-medium leading-tight text-foreground">
-            {t(locale, step.titleKey)}
-          </h3>
-          <p class="mt-3 max-w-xs text-sm leading-6 text-muted-foreground">
-            {t(locale, step.bodyKey)}
-          </p>
-        </div>
-      </li>
-    ))
+    images.length > 0 ? (
+      <div class="grid min-w-0 gap-4 sm:grid-cols-2 lg:grid-cols-1 xl:grid-cols-2">
+        {images.map((image, index) => (
+          <figure class="min-w-0 bg-muted">
+            <img
+              class="aspect-[3/4] h-auto w-full object-cover object-center"
+              src={image.src}
+              width={image.width}
+              height={image.height}
+              alt={imageCopy.alt[index] ?? imageCopy.alt[0]}
+              loading="lazy"
+              decoding="async"
+              sizes="(min-width: 1280px) 20vw, (min-width: 1024px) 40vw, (min-width: 640px) 48vw, 100vw"
+            />
+            <figcaption class="border-x border-b border-border bg-card px-5 py-4 text-xs leading-5 text-muted-foreground">
+              {imageCopy.caption[index] ?? imageCopy.caption[0]}
+            </figcaption>
+          </figure>
+        ))}
+      </div>
+    ) : null
   }
-</ol>
+
+  <ol class="grid min-w-0 border-y border-border sm:grid-cols-2">
+    {
+      steps.map((step, index) => (
+        <li class="relative grid min-h-44 min-w-0 grid-cols-[3.25rem_minmax(0,1fr)] border-b border-border py-7 last:border-b-0 sm:min-h-52 sm:grid-cols-1 sm:border-r sm:px-7 sm:py-8 sm:[&:nth-child(2n)]:border-r-0 sm:[&:nth-last-child(-n+2)]:border-b-0 lg:min-h-56">
+          <span class="font-serif text-2xl tabular-nums text-primary/70 md:text-3xl">
+            {String(index + 1).padStart(2, "0")}
+          </span>
+          <div class="min-w-0 sm:self-end">
+            <h3 class="break-words text-xl font-medium leading-tight text-foreground">
+              {t(locale, step.titleKey)}
+            </h3>
+            <p class="mt-3 max-w-xs break-words text-sm leading-6 text-muted-foreground">
+              {t(locale, step.bodyKey)}
+            </p>
+          </div>
+        </li>
+      ))
+    }
+  </ol>
+</div>

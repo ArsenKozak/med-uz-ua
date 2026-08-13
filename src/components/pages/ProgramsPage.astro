@@ -3,12 +3,14 @@ import Container from "../ui/Container.astro";
 import BaseLayout from "../../layouts/BaseLayout.astro";
 import { clinicContact } from "../../lib/clinic";
 import { localizePath, t, type Locale } from "../../lib/i18n";
+import { getAppointmentHref } from "../../lib/navigation";
 
 interface Props {
   locale: Locale;
 }
 
 const { locale } = Astro.props;
+const appointmentHref = getAppointmentHref(Astro.url.pathname, locale);
 const callAriaLabel = t(locale, "programs.callAria").replace(
   "{phone}",
   clinicContact.phoneDisplay,
@@ -182,7 +184,7 @@ const callAriaLabel = t(locale, "programs.callAria").replace(
       <div class="flex flex-col gap-3 sm:flex-row sm:flex-wrap lg:col-span-5 lg:justify-end">
         <a
           class="focus-ring-primary inline-flex min-h-12 items-center justify-center bg-primary px-6 text-sm font-semibold text-primary-foreground transition-colors hover:bg-primary/90"
-          href={localizePath("/#appointment-form", locale)}
+          href={appointmentHref}
         >
           {t(locale, "programs.book")}
         </a>

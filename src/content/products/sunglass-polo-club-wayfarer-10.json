@@ -1,0 +1,13 @@
+{
+  "title": "Сонцезахисні окуляри Polo Club Wayfarer",
+  "description": "Стиль Wayfarer з дзеркальними поляризованими лінзами.",
+  "category": "sunglasses",
+  "brand": "Polo Club",
+  "priceMinor": 270000,
+  "currency": "UAH",
+  "image": "/images/artificial/shop-editorial-eyewear.jpg",
+  "imageKind": "editorial",
+  "inStock": true,
+  "status": "active",
+  "verificationStatus": "verified"
+}

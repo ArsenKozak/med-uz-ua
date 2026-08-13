@@ -1,7 +1,14 @@
 import type { APIRoute } from "astro";
 
-import { dispatchAppointment } from "../../lib/leads/dispatcher";
-import { appointmentSchema } from "../../schemas/appointment";
+import {
+  createLeadDispatcher,
+  type AppointmentDispatcher,
+} from "../../lib/leads/dispatcher.ts";
+import {
+  appointmentSchema,
+  getAppointmentFieldErrors,
+  type AppointmentFieldErrors,
+} from "../../schemas/appointment.ts";
 
 export const prerender = false;
 
@@ -11,8 +18,12 @@ type AppointmentApiResponse =
   | { ok: true }
   | {
       ok: false;
+      error: "INVALID_INPUT";
+      fieldErrors: AppointmentFieldErrors;
+    }
+  | {
+      ok: false;
       error:
-        | "INVALID_INPUT"
         | "INVALID_ORIGIN"
         | "PAYLOAD_TOO_LARGE"
         | "UPSTREAM_ERROR";
@@ -27,12 +38,16 @@ function jsonResponse(
     headers: {
       "cache-control": "no-store",
       "content-type": "application/json; charset=utf-8",
+      "x-content-type-options": "nosniff",
     },
   });
 }
 
-function invalidInput(): Response {
-  return jsonResponse({ ok: false, error: "INVALID_INPUT" }, 400);
+function invalidInput(fieldErrors: AppointmentFieldErrors = {}): Response {
+  return jsonResponse(
+    { ok: false, error: "INVALID_INPUT", fieldErrors },
+    400,
+  );
 }
 
 function hasValidOrigin(request: Request): boolean {
@@ -71,13 +86,23 @@ async function readBoundedBody(request: Request): Promise<string | null> {
   }
 }
 
-export const POST: APIRoute = async ({ request }) => {
+const unavailableDispatcher: AppointmentDispatcher = async () => {
+  throw new Error("LEAD_DISPATCH_UNAVAILABLE");
+};
+
+export async function handleAppointmentRequest(
+  request: Request,
+  dispatchAppointment: AppointmentDispatcher = unavailableDispatcher,
+): Promise<Response> {
   if (!hasValidOrigin(request)) {
     return jsonResponse({ ok: false, error: "INVALID_ORIGIN" }, 403);
   }
 
-  const contentType = request.headers.get("content-type") ?? "";
-  if (!contentType.toLowerCase().includes("application/json")) {
+  const contentType = (request.headers.get("content-type") ?? "")
+    .split(";", 1)[0]
+    ?.trim()
+    .toLowerCase();
+  if (contentType !== "application/json") {
     return invalidInput();
   }
 
@@ -103,7 +128,7 @@ export const POST: APIRoute = async ({ request }) => {
   const result = appointmentSchema.safeParse(body);
 
   if (!result.success) {
-    return invalidInput();
+    return invalidInput(getAppointmentFieldErrors(result.error));
   }
 
   try {
@@ -113,4 +138,10 @@ export const POST: APIRoute = async ({ request }) => {
   }
 
   return jsonResponse({ ok: true }, 200);
-};
+}
+
+export const POST: APIRoute = ({ request, locals }) =>
+  handleAppointmentRequest(
+    request,
+    createLeadDispatcher(locals.runtime.env),
+  );

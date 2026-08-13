@@ -1,0 +1,13 @@
+{
+  "title": "Сонцезахисні окуляри Vido Round",
+  "description": "Круглі сонцезахисні окуляри з тонкими металевими дужками.",
+  "category": "sunglasses",
+  "brand": "Vido",
+  "priceMinor": 170000,
+  "currency": "UAH",
+  "image": "/images/artificial/shop-editorial-eyewear.jpg",
+  "imageKind": "editorial",
+  "inStock": false,
+  "status": "active",
+  "verificationStatus": "verified"
+}

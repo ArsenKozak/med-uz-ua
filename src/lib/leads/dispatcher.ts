@@ -5,27 +5,73 @@ type Fetcher = (
   init?: RequestInit,
 ) => Promise<Response>;
 
-const mockTelegramFetch: Fetcher = async () =>
-  Response.json({ ok: true }, { status: 200 });
+export interface LeadDispatchEnvironment {
+  readonly LEAD_API_URL?: string;
+  readonly LEAD_API_TOKEN?: string;
+}
+
+export type AppointmentDispatcher = (
+  appointment: AppointmentInput,
+) => Promise<void>;
+
+function readDispatchConfig(
+  environment: LeadDispatchEnvironment,
+): { endpoint: URL; token: string } | null {
+  const rawEndpoint = environment.LEAD_API_URL?.trim();
+  const token = environment.LEAD_API_TOKEN?.trim();
+
+  if (!rawEndpoint || !token) {
+    return null;
+  }
+
+  try {
+    const endpoint = new URL(rawEndpoint);
+
+    if (
+      endpoint.protocol !== "https:" ||
+      endpoint.username !== "" ||
+      endpoint.password !== "" ||
+      endpoint.hash !== ""
+    ) {
+      return null;
+    }
+
+    return { endpoint, token };
+  } catch {
+    return null;
+  }
+}
 
 /**
- * Stage 1 downstream boundary. The injected fetch mock keeps the tracer bullet
- * deterministic while preserving the same awaited failure semantics as the
- * eventual Telegram, CRM, or email adapter.
+ * Creates the production lead-delivery boundary from server-only bindings.
+ * Missing or unsafe configuration fails closed so the UI cannot report a
+ * successful appointment that was never delivered.
  */
-export async function dispatchAppointment(
-  appointment: AppointmentInput,
-  fetcher: Fetcher = mockTelegramFetch,
-): Promise<void> {
-  const response = await fetcher("https://api.telegram.invalid/mock/sendMessage", {
-    method: "POST",
-    headers: {
-      "content-type": "application/json",
-    },
-    body: JSON.stringify(appointment),
-  });
+export function createLeadDispatcher(
+  environment: LeadDispatchEnvironment,
+  fetcher: Fetcher = fetch,
+): AppointmentDispatcher {
+  return async (appointment) => {
+    const config = readDispatchConfig(environment);
 
-  if (!response.ok) {
-    throw new Error("LEAD_DISPATCH_FAILED");
-  }
+    if (config === null) {
+      throw new Error("LEAD_DISPATCH_UNAVAILABLE");
+    }
+
+    const response = await fetcher(config.endpoint, {
+      method: "POST",
+      headers: {
+        accept: "application/json",
+        authorization: `Bearer ${config.token}`,
+        "content-type": "application/json",
+      },
+      body: JSON.stringify(appointment),
+      redirect: "error",
+      signal: AbortSignal.timeout(8_000),
+    });
+
+    if (!response.ok) {
+      throw new Error("LEAD_DISPATCH_FAILED");
+    }
+  };
 }

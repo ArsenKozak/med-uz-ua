@@ -1,0 +1,13 @@
+{
+  "title": "Сонцезахисні окуляри Twenty Metal",
+  "description": "Стильні сонцезахисні окуляри у легкій металевій оправі.",
+  "category": "sunglasses",
+  "brand": "Twenty",
+  "priceMinor": 200000,
+  "currency": "UAH",
+  "image": "/images/artificial/shop-editorial-eyewear.jpg",
+  "imageKind": "editorial",
+  "inStock": true,
+  "status": "active",
+  "verificationStatus": "verified"
+}

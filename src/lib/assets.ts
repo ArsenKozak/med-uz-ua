@@ -12,6 +12,13 @@ export interface VerifiedImageAsset {
   readonly mimeType: VerifiedImageMimeType;
 }
 
+export interface OwnerSuppliedImageAsset extends VerifiedImageAsset {
+  /** Repository owner supplied the file in the confirmed baseline. */
+  readonly provenance: "owner-supplied";
+  /** A human visual audit matched the image to the stated scene. */
+  readonly visuallyVerified: true;
+}
+
 /**
  * These dimensions and MIME types were read from the local image bytes. Keep
  * this manifest explicit so templates never have to guess paths or aspect
@@ -70,6 +77,62 @@ export const brandImageAssets = {
     mimeType: "image/png",
   },
 } satisfies Readonly<Record<string, VerifiedImageAsset>>;
+
+/**
+ * Clinic imagery supplied by the repository owner and visually inspected in
+ * the local workspace. Scene labels describe only what is visible; they do not
+ * make treatment, outcome, licensing, or authorship claims.
+ */
+export const clinicImageAssets = {
+  titleBrandUk: {
+    src: "/images/clinic/title-brand.jpg",
+    width: 2788,
+    height: 616,
+    mimeType: "image/png",
+    provenance: "owner-supplied",
+    visuallyVerified: true,
+  },
+  doctorPortrait: {
+    src: "/images/clinic/doctor-miroslava-portrait.jpg",
+    width: 995,
+    height: 1280,
+    mimeType: "image/jpeg",
+    provenance: "owner-supplied",
+    visuallyVerified: true,
+  },
+  doctorInCabinet: {
+    src: "/images/clinic/doctor-in-cabinet.jpg",
+    width: 1280,
+    height: 960,
+    mimeType: "image/jpeg",
+    provenance: "owner-supplied",
+    visuallyVerified: true,
+  },
+  pediatricExamination: {
+    src: "/images/clinic/pediatric-chart.jpg",
+    width: 1280,
+    height: 960,
+    mimeType: "image/jpeg",
+    provenance: "owner-supplied",
+    visuallyVerified: true,
+  },
+  adultExamination: {
+    src: "/images/clinic/examination-process.jpg",
+    width: 960,
+    height: 1280,
+    mimeType: "image/jpeg",
+    provenance: "owner-supplied",
+    visuallyVerified: true,
+  },
+  diagnosticConsultation: {
+    src: "/images/clinic/diagnostics-device.jpg",
+    width: 960,
+    height: 1280,
+    mimeType: "image/jpeg",
+    provenance: "owner-supplied",
+    visuallyVerified: true,
+  },
+} satisfies Readonly<Record<string, OwnerSuppliedImageAsset>>;
 
 export const certificateAssets = [
   {
@@ -134,8 +197,29 @@ export const certificateAssets = [
   },
 ] satisfies readonly VerifiedImageAsset[];
 
-/** No verified entrance / ATB / second-floor image exists in the asset set. */
-export const wayfindingAssets: readonly VerifiedImageAsset[] = [];
+/**
+ * Owner-supplied photographs visually show the same entrance beside an ATB
+ * sign. The second file contains baked-in Ukrainian wayfinding text, so the
+ * first image is preferred for multilingual UI.
+ */
+export const wayfindingAssets = [
+  {
+    src: "/images/clinic/wayfinding-atb-landmark.jpg",
+    width: 1200,
+    height: 1600,
+    mimeType: "image/jpeg",
+    provenance: "owner-supplied",
+    visuallyVerified: true,
+  },
+  {
+    src: "/images/clinic/wayfinding-atb-landmark2.jpg",
+    width: 1284,
+    height: 1874,
+    mimeType: "image/jpeg",
+    provenance: "owner-supplied",
+    visuallyVerified: true,
+  },
+] satisfies readonly OwnerSuppliedImageAsset[];
 
 /** Files found in the image tree whose bytes are HTML, not raster images. */
 export const knownInvalidImagePaths = [

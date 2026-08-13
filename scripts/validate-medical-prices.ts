@@ -11,13 +11,20 @@ import type {
   OfficialPriceSection,
 } from "../src/schemas/medical-price.ts";
 
-const EXPECTED_ITEM_COUNT = 40;
+const EXPECTED_IDS = [
+  1, 2, 3, 4, 5, 6, 7, 8, 9, 10,
+  11, 12, 13, 14, 15, 16, 17, 18, 19, 20,
+  21, 22, 23, 24, 25, 26, 27, 28, 29, 30,
+  31, 32, 33, 38, 39, 40,
+] as const;
+const REMOVED_IDS = [34, 35, 36, 37] as const;
+const EXPECTED_ITEM_COUNT = EXPECTED_IDS.length;
 
 const EXPECTED_PRICES_UAH: readonly number[] = [
   800, 700, 700, 700, 600, 600, 200, 200, 200, 300,
   400, 300, 200, 300, 150, 250, 300, 200, 50, 300,
   350, 300, 400, 600, 200, 300, 200, 1200, 400, 400,
-  700, 300, 200, 400, 3000, 400, 3000, 600, 300, 100,
+  700, 300, 200, 600, 300, 100,
 ];
 
 const EXPECTED_UI_CATEGORIES: readonly MedicalUiCategory[] = [
@@ -54,10 +61,6 @@ const EXPECTED_UI_CATEGORIES: readonly MedicalUiCategory[] = [
   "procedures",
   "diagnostics",
   "diagnostics",
-  "injections-therapy",
-  "injections-therapy",
-  "injections-therapy",
-  "injections-therapy",
   "laboratory",
   "laboratory",
   "laboratory",
@@ -97,10 +100,6 @@ const EXPECTED_OFFICIAL_NAMES_UK: readonly string[] = [
   "Зондування слізних каналів (2 ока)",
   "Проведення канальцевої та сльозоносової проб",
   'Тести на синдром"сухого ока"',
-  "Парабульбарна ін'єкція ( 1 ін. )",
-  "Парабульбарна ін'єкція  ( курс 7-10 ін. )",
-  "Субкон'юктивальна ін'єкція ( 1 ін.)",
-  "Субкон'юктивальна ін'єкція ( курс 7-10)",
   "Бакпосів з ока+антибіотикограма (1 око)",
   "Демодекс (Мікроскопія на виявлення шкірного кліща роду Demodex)",
   "Забір матеріалу на БАК(у транс.середовище)",
@@ -121,8 +120,6 @@ const KEY_PRICE_ASSERTIONS: ReadonlyArray<{
   { id: 5, priceUah: 600 },
   { id: 6, priceUah: 600 },
   { id: 28, priceUah: 1200 },
-  { id: 35, priceUah: 3000 },
-  { id: 37, priceUah: 3000 },
   { id: 40, priceUah: 100 },
 ];
 
@@ -155,19 +152,31 @@ if (!itemsResult.success) {
     );
   }
 
-  for (let expectedId = 1; expectedId <= EXPECTED_ITEM_COUNT; expectedId += 1) {
+  for (const expectedId of EXPECTED_IDS) {
     if (!uniqueIds.has(expectedId)) {
       validationErrors.push(`Missing ID ${expectedId}.`);
     }
   }
 
+  for (const removedId of REMOVED_IDS) {
+    if (uniqueIds.has(removedId)) {
+      validationErrors.push(`Removed ID ${removedId} must not be present.`);
+    }
+  }
+
   for (const [zeroBasedIndex, expectedPriceUah] of EXPECTED_PRICES_UAH.entries()) {
-    const id = zeroBasedIndex + 1;
+    const id = EXPECTED_IDS[zeroBasedIndex];
+    if (id === undefined) {
+      validationErrors.push(
+        `Canonical ID is missing at index ${zeroBasedIndex}.`,
+      );
+      continue;
+    }
     const item = itemById.get(id);
     const expectedUiCategory = EXPECTED_UI_CATEGORIES[zeroBasedIndex];
     const expectedOfficialNameUk = EXPECTED_OFFICIAL_NAMES_UK[zeroBasedIndex];
     const expectedOfficialSection: OfficialPriceSection =
-      id <= 37 ? "ophthalmology" : "other-medical-services";
+      id <= 33 ? "ophthalmology" : "other-medical-services";
     const expectedNoteUk = EXPECTED_NOTE_UK_BY_ID.get(id);
 
     if (!item) {
@@ -248,6 +257,6 @@ if (validationErrors.length > 0) {
   process.exitCode = 1;
 } else {
   console.log(
-    `Medical price validation passed: ${EXPECTED_ITEM_COUNT} complete canonical records matched, with valid metadata and contiguous unique IDs 1–40.`,
+    `Medical price validation passed: ${EXPECTED_ITEM_COUNT} retained canonical records matched; IDs 34–37 are absent and IDs 38–40 preserve their original numbering.`,
   );
 }

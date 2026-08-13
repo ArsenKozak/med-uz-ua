@@ -1,3 +1,6 @@
+import { BOOKING_HREF } from "./clinic";
+import { localizePath, stripLocalePrefix, type Locale } from "./i18n";
+
 export type NavigationMatch = "exact" | "prefix";
 
 export interface NavigationItem {
@@ -44,4 +47,32 @@ export function isNavigationItemActive(
   return (
     currentPath === targetPath || currentPath.startsWith(`${targetPath}/`)
   );
+}
+
+/** Routes that render the shared appointment form in their own document. */
+export function routeHasAppointmentForm(pathname: string): boolean {
+  const routePath = normalizePathname(stripLocalePrefix(pathname));
+
+  if (routePath === "/") {
+    return true;
+  }
+
+  const serviceDetailMatch = /^\/services\/([^/]+)$/.exec(routePath);
+
+  return (
+    serviceDetailMatch !== null && serviceDetailMatch[1] !== "programs"
+  );
+}
+
+/**
+ * Keep consultation links on the current page when it owns the form; otherwise
+ * point to the locale's home-page form.
+ */
+export function getAppointmentHref(
+  pathname: string,
+  locale: Locale,
+): string {
+  return routeHasAppointmentForm(pathname)
+    ? "#appointment-form"
+    : localizePath(BOOKING_HREF, locale);
 }

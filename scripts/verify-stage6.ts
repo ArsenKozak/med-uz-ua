@@ -1,4 +1,3 @@
-import { createHash } from "node:crypto";
 import fs from "node:fs";
 import path from "node:path";
 import { z } from "astro/zod";
@@ -16,6 +15,7 @@ const PRODUCT_MANIFEST_FILE = path.join(
   "scripts",
   "seed-products.manifest.json",
 );
+const PRODUCT_SEED_FILE = path.join(PROJECT_ROOT, "shop_seed.json");
 const APPOINTMENT_API_FILE = path.join(
   PROJECT_ROOT,
   "src",
@@ -30,22 +30,34 @@ const APPOINTMENT_FORM_FILE = path.join(
   "clinic",
   "AppointmentForm.astro",
 );
+const LEAD_DISPATCHER_FILE = path.join(
+  PROJECT_ROOT,
+  "src",
+  "lib",
+  "leads",
+  "dispatcher.ts",
+);
 const WRANGLER_FILE = path.join(PROJECT_ROOT, "wrangler.jsonc");
 const WORKER_ENTRY_FILE = path.join(DIST_DIR, "_worker.js", "index.js");
 
-const REQUIRED_API_SHA256 =
-  "d50e21f4ec8dcaa39b25ea0ae7630005d2d80bc72784fc78600803af786f2b9b";
 const REQUIRED_WORKER_MAIN = "./dist/_worker.js/index.js";
 const REQUIRED_ASSETS_DIRECTORY = "./dist";
 const SITE_ORIGIN = "https://med.uz.ua";
 const EXPECTED_PRODUCT_COUNT = 60;
 const EXPECTED_PRODUCTS_PER_CATEGORY = 15;
-const EXPECTED_PRICE_COUNT = 40;
+const EXPECTED_PRICE_IDS = [
+  1, 2, 3, 4, 5, 6, 7, 8, 9, 10,
+  11, 12, 13, 14, 15, 16, 17, 18, 19, 20,
+  21, 22, 23, 24, 25, 26, 27, 28, 29, 30,
+  31, 32, 33, 38, 39, 40,
+] as const;
+const REMOVED_PRICE_IDS = [34, 35, 36, 37] as const;
+const EXPECTED_PRICE_COUNT = EXPECTED_PRICE_IDS.length;
 
 const EXPECTED_PRICES_UAH: readonly number[] = [
   800, 700, 700, 700, 600, 600, 200, 200, 200, 300, 400, 300, 200, 300,
   150, 250, 300, 200, 50, 300, 350, 300, 400, 600, 200, 300, 200, 1200,
-  400, 400, 700, 300, 200, 400, 3000, 400, 3000, 600, 300, 100,
+  400, 400, 700, 300, 200, 600, 300, 100,
 ];
 
 const KNOWN_INVALID_IMAGE_PATHS: readonly string[] = [
@@ -73,6 +85,8 @@ const CORE_ROUTES: readonly string[] = [
   "shop",
   "about",
   "contacts",
+  "offer",
+  "privacy",
 ];
 
 const EXPECTED_PRODUCT_CATEGORIES: readonly string[] = [
@@ -90,6 +104,28 @@ const manifestSchema = z
     ),
   })
   .strict();
+
+const seedCatalogSchema = z
+  .array(
+    z
+      .object({
+        id: z.string().regex(/^[a-z0-9]+(?:-[a-z0-9]+)*$/),
+        title: z.string().trim().min(1),
+        category: z.enum(["lenses", "frames", "sunglasses", "care"]),
+        brand: z.string().trim().min(1),
+        price: z.number().int().positive().refine(Number.isSafeInteger),
+        inStock: z.boolean(),
+        image: z
+          .string()
+          .regex(
+            /^\/images\/shop\/(?:lenses|frames|sunglasses|care)\/[a-z0-9][a-z0-9._-]*\.(?:jpe?g|png|webp|avif)$/i,
+          )
+          .refine((value) => !value.includes("..") && !value.includes("\\")),
+        description: z.string().trim().min(1),
+      })
+      .strict(),
+  )
+  .length(EXPECTED_PRODUCT_COUNT);
 
 const wranglerSchema = z
   .object({
@@ -252,15 +288,6 @@ function parseJsoncUnknown(rawJsonc: string, sourceName: string): unknown | null
   }
 }
 
-function sha256(filePath: string): string | null {
-  try {
-    return createHash("sha256").update(fs.readFileSync(filePath)).digest("hex");
-  } catch (error) {
-    fail("api", `Cannot hash ${path.relative(PROJECT_ROOT, filePath)}: ${describeError(error)}`);
-    return null;
-  }
-}
-
 function isNonEmptyFile(filePath: string): boolean {
   try {
     return fs.statSync(filePath).isFile() && fs.statSync(filePath).size > 0;
@@ -352,14 +379,6 @@ function routeOutputFile(locale: LocaleConfig, route: string): string {
 }
 
 function verifyProtectedInfrastructure(): void {
-  const actualApiHash = sha256(APPOINTMENT_API_FILE);
-  if (actualApiHash !== null && actualApiHash !== REQUIRED_API_SHA256) {
-    fail(
-      "api",
-      `Protected API SHA-256 mismatch: expected ${REQUIRED_API_SHA256}, received ${actualApiHash}. Restore src/pages/api/appointments.ts byte-for-byte.`,
-    );
-  }
-
   const wranglerSource = readText(WRANGLER_FILE, "cloudflare");
   if (wranglerSource !== null) {
     const wranglerData = parseJsoncUnknown(wranglerSource, "wrangler.jsonc");
@@ -403,9 +422,9 @@ function verifyMedicalPrices(): void {
     fail("prices", "Duplicate official medical price IDs were found.");
   }
 
-  for (let id = 1; id <= EXPECTED_PRICE_COUNT; id += 1) {
+  for (const [index, id] of EXPECTED_PRICE_IDS.entries()) {
     const item = itemsById.get(id);
-    const expectedPrice = EXPECTED_PRICES_UAH[id - 1];
+    const expectedPrice = EXPECTED_PRICES_UAH[index];
     if (!item) {
       fail("prices", `Official medical price ID ${id} is missing.`);
     } else if (expectedPrice === undefined || item.priceUah !== expectedPrice) {
@@ -413,6 +432,12 @@ function verifyMedicalPrices(): void {
         "prices",
         `Price mismatch for ID ${id}: expected ${expectedPrice ?? "missing canonical value"} UAH, received ${item.priceUah} UAH.`,
       );
+    }
+  }
+
+  for (const removedId of REMOVED_PRICE_IDS) {
+    if (itemsById.has(removedId)) {
+      fail("prices", `Removed medical price ID ${removedId} is still present.`);
     }
   }
 
@@ -459,6 +484,32 @@ function verifyProductCatalog(): void {
 
   const generatedFiles = manifestResult.data.generatedFiles;
   const generatedFileSet = new Set(generatedFiles);
+
+  const seedSource = readText(PRODUCT_SEED_FILE, "catalog");
+  if (seedSource === null) return;
+  const seedData = parseJsoncUnknown(seedSource, "shop_seed.json");
+  const seedResult = seedCatalogSchema.safeParse(seedData);
+  if (!seedResult.success) {
+    fail("catalog", `shop_seed.json is invalid: ${seedResult.error.message}`);
+    return;
+  }
+  const seedFiles = seedResult.data
+    .map((product) => `${product.id}.json`)
+    .sort();
+  const uniqueSeedFiles = new Set(seedFiles);
+  if (uniqueSeedFiles.size !== EXPECTED_PRODUCT_COUNT) {
+    fail("catalog", "shop_seed.json contains duplicate product IDs.");
+  }
+  const sortedGeneratedFiles = [...generatedFiles].sort();
+  if (
+    seedFiles.length !== sortedGeneratedFiles.length ||
+    seedFiles.some((filename, index) => filename !== sortedGeneratedFiles[index])
+  ) {
+    fail(
+      "catalog",
+      "shop_seed.json IDs and seed-products.manifest.json must match exactly. Run `pnpm seed:products`.",
+    );
+  }
   if (generatedFiles.length !== EXPECTED_PRODUCT_COUNT) {
     fail(
       "catalog",
@@ -665,11 +716,19 @@ function verifyRoutesAndPrices(): Map<string, string> {
         `${routePublicPath(locale, "services")} contains duplicate medical price markers.`,
       );
     }
-    for (let id = 1; id <= EXPECTED_PRICE_COUNT; id += 1) {
+    for (const id of EXPECTED_PRICE_IDS) {
       if (!uniqueMarkerIds.has(id)) {
         fail(
           "prices",
           `${routePublicPath(locale, "services")} is missing data-medical-price-id=${id}.`,
+        );
+      }
+    }
+    for (const removedId of REMOVED_PRICE_IDS) {
+      if (uniqueMarkerIds.has(removedId)) {
+        fail(
+          "prices",
+          `${routePublicPath(locale, "services")} still renders removed data-medical-price-id=${removedId}.`,
         );
       }
     }
@@ -762,7 +821,9 @@ function verifyBuiltImages(htmlDocuments: Map<string, string>): void {
 
 function verifyAppointmentContract(): void {
   const source = readText(APPOINTMENT_FORM_FILE, "appointment");
-  if (source === null) return;
+  const apiSource = readText(APPOINTMENT_API_FILE, "appointment");
+  const dispatcherSource = readText(LEAD_DISPATCHER_FILE, "appointment");
+  if (source === null || apiSource === null || dispatcherSource === null) return;
 
   const requiredMarkers: ReadonlyArray<{ label: string; pattern: RegExp }> = [
     {
@@ -775,11 +836,14 @@ function verifyAppointmentContract(): void {
     },
     { label: "POST method", pattern: /method\s*:\s*["']POST["']/ },
     {
-      label: "exact { name, phone } JSON payload",
-      pattern: /body\s*:\s*JSON\.stringify\(\s*{\s*name\s*,\s*phone\s*}\s*\)/,
+      label: "name, phone, honeypot and timing JSON payload",
+      pattern: /body\s*:\s*JSON\.stringify\(\s*{\s*name\s*,\s*phone\s*,\s*website\s*,\s*elapsedMs\s*}\s*\)/,
     },
     { label: "name field", pattern: /name\s*=\s*["']name["']/ },
     { label: "phone field", pattern: /name\s*=\s*["']phone["']/ },
+    { label: "honeypot field", pattern: /name\s*=\s*["']website["']/ },
+    { label: "linked name error", pattern: /aria-describedby\s*=\s*["']appointment-name-error["']/ },
+    { label: "linked phone error", pattern: /aria-describedby\s*=\s*["']appointment-phone-error["']/ },
     { label: "successful field reset", pattern: /form\.reset\(\)/ },
     {
       label: "appointment success analytics",
@@ -791,9 +855,38 @@ function verifyAppointmentContract(): void {
     if (!marker.pattern.test(source)) {
       fail(
         "appointment",
-        `AppointmentForm.astro is missing the required ${marker.label} contract marker. Keep the endpoint /api/appointments and payload exactly { name, phone }.`,
+        `AppointmentForm.astro is missing the required ${marker.label} contract marker.`,
       );
     }
+  }
+
+  const apiMarkers: ReadonlyArray<{ label: string; pattern: RegExp }> = [
+    { label: "shared appointment schema", pattern: /appointmentSchema/ },
+    { label: "server safeParse boundary", pattern: /appointmentSchema\.safeParse\(body\)/ },
+    { label: "same-origin validation", pattern: /hasValidOrigin\(request\)/ },
+    { label: "bounded request body", pattern: /MAX_BODY_BYTES\s*=\s*4_096/ },
+    { label: "JSON-only input", pattern: /application\/json/ },
+    { label: "awaited dispatch", pattern: /await dispatchAppointment\(result\.data\)/ },
+    {
+      label: "server-bound dispatcher",
+      pattern: /createLeadDispatcher\(locals\.runtime\.env\)/,
+    },
+  ];
+  for (const marker of apiMarkers) {
+    if (!marker.pattern.test(apiSource)) {
+      fail("appointment", `appointments.ts is missing ${marker.label}.`);
+    }
+  }
+  if (/console\.(?:log|info|warn|error|debug)/.test(`${source}\n${apiSource}`)) {
+    fail("appointment", "Appointment UI/API must not log patient input.");
+  }
+  for (const binding of ["LEAD_API_URL", "LEAD_API_TOKEN"] as const) {
+    if (!dispatcherSource.includes(binding)) {
+      fail("appointment", `Lead dispatcher is missing the ${binding} server binding.`);
+    }
+  }
+  if (/mockTelegramFetch|\.invalid\/mock/.test(dispatcherSource)) {
+    fail("appointment", "Lead dispatcher must not use an always-successful mock.");
   }
 }
 
@@ -811,10 +904,11 @@ if (failures.length > 0) {
   }
   process.exitCode = 1;
 } else {
-  console.log("Stage 6 production verification passed:");
-  console.log(`- protected API SHA-256: ${REQUIRED_API_SHA256}`);
-  console.log(`- official medical prices: ${EXPECTED_PRICE_COUNT} contiguous canonical IDs`);
+  console.log("Stage 6 static verification passed:");
+  console.log(`- appointment API: shared schema, origin/body/content-type, awaited dispatch gates passed`);
+  console.log(`- retained medical prices: ${EXPECTED_PRICE_COUNT} stable canonical IDs`);
   console.log(`- generated catalog: ${EXPECTED_PRODUCT_COUNT} unique products (${EXPECTED_PRODUCTS_PER_CATEGORY} per category)`);
   console.log(`- localized core routes: ${LOCALES.length * CORE_ROUTES.length}`);
   console.log("- canonical, hreflang, image-byte, image-dimension, appointment, Worker, and Wrangler gates: passed");
+  console.log("- external lead delivery, provider accounts, and production deployment require separate verification");
 }

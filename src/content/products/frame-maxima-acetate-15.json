@@ -1,0 +1,13 @@
+{
+  "title": "Оправа Maxima Acetate",
+  "description": "Стильна пластикова оправа для повсякденного комфорту.",
+  "category": "frames",
+  "brand": "Maxima",
+  "priceMinor": 180000,
+  "currency": "UAH",
+  "image": "/images/artificial/shop-editorial-eyewear.jpg",
+  "imageKind": "editorial",
+  "inStock": true,
+  "status": "active",
+  "verificationStatus": "verified"
+}
