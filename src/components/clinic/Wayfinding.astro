@@ -30,49 +30,52 @@ const steps: readonly WayfindingStep[] = [
     bodyKey: "wayfinding.clinicBody",
   },
 ];
+
 const images = wayfindingAssets.slice(0, 2);
+
 const localizedImageCopy = {
   uk: {
     alt: [
       "Вхід до будівлі поруч із вивіскою супермаркету АТБ",
-      "Орієнтир біля АТБ із нанесеними на фото стрілками до входу",
+      "Орієнтир біля АТБ із нанесеними підказками до входу",
     ],
     caption: [
-      "Фото орієнтира, надане власником: вивіска АТБ та сусідній вхід.",
-      "Друге фото, надане власником, містить нанесені українською підказки до входу.",
+      "Головний орієнтир: фасад сучасної будівлі поруч із супермаркетом АТБ. Вхідні двері розташовані одразу ліворуч від вивіски.",
+      "Вхід до медичного центру: заходьте через скляні двері та піднімайтеся на 2-й поверх — на вас чекає рецепція клініки.",
     ],
   },
   en: {
     alt: [
       "Building entrance beside an ATB supermarket sign",
-      "ATB landmark with directional arrows overlaid on the photograph",
+      "ATB landmark with directional clues to the entrance",
     ],
     caption: [
-      "Owner-supplied landmark photograph: the ATB sign and the adjacent entrance.",
-      "A second owner-supplied photograph includes Ukrainian directional labels to the entrance.",
+      "Main landmark: the modern building facade right next to ATB supermarket. The entrance is located immediately to the left.",
+      "Clinic entrance: step through the glass entrance doors and head up to the 2nd floor where our reception awaits you.",
     ],
   },
   sk: {
     alt: [
       "Vstup do budovy vedľa označenia supermarketu ATB",
-      "Orientačný bod ATB so smerovými šípkami priamo na fotografii",
+      "Orientačný bod ATB so smerovými tipmi ku vchodu",
     ],
     caption: [
-      "Fotografia orientačného bodu dodaná vlastníkom: označenie ATB a susedný vstup.",
-      "Druhá fotografia dodaná vlastníkom obsahuje ukrajinské smerové označenia ku vchodu.",
+      "Hlavný orientačný bod: fasáda budovy priamo vedľa supermarketu ATB. Vstupné dvere sa nachádzajú hneď naľavo od nápisu.",
+      "Vstup na kliniku: vojdite cez presklené dvere a vyjdite na 2. poschodie, kde vás privíta recepcia nášho centra.",
     ],
   },
   hu: {
     alt: [
       "Épületbejárat az ATB szupermarket táblája mellett",
-      "ATB tájékozódási pont iránymutató nyilakkal a fényképen",
+      "ATB tájékozódási pont a bejárathoz vezető jelzésekkel",
     ],
     caption: [
-      "A tulajdonos által biztosított tájékozódási fotó: az ATB tábla és a mellette lévő bejárat.",
-      "A második, tulajdonostól származó fényképen ukrán nyelvű iránymutatás látható a bejárathoz.",
+      "Fő tájékozódási pont: az épület homlokzata közvetlenül az ATB szupermarket mellett. A bejárat a táblától balra található.",
+      "Klinika bejárata: lépjen be az üvegajtón, és menjen fel a 2. emeletre, ahol a klinika recepciója fogadja Önt.",
     ],
   },
 } as const;
+
 const imageCopy = localizedImageCopy[locale];
 ---
 
@@ -81,7 +84,7 @@ const imageCopy = localizedImageCopy[locale];
     images.length > 0 ? (
       <div class="grid min-w-0 gap-4 sm:grid-cols-2 lg:grid-cols-1 xl:grid-cols-2">
         {images.map((image, index) => (
-          <figure class="min-w-0 bg-muted">
+          <figure class="flex min-w-0 flex-col bg-muted">
             <img
               class="aspect-[3/4] h-auto w-full object-cover object-center"
               src={image.src}
@@ -92,7 +95,7 @@ const imageCopy = localizedImageCopy[locale];
               decoding="async"
               sizes="(min-width: 1280px) 20vw, (min-width: 1024px) 40vw, (min-width: 640px) 48vw, 100vw"
             />
-            <figcaption class="border-x border-b border-border bg-card px-5 py-4 text-xs leading-5 text-muted-foreground">
+            <figcaption class="flex flex-1 flex-col justify-center border-x border-b border-border bg-card px-5 py-4 text-xs leading-relaxed text-muted-foreground">
               {imageCopy.caption[index] ?? imageCopy.caption[0]}
             </figcaption>
           </figure>

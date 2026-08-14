@@ -1,6 +1,7 @@
 ---
 import AppointmentForm from "../clinic/AppointmentForm.astro";
 import ServiceCard from "../clinic/ServiceCard.astro";
+import ReviewsPanel from "../clinic/ReviewsPanel.astro";
 import Wayfinding from "../clinic/Wayfinding.astro";
 import SocialLinks from "../clinic/SocialLinks.astro";
 import Container from "../ui/Container.astro";
@@ -140,7 +141,6 @@ const worldLabel = worldLabels[locale];
     <Container>
       <div class="grid gap-8 lg:grid-cols-12 lg:items-end" data-reveal>
         <div class="lg:col-span-8">
-          <!-- Посилання замість статичного тексту -->
           <p class="text-xs font-semibold uppercase tracking-[0.22em] text-primary">
             <a
               href={localizePath("/services", locale)}
@@ -215,7 +215,6 @@ const worldLabel = worldLabels[locale];
             </a>
           </div>
         </article>
-
       </div>
     </Container>
   </section>
@@ -351,6 +350,8 @@ const worldLabel = worldLabels[locale];
       </div>
     </Container>
   </section>
+
+  <ReviewsPanel locale={locale} />
 
   <section class="min-w-0 border-t border-border bg-muted py-20 sm:py-24 lg:py-32" aria-labelledby="final-action-heading">
     <Container

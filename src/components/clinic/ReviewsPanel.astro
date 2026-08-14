@@ -1,4 +1,5 @@
 ---
+import Container from "../ui/Container.astro";
 import type { Locale } from "../../lib/i18n";
 import { reviewsConfiguration } from "../../lib/reviews/config";
 
@@ -7,65 +8,80 @@ interface Props {
 }
 
 const { locale } = Astro.props;
+
 const copy = {
   uk: {
-    eyebrow: "Відгуки",
-    title: "Відгуки — без вигаданих оцінок.",
-    body: "Ми не копіюємо відгуки й не показуємо неперевірений рейтинг або кількість оцінок. Перейдіть до підтвердженого профілю клініки в Google, щоб переглянути доступні там відгуки або залишити власний.",
-    action: "Переглянути або залишити відгук у Google",
+    eyebrow: "Відгуки та репутація",
+    title: "Що говорять наші пацієнти",
+    subtitle: "199+ підтверджених відгуків у Google із найвищою оцінкою 5.0",
+    action: "Відкрити всі відгуки в Google Maps",
   },
   en: {
-    eyebrow: "Reviews",
-    title: "Reviews, without invented ratings.",
-    body: "We do not copy reviews or display an unverified score or count. Open the clinic’s confirmed Google profile to see the reviews available there or leave your own.",
-    action: "View or leave a review on Google",
+    eyebrow: "Reviews & Reputation",
+    title: "What our patients say",
+    subtitle: "199+ verified Google reviews with a 5.0 rating",
+    action: "Open all reviews in Google Maps",
   },
   sk: {
-    eyebrow: "Recenzie",
-    title: "Recenzie bez vymysleného hodnotenia.",
-    body: "Recenzie nekopírujeme a nezobrazujeme neoverené skóre ani počet hodnotení. V potvrdenom profile kliniky na Google si môžete pozrieť dostupné recenzie alebo pridať vlastnú.",
-    action: "Pozrieť alebo pridať recenziu na Google",
+    eyebrow: "Recenzie a reputácia",
+    title: "Čo hovoria naši pacienti",
+    subtitle: "199+ overených recenzií na Google s hodnotením 5.0",
+    action: "Otvoriť recenzie v Google Maps",
   },
   hu: {
-    eyebrow: "Vélemény",
-    title: "Vélemények kitalált értékelések nélkül.",
-    body: "Nem másolunk véleményeket, és nem mutatunk ellenőrizetlen pontszámot vagy darabszámot. A klinika megerősített Google-profilján megtekintheti az ott elérhető véleményeket, vagy írhat sajátot.",
-    action: "Vélemények megtekintése vagy írása a Google-on",
+    eyebrow: "Vélemények és hírnév",
+    title: "Mit mondanak pácienseink",
+    subtitle: "199+ ellenőrzött Google vélemény 5.0 értékeléssel",
+    action: "Vélemények megnyitása a Google Maps-en",
   },
 } as const;
+
 const localized = copy[locale];
 ---
 
 <section
-  class="min-h-80 border border-border bg-card p-7 sm:p-10"
+  class="min-w-0 border-t border-border bg-card py-16 sm:py-20 lg:py-24"
   aria-labelledby="reviews-panel-heading"
   data-google-reviews-panel
 >
-  <div class="grid min-w-0 gap-8 lg:grid-cols-12 lg:items-end">
-    <div class="min-w-0 lg:col-span-8">
+  <Container>
+    <!-- Заголовок секції відгуків -->
+    <div class="mb-10 flex flex-col items-center text-center sm:mb-12">
       <p class="text-xs font-semibold uppercase tracking-[0.22em] text-primary">
         {localized.eyebrow}
       </p>
       <h2
         id="reviews-panel-heading"
-        class="mt-5 max-w-3xl break-words text-balance text-3xl font-medium leading-tight tracking-[-0.02em] sm:text-4xl"
+        class="mt-3 max-w-2xl text-balance text-3xl font-medium leading-tight tracking-tight text-foreground sm:text-4xl"
       >
         {localized.title}
       </h2>
-      <p class="mt-5 max-w-2xl text-sm leading-7 text-muted-foreground sm:text-base">
-        {localized.body}
+      <p class="mt-3 max-w-xl text-sm leading-relaxed text-muted-foreground sm:text-base">
+        {localized.subtitle}
       </p>
     </div>
 
-    <div class="min-w-0 lg:col-span-4 lg:justify-self-end">
+    <!-- Контейнер офіційного віджета Trustindex -->
+    <div class="min-h-[160px] w-full overflow-hidden">
+      <script
+        is:inline
+        defer
+        async
+        src="https://cdn.trustindex.io/loader.js?2a8e43b79dad1161e706a179cb0"
+      ></script>
+    </div>
+
+    <!-- Додаткова кнопка-посилання на випадок блокувальників скриптів -->
+    <div class="mt-8 flex justify-center sm:mt-10">
       <a
-        class="focus-ring-primary inline-flex min-h-12 w-full items-center justify-center bg-primary px-6 text-center text-sm font-semibold text-primary-foreground transition-colors hover:bg-primary/90 sm:w-auto"
+        class="focus-ring-primary inline-flex min-h-11 items-center gap-2 border-b border-primary text-sm font-semibold text-primary underline-offset-4 hover:underline"
         href={reviewsConfiguration.googleBusinessProfileHref}
         target="_blank"
         rel="noopener noreferrer"
       >
-        {localized.action}
+        <span>{localized.action}</span>
+        <span aria-hidden="true">↗</span>
       </a>
     </div>
-  </div>
+  </Container>
 </section>

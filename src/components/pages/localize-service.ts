@@ -1,23 +1,45 @@
 import type { ServiceDetail } from "../../lib/cms";
-import { t, type Locale } from "../../lib/i18n";
+import type { Locale } from "../../lib/i18n";
+import { getSpecializations } from "../../data/specializations";
 
 export function localizeServiceDetail(
   service: ServiceDetail,
   locale: Locale,
 ): ServiceDetail {
-  if (service.slug !== "pediatric") return service;
+  const specs = getSpecializations(locale);
+  
+  if (service.slug === "pediatric") {
+    const spec = specs.find((s) => s.id === "pediatric");
+    if (spec) {
+      return {
+        ...service,
+        title: spec.title,
+        description: spec.description,
+      };
+    }
+  }
 
-  return {
-    ...service,
-    title: t(locale, "serviceDetail.pediatricTitle"),
-    description: t(locale, "serviceDetail.pediatricDescription"),
-    heroTagline: t(locale, "serviceDetail.pediatricTagline"),
-    keyBenefits: [
-      t(locale, "serviceDetail.pediatricBenefit1"),
-      t(locale, "serviceDetail.pediatricBenefit2"),
-      t(locale, "serviceDetail.pediatricBenefit3"),
-    ],
-    metaTitle: t(locale, "serviceDetail.pediatricMetaTitle"),
-    metaDescription: t(locale, "serviceDetail.pediatricMetaDescription"),
-  };
+  if (service.slug === "adult") {
+    const spec = specs.find((s) => s.id === "adult-diagnostics");
+    if (spec) {
+      return {
+        ...service,
+        title: spec.title,
+        description: spec.description,
+      };
+    }
+  }
+
+  if (service.slug === "surgical") {
+    const spec = specs.find((s) => s.id === "care-pathway");
+    if (spec) {
+      return {
+        ...service,
+        title: spec.title,
+        description: spec.description,
+      };
+    }
+  }
+
+  return service;
 }

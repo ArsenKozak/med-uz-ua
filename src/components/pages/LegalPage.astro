@@ -5,7 +5,7 @@ import {
   getLegalDocument,
   type LegalDocumentKind,
 } from "../../data/legal";
-import { localizePath, type Locale } from "../../lib/i18n";
+import type { Locale } from "../../lib/i18n";
 import Container from "../ui/Container.astro";
 
 interface Props {
@@ -80,35 +80,10 @@ const labels = contactLabels[locale];
     </header>
 
     <Container class="py-14 sm:py-18 lg:py-24">
-      <aside
-        class="border-l-4 border-accent bg-card p-6 shadow-sm sm:p-8"
-        aria-labelledby="legal-status-heading"
-      >
-        <h2 id="legal-status-heading" class="text-2xl font-medium text-primary">
-          {document.statusTitle}
-        </h2>
-        <p class="mt-3 max-w-4xl text-sm leading-7 text-muted-foreground sm:text-base">
-          {document.statusBody}
-        </p>
-        {
-          document.informationalNotice && document.controllingHref ? (
-            <p class="mt-4 text-sm leading-7 text-foreground">
-              {document.informationalNotice}{" "}
-              <a
-                class="focus-ring-primary font-semibold text-primary underline decoration-accent decoration-2 underline-offset-4"
-                href={localizePath(document.controllingHref, "uk")}
-                hreflang="uk"
-              >
-                Українська версія
-              </a>
-            </p>
-          ) : null
-        }
-      </aside>
 
       <section
-        class="mt-8 grid min-w-0 gap-px border border-border bg-border sm:grid-cols-2 lg:grid-cols-3"
-        aria-label={labels.seller}
+              class="grid min-w-0 gap-px border border-border bg-border sm:grid-cols-2 lg:grid-cols-3"
+              aria-label={labels.seller}
       >
         <div class="min-w-0 bg-card p-5 sm:p-6">
           <h2 class="text-xs font-semibold uppercase tracking-[0.18em] text-primary">
