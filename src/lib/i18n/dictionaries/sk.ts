@@ -96,7 +96,7 @@ export const sk = {
   "breadcrumbs.services": "Služby",
   "breadcrumbs.programs": "Programy",
 
-  "seo.home.title": "Med.uz.ua — súkromná oftalmológia v Užhorode",
+  "seo.home.title": "Európska oftalmologická klinika | Užhorod",
   "seo.home.description": "Objednajte si súkromnú oftalmologickú konzultáciu v Med.uz.ua v Užhorode.",
   "seo.services.title": "Služby a cenník | Med.uz.ua",
   "seo.services.description": "Prezrite si kategórie konzultácií, diagnostiky, výberu optiky a zákrokov Med.uz.ua.",

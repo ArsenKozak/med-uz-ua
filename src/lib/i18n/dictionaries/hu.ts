@@ -96,7 +96,7 @@ export const hu = {
   "breadcrumbs.services": "Szolgáltatások",
   "breadcrumbs.programs": "Programok",
 
-  "seo.home.title": "Med.uz.ua — magánszemészet Ungváron",
+  "seo.home.title": "Európai Szemészeti Klinika | Ungvár",
   "seo.home.description": "Kérjen magán szemészeti konzultációt az ungvári Med.uz.ua klinikán.",
   "seo.services.title": "Szolgáltatások és árlista | Med.uz.ua",
   "seo.services.description": "Tekintse át a Med.uz.ua konzultációs, diagnosztikai, optikaválasztási és beavatkozási kategóriáit.",

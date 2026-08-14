@@ -94,7 +94,7 @@ export const uk = {
   "breadcrumbs.services": "Послуги",
   "breadcrumbs.programs": "Програми",
 
-  "seo.home.title": "Med.uz.ua — приватна офтальмологія в Ужгороді",
+  "seo.home.title": "Європейська офтальмологічна клініка | Ужгород",
   "seo.home.description": "Запишіться на приватну офтальмологічну консультацію в Med.uz.ua в Ужгороді.",
   "seo.services.title": "Послуги та прайс-лист | Med.uz.ua",
   "seo.services.description": "Перегляньте категорії консультацій, діагностики, підбору оптики та процедур Med.uz.ua.",

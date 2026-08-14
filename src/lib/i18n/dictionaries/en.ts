@@ -96,7 +96,7 @@ export const en = {
   "breadcrumbs.services": "Services",
   "breadcrumbs.programs": "Programs",
 
-  "seo.home.title": "Med.uz.ua — Private Ophthalmology in Uzhhorod",
+  "seo.home.title": "European Ophthalmological Clinic | Uzhhorod",
   "seo.home.description": "Reserve a private ophthalmology consultation with Med.uz.ua in Uzhhorod.",
   "seo.services.title": "Services and Price List | Med.uz.ua",
   "seo.services.description": "Review Med.uz.ua consultation, diagnostic, optical-selection, and clinical procedure categories.",
