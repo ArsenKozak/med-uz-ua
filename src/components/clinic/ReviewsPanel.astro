@@ -1,45 +1,36 @@
 ---
 import type { Locale } from "../../lib/i18n";
-import { getReviewsConfiguration } from "../../lib/reviews/config";
+import { reviewsConfiguration } from "../../lib/reviews/config";
 
 interface Props {
   readonly locale: Locale;
 }
 
 const { locale } = Astro.props;
-const configuration = getReviewsConfiguration();
 const copy = {
   uk: {
     eyebrow: "Відгуки",
-    title: "Досвід пацієнтів — лише з живого джерела.",
-    body: "Trustindex widget ще не активовано: потрібен точний embed-код, виданий провайдером для цього бізнесу. Ми не показуємо вигадану оцінку або кількість відгуків.",
-    configured: "Ідентифікатор віджета надано, але embed-код і live-відповідь не перевірені.",
-    action: "Залишити відгук у Google",
-    unavailable: "Пряме посилання на Google Business очікує підтвердження власника.",
+    title: "Відгуки — без вигаданих оцінок.",
+    body: "Ми не копіюємо відгуки й не показуємо неперевірений рейтинг або кількість оцінок. Перейдіть до підтвердженого профілю клініки в Google, щоб переглянути доступні там відгуки або залишити власний.",
+    action: "Переглянути або залишити відгук у Google",
   },
   en: {
     eyebrow: "Reviews",
-    title: "Patient experience, only from a live source.",
-    body: "The Trustindex widget is not active: the exact provider-issued embed code for this business is still required. No invented score or review count is shown.",
-    configured: "A widget identifier is present, but the embed code and live response are not verified.",
-    action: "Leave a review on Google",
-    unavailable: "The direct Google Business link is awaiting owner confirmation.",
+    title: "Reviews, without invented ratings.",
+    body: "We do not copy reviews or display an unverified score or count. Open the clinic’s confirmed Google profile to see the reviews available there or leave your own.",
+    action: "View or leave a review on Google",
   },
   sk: {
     eyebrow: "Recenzie",
-    title: "Skúsenosti pacientov iba zo živého zdroja.",
-    body: "Widget Trustindex nie je aktívny: chýba presný embed kód vydaný poskytovateľom pre túto firmu. Nezobrazujeme vymyslené hodnotenie ani počet recenzií.",
-    configured: "Identifikátor widgetu je prítomný, ale embed kód a live odpoveď nie sú overené.",
-    action: "Napísať recenziu na Google",
-    unavailable: "Priamy odkaz Google Business čaká na potvrdenie vlastníka.",
+    title: "Recenzie bez vymysleného hodnotenia.",
+    body: "Recenzie nekopírujeme a nezobrazujeme neoverené skóre ani počet hodnotení. V potvrdenom profile kliniky na Google si môžete pozrieť dostupné recenzie alebo pridať vlastnú.",
+    action: "Pozrieť alebo pridať recenziu na Google",
   },
   hu: {
     eyebrow: "Vélemény",
-    title: "Pácienstapasztalatok csak élő forrásból.",
-    body: "A Trustindex widget nem aktív: a szolgáltató által ehhez a vállalkozáshoz kiadott pontos embed kód még hiányzik. Nem jelenítünk meg kitalált értékelést vagy véleményszámot.",
-    configured: "Widget-azonosító van, de az embed kód és az élő válasz nincs ellenőrizve.",
-    action: "Vélemény írása a Google-on",
-    unavailable: "A közvetlen Google Business link tulajdonosi megerősítésre vár.",
+    title: "Vélemények kitalált értékelések nélkül.",
+    body: "Nem másolunk véleményeket, és nem mutatunk ellenőrizetlen pontszámot vagy darabszámot. A klinika megerősített Google-profilján megtekintheti az ott elérhető véleményeket, vagy írhat sajátot.",
+    action: "Vélemények megtekintése vagy írása a Google-on",
   },
 } as const;
 const localized = copy[locale];
@@ -48,7 +39,7 @@ const localized = copy[locale];
 <section
   class="min-h-80 border border-border bg-card p-7 sm:p-10"
   aria-labelledby="reviews-panel-heading"
-  data-reviews-fallback
+  data-google-reviews-panel
 >
   <div class="grid min-w-0 gap-8 lg:grid-cols-12 lg:items-end">
     <div class="min-w-0 lg:col-span-8">
@@ -64,32 +55,17 @@ const localized = copy[locale];
       <p class="mt-5 max-w-2xl text-sm leading-7 text-muted-foreground sm:text-base">
         {localized.body}
       </p>
-      {
-        configuration.trustindexWidgetConfigured ? (
-          <p class="mt-4 border-l-2 border-accent pl-4 text-xs leading-6 text-muted-foreground">
-            {localized.configured}
-          </p>
-        ) : null
-      }
     </div>
 
     <div class="min-w-0 lg:col-span-4 lg:justify-self-end">
-      {
-        configuration.googleReviewHref ? (
-          <a
-            class="focus-ring-primary inline-flex min-h-12 w-full items-center justify-center bg-primary px-6 text-center text-sm font-semibold text-primary-foreground transition-colors hover:bg-primary/90 sm:w-auto"
-            href={configuration.googleReviewHref}
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            {localized.action}
-          </a>
-        ) : (
-          <p class="max-w-sm text-sm leading-7 text-muted-foreground">
-            {localized.unavailable}
-          </p>
-        )
-      }
+      <a
+        class="focus-ring-primary inline-flex min-h-12 w-full items-center justify-center bg-primary px-6 text-center text-sm font-semibold text-primary-foreground transition-colors hover:bg-primary/90 sm:w-auto"
+        href={reviewsConfiguration.googleBusinessProfileHref}
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        {localized.action}
+      </a>
     </div>
   </div>
 </section>

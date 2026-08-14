@@ -13,9 +13,18 @@ export const medicalUiCategorySchema = z.enum([
   "laboratory",
 ]);
 
+const retainedMedicalPriceIdSchema = z
+  .number()
+  .int()
+  .min(1)
+  .max(40)
+  .refine((id) => id < 34 || id > 37, {
+    error: "Medical price IDs 34–37 were removed from the canonical list.",
+  });
+
 export const medicalPriceItemSchema = z
   .object({
-    id: z.number().int().min(1).max(40),
+    id: retainedMedicalPriceIdSchema,
     officialSection: officialPriceSectionSchema,
     uiCategory: medicalUiCategorySchema,
     officialNameUk: z.string().min(1),

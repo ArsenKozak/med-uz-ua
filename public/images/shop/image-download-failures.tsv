@@ -1,45 +1,61 @@
-product_id	category	requested_file	source_page	provider	reason
-lens-air-optix-astigmatism-9	lenses	lens-air-optix-astigmatism-9	https://www.myalcon.com/contact-lenses/monthly/air-optix-plus-hydraglyde-for-astigmatism/	Alcon	page-download-failed
-lens-dailies-total-1-4	lenses	lens-dailies-total-1-4	https://www.myalcon.com/contact-lenses/daily/dailies-total1/	Alcon	page-download-failed
-lens-acuvue-vita-15	lenses	lens-acuvue-vita-15	https://www.acuvue.com/en-us/products/acuvue-vita/	ACUVUE	image-download-failed
-care-renu-multiplus-5	care	care-renu-multiplus-5	https://www.renu.com/	Bausch + Lomb	qualified-https-image-not-found
-care-ao-sept-plus-6	care	care-ao-sept-plus-6	https://www.myalcon.com/contact-lenses/contact-lens-solutions/aosept-plus-hydraglyde/	Alcon	page-download-failed
-care-hylo-comod-4	care	care-hylo-comod-4	https://hylo.de/en/products/hylo-comod	URSAPHARM	qualified-https-image-not-found
-care-hylo-dual-9	care	care-hylo-dual-9	https://hylo.de/en/products/hylo-dual	URSAPHARM	qualified-https-image-not-found
-lens-menicon-z-11	lenses	/images/shop/lenses/menicon-z.jpg		Menicon	not-attempted-no-documented-official-source-or-exact-model-id
-lens-rodenstock-cxl-13	lenses	/images/shop/lenses/rodenstock-cxl.jpg		Rodenstock	not-attempted-no-documented-official-source-or-exact-model-id
-care-hilens-optical-10	care	/images/shop/care/hilens-care.jpg		Hilens	not-attempted-no-documented-official-source-or-exact-model-id
-care-lens-case-12	care	/images/shop/care/lens-case.jpg		Bausch & Lomb	not-attempted-no-documented-official-source-or-exact-model-id
-care-tweezers-13	care	/images/shop/care/tweezers.jpg		SEED	not-attempted-no-documented-official-source-or-exact-model-id
-care-peroxide-neutralizer-14	care	/images/shop/care/peroxide-neutralizer.jpg		Menicon	not-attempted-no-documented-official-source-or-exact-model-id
-care-artificial-tears-15	care	/images/shop/care/thealoz-duo.jpg		Thea	not-attempted-no-documented-official-source-or-exact-model-id
-frame-owlet-classic-1	frames	/images/shop/frames/owlet-classic.jpg		Owlet	not-attempted-no-documented-official-source-or-exact-model-id
-frame-polo-club-elegant-2	frames	/images/shop/frames/polo-club-elegant.jpg		Polo Club	not-attempted-no-documented-official-source-or-exact-model-id
-frame-oliver-black-premium-3	frames	/images/shop/frames/oliver-black-premium.jpg		Oliver Black	not-attempted-no-documented-official-source-or-exact-model-id
-frame-maxima-titanium-4	frames	/images/shop/frames/maxima-titanium.jpg		Maxima & Co	not-attempted-no-documented-official-source-or-exact-model-id
-frame-twenty-retro-5	frames	/images/shop/frames/twenty-retro.jpg		Twenty	not-attempted-no-documented-official-source-or-exact-model-id
-frame-shadow-minimalist-6	frames	/images/shop/frames/shadow-minimalist.jpg		Shadow	not-attempted-no-documented-official-source-or-exact-model-id
-frame-dacchi-square-7	frames	/images/shop/frames/dacchi-square.jpg		Dacchi	not-attempted-no-documented-official-source-or-exact-model-id
-frame-vido-round-8	frames	/images/shop/frames/vido-round.jpg		Vido	not-attempted-no-documented-official-source-or-exact-model-id
-frame-seiko-precision-9	frames	/images/shop/frames/seiko-precision.jpg		SEIKO	not-attempted-no-documented-official-source-or-exact-model-id
-frame-alvaro-sport-10	frames	/images/shop/frames/alvaro-sport.jpg		Alvaro	not-attempted-no-documented-official-source-or-exact-model-id
-frame-pro-lightweight-11	frames	/images/shop/frames/pro-lightweight.jpg		Pro	not-attempted-no-documented-official-source-or-exact-model-id
-frame-owlet-cateye-12	frames	/images/shop/frames/owlet-cateye.jpg		Owlet	not-attempted-no-documented-official-source-or-exact-model-id
-frame-polo-club-wayfarer-13	frames	/images/shop/frames/polo-club-wayfarer.jpg		Polo Club	not-attempted-no-documented-official-source-or-exact-model-id
-frame-oliver-black-gold-14	frames	/images/shop/frames/oliver-black-gold.jpg		Oliver Black	not-attempted-no-documented-official-source-or-exact-model-id
-frame-maxima-acetate-15	frames	/images/shop/frames/maxima-acetate.jpg		Maxima	not-attempted-no-documented-official-source-or-exact-model-id
-sunglass-polo-club-aviator-1	sunglasses	/images/shop/sunglasses/polo-club-aviator.jpg		Polo Club	not-attempted-no-documented-official-source-or-exact-model-id
-sunglass-owlet-cateye-2	sunglasses	/images/shop/sunglasses/owlet-sun-cateye.jpg		Owlet	not-attempted-no-documented-official-source-or-exact-model-id
-sunglass-maxima-oversize-3	sunglasses	/images/shop/sunglasses/maxima-oversize.jpg		Maxima	not-attempted-no-documented-official-source-or-exact-model-id
-sunglass-oliver-black-classic-4	sunglasses	/images/shop/sunglasses/oliver-black-classic.jpg		Oliver Black	not-attempted-no-documented-official-source-or-exact-model-id
-sunglass-twenty-sport-5	sunglasses	/images/shop/sunglasses/twenty-sport.jpg		Twenty	not-attempted-no-documented-official-source-or-exact-model-id
-sunglass-shadow-retro-6	sunglasses	/images/shop/sunglasses/shadow-retro.jpg		Shadow	not-attempted-no-documented-official-source-or-exact-model-id
-sunglass-dacchi-square-7	sunglasses	/images/shop/sunglasses/dacchi-square.jpg		Dacchi	not-attempted-no-documented-official-source-or-exact-model-id
-sunglass-vido-round-8	sunglasses	/images/shop/sunglasses/vido-round.jpg		Vido	not-attempted-no-documented-official-source-or-exact-model-id
-sunglass-alvaro-gradient-9	sunglasses	/images/shop/sunglasses/alvaro-gradient.jpg		Alvaro	not-attempted-no-documented-official-source-or-exact-model-id
-sunglass-polo-club-wayfarer-10	sunglasses	/images/shop/sunglasses/polo-club-wayfarer.jpg		Polo Club	not-attempted-no-documented-official-source-or-exact-model-id
-sunglass-owlet-fashion-11	sunglasses	/images/shop/sunglasses/owlet-fashion.jpg		Owlet	not-attempted-no-documented-official-source-or-exact-model-id
-sunglass-maxima-polarized-12	sunglasses	/images/shop/sunglasses/maxima-polarized.jpg		Maxima	not-attempted-no-documented-official-source-or-exact-model-id
-sunglass-oliver-black-premium-13	sunglasses	/images/shop/sunglasses/oliver-black-premium.jpg		Oliver Black	not-attempted-no-documented-official-source-or-exact-model-id
-sunglass-twenty-metal-14	sunglasses	/images/shop/sunglasses/twenty-metal.jpg		Twenty	not-attempted-no-documented-official-source-or-exact-model-id
-sunglass-shadow-elegant-15	sunglasses	/images/shop/sunglasses/shadow-elegant.jpg		Shadow	not-attempted-no-documented-official-source-or-exact-model-id
+product_id	expected_file	reason
+lens-air-optix-night-day-1	/images/shop/lenses/lens-air-optix-night-day-1.webp	exact-match-not-confirmed,usage-rights-not-confirmed
+lens-biofinity-2	/images/shop/lenses/lens-biofinity-2.png	exact-match-not-confirmed,usage-rights-not-confirmed
+lens-acuvue-oasys-3	/images/shop/lenses/lens-acuvue-oasys-3.webp	exact-match-not-confirmed,usage-rights-not-confirmed
+lens-dailies-total-1-4	/images/shop/lenses/lens-dailies-total-1-4.jpg	direct-image-url-unresolved,exact-match-not-confirmed,usage-rights-not-confirmed,local-file-missing
+lens-ultra-bausch-lomb-5	/images/shop/lenses/lens-ultra-bausch-lomb-5.webp	exact-match-not-confirmed,usage-rights-not-confirmed
+lens-clariti-1day-6	/images/shop/lenses/lens-clariti-1day-6.webp	exact-match-not-confirmed,usage-rights-not-confirmed
+lens-acuvue-moist-7	/images/shop/lenses/lens-acuvue-moist-7.webp	exact-match-not-confirmed,usage-rights-not-confirmed
+lens-air-optix-plus-8	/images/shop/lenses/lens-air-optix-plus-8.png	exact-match-not-confirmed,usage-rights-not-confirmed
+lens-air-optix-astigmatism-9	/images/shop/lenses/lens-air-optix-astigmatism-9.jpg	direct-image-url-unresolved,exact-match-not-confirmed,usage-rights-not-confirmed,local-file-missing
+lens-purevision-2-10	/images/shop/lenses/lens-purevision-2-10.webp	exact-match-not-confirmed,usage-rights-not-confirmed
+lens-menicon-z-11	/images/shop/lenses/lens-menicon-z-11.jpg	source-page-unresolved,direct-image-url-unresolved,exact-match-not-confirmed,usage-rights-not-confirmed,local-file-missing
+lens-seed-1day-pure-12	/images/shop/lenses/lens-seed-1day-pure-12.jpg	exact-match-not-confirmed,usage-rights-not-confirmed
+lens-rodenstock-cxl-13	/images/shop/lenses/lens-rodenstock-cxl-13.jpg	source-page-unresolved,direct-image-url-unresolved,exact-match-not-confirmed,usage-rights-not-confirmed,local-file-missing
+lens-biotrue-oneday-14	/images/shop/lenses/lens-biotrue-oneday-14.png	exact-match-not-confirmed,usage-rights-not-confirmed
+lens-acuvue-vita-15	/images/shop/lenses/lens-acuvue-vita-15.jpg	direct-image-url-unresolved,exact-match-not-confirmed,usage-rights-not-confirmed,local-file-missing
+care-biotrue-solution-1	/images/shop/care/care-biotrue-solution-1.jpg	exact-match-not-confirmed,usage-rights-not-confirmed
+care-opti-free-puremoist-2	/images/shop/care/care-opti-free-puremoist-2.webp	exact-match-not-confirmed,usage-rights-not-confirmed
+care-systane-ultra-drops-3	/images/shop/care/care-systane-ultra-drops-3.jpg	usage-rights-not-confirmed
+care-hylo-comod-4	/images/shop/care/care-hylo-comod-4.jpg	direct-image-url-unresolved,exact-match-not-confirmed,usage-rights-not-confirmed,local-file-missing
+care-renu-multiplus-5	/images/shop/care/care-renu-multiplus-5.jpg	direct-image-url-unresolved,exact-match-not-confirmed,usage-rights-not-confirmed,local-file-missing
+care-ao-sept-plus-6	/images/shop/care/care-ao-sept-plus-6.jpg	direct-image-url-unresolved,exact-match-not-confirmed,usage-rights-not-confirmed,local-file-missing
+care-blink-contacts-7	/images/shop/care/care-blink-contacts-7.png	exact-match-not-confirmed,usage-rights-not-confirmed
+care-avizor-unica-8	/images/shop/care/care-avizor-unica-8.png	exact-match-not-confirmed,usage-rights-not-confirmed
+care-hylo-dual-9	/images/shop/care/care-hylo-dual-9.jpg	direct-image-url-unresolved,exact-match-not-confirmed,usage-rights-not-confirmed,local-file-missing
+care-hilens-optical-10	/images/shop/care/care-hilens-optical-10.jpg	source-page-unresolved,direct-image-url-unresolved,exact-match-not-confirmed,usage-rights-not-confirmed,local-file-missing
+care-systane-balance-11	/images/shop/care/care-systane-balance-11.webp	usage-rights-not-confirmed
+care-lens-case-12	/images/shop/care/care-lens-case-12.jpg	source-page-unresolved,direct-image-url-unresolved,exact-match-not-confirmed,usage-rights-not-confirmed,local-file-missing
+care-tweezers-13	/images/shop/care/care-tweezers-13.jpg	source-page-unresolved,direct-image-url-unresolved,exact-match-not-confirmed,usage-rights-not-confirmed,local-file-missing
+care-peroxide-neutralizer-14	/images/shop/care/care-peroxide-neutralizer-14.jpg	source-page-unresolved,direct-image-url-unresolved,exact-match-not-confirmed,usage-rights-not-confirmed,local-file-missing
+care-artificial-tears-15	/images/shop/care/care-artificial-tears-15.jpg	source-page-unresolved,direct-image-url-unresolved,exact-match-not-confirmed,usage-rights-not-confirmed,local-file-missing
+frame-owlet-classic-1	/images/shop/frames/frame-owlet-classic-1.jpg	source-page-unresolved,direct-image-url-unresolved,exact-match-not-confirmed,usage-rights-not-confirmed,local-file-missing
+frame-polo-club-elegant-2	/images/shop/frames/frame-polo-club-elegant-2.jpg	source-page-unresolved,direct-image-url-unresolved,exact-match-not-confirmed,usage-rights-not-confirmed,local-file-missing
+frame-oliver-black-premium-3	/images/shop/frames/frame-oliver-black-premium-3.jpg	source-page-unresolved,direct-image-url-unresolved,exact-match-not-confirmed,usage-rights-not-confirmed,local-file-missing
+frame-maxima-titanium-4	/images/shop/frames/frame-maxima-titanium-4.jpg	source-page-unresolved,direct-image-url-unresolved,exact-match-not-confirmed,usage-rights-not-confirmed,local-file-missing
+frame-twenty-retro-5	/images/shop/frames/frame-twenty-retro-5.jpg	source-page-unresolved,direct-image-url-unresolved,exact-match-not-confirmed,usage-rights-not-confirmed,local-file-missing
+frame-shadow-minimalist-6	/images/shop/frames/frame-shadow-minimalist-6.jpg	source-page-unresolved,direct-image-url-unresolved,exact-match-not-confirmed,usage-rights-not-confirmed,local-file-missing
+frame-dacchi-square-7	/images/shop/frames/frame-dacchi-square-7.jpg	source-page-unresolved,direct-image-url-unresolved,exact-match-not-confirmed,usage-rights-not-confirmed,local-file-missing
+frame-vido-round-8	/images/shop/frames/frame-vido-round-8.jpg	source-page-unresolved,direct-image-url-unresolved,exact-match-not-confirmed,usage-rights-not-confirmed,local-file-missing
+frame-seiko-precision-9	/images/shop/frames/frame-seiko-precision-9.jpg	source-page-unresolved,direct-image-url-unresolved,exact-match-not-confirmed,usage-rights-not-confirmed,local-file-missing
+frame-alvaro-sport-10	/images/shop/frames/frame-alvaro-sport-10.jpg	source-page-unresolved,direct-image-url-unresolved,exact-match-not-confirmed,usage-rights-not-confirmed,local-file-missing
+frame-pro-lightweight-11	/images/shop/frames/frame-pro-lightweight-11.jpg	source-page-unresolved,direct-image-url-unresolved,exact-match-not-confirmed,usage-rights-not-confirmed,local-file-missing
+frame-owlet-cateye-12	/images/shop/frames/frame-owlet-cateye-12.jpg	source-page-unresolved,direct-image-url-unresolved,exact-match-not-confirmed,usage-rights-not-confirmed,local-file-missing
+frame-polo-club-wayfarer-13	/images/shop/frames/frame-polo-club-wayfarer-13.jpg	source-page-unresolved,direct-image-url-unresolved,exact-match-not-confirmed,usage-rights-not-confirmed,local-file-missing
+frame-oliver-black-gold-14	/images/shop/frames/frame-oliver-black-gold-14.jpg	source-page-unresolved,direct-image-url-unresolved,exact-match-not-confirmed,usage-rights-not-confirmed,local-file-missing
+frame-maxima-acetate-15	/images/shop/frames/frame-maxima-acetate-15.jpg	source-page-unresolved,direct-image-url-unresolved,exact-match-not-confirmed,usage-rights-not-confirmed,local-file-missing
+sunglass-polo-club-aviator-1	/images/shop/sunglasses/sunglass-polo-club-aviator-1.jpg	source-page-unresolved,direct-image-url-unresolved,exact-match-not-confirmed,usage-rights-not-confirmed,local-file-missing
+sunglass-owlet-cateye-2	/images/shop/sunglasses/sunglass-owlet-cateye-2.jpg	source-page-unresolved,direct-image-url-unresolved,exact-match-not-confirmed,usage-rights-not-confirmed,local-file-missing
+sunglass-maxima-oversize-3	/images/shop/sunglasses/sunglass-maxima-oversize-3.jpg	source-page-unresolved,direct-image-url-unresolved,exact-match-not-confirmed,usage-rights-not-confirmed,local-file-missing
+sunglass-oliver-black-classic-4	/images/shop/sunglasses/sunglass-oliver-black-classic-4.jpg	source-page-unresolved,direct-image-url-unresolved,exact-match-not-confirmed,usage-rights-not-confirmed,local-file-missing
+sunglass-twenty-sport-5	/images/shop/sunglasses/sunglass-twenty-sport-5.jpg	source-page-unresolved,direct-image-url-unresolved,exact-match-not-confirmed,usage-rights-not-confirmed,local-file-missing
+sunglass-shadow-retro-6	/images/shop/sunglasses/sunglass-shadow-retro-6.jpg	source-page-unresolved,direct-image-url-unresolved,exact-match-not-confirmed,usage-rights-not-confirmed,local-file-missing
+sunglass-dacchi-square-7	/images/shop/sunglasses/sunglass-dacchi-square-7.jpg	source-page-unresolved,direct-image-url-unresolved,exact-match-not-confirmed,usage-rights-not-confirmed,local-file-missing
+sunglass-vido-round-8	/images/shop/sunglasses/sunglass-vido-round-8.jpg	source-page-unresolved,direct-image-url-unresolved,exact-match-not-confirmed,usage-rights-not-confirmed,local-file-missing
+sunglass-alvaro-gradient-9	/images/shop/sunglasses/sunglass-alvaro-gradient-9.jpg	source-page-unresolved,direct-image-url-unresolved,exact-match-not-confirmed,usage-rights-not-confirmed,local-file-missing
+sunglass-polo-club-wayfarer-10	/images/shop/sunglasses/sunglass-polo-club-wayfarer-10.jpg	source-page-unresolved,direct-image-url-unresolved,exact-match-not-confirmed,usage-rights-not-confirmed,local-file-missing
+sunglass-owlet-fashion-11	/images/shop/sunglasses/sunglass-owlet-fashion-11.jpg	source-page-unresolved,direct-image-url-unresolved,exact-match-not-confirmed,usage-rights-not-confirmed,local-file-missing
+sunglass-maxima-polarized-12	/images/shop/sunglasses/sunglass-maxima-polarized-12.jpg	source-page-unresolved,direct-image-url-unresolved,exact-match-not-confirmed,usage-rights-not-confirmed,local-file-missing
+sunglass-oliver-black-premium-13	/images/shop/sunglasses/sunglass-oliver-black-premium-13.jpg	source-page-unresolved,direct-image-url-unresolved,exact-match-not-confirmed,usage-rights-not-confirmed,local-file-missing
+sunglass-twenty-metal-14	/images/shop/sunglasses/sunglass-twenty-metal-14.jpg	source-page-unresolved,direct-image-url-unresolved,exact-match-not-confirmed,usage-rights-not-confirmed,local-file-missing
+sunglass-shadow-elegant-15	/images/shop/sunglasses/sunglass-shadow-elegant-15.jpg	source-page-unresolved,direct-image-url-unresolved,exact-match-not-confirmed,usage-rights-not-confirmed,local-file-missing

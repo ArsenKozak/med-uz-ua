@@ -12,28 +12,64 @@ const containerId = /^GTM-[A-Z0-9]+$/.test(rawContainerId ?? "")
   : "";
 const copy = {
   uk: {
-    title: "Налаштування аналітики",
-    body: "За вашою згодою ми завантажимо Google Tag Manager для неперсональних подій взаємодії. Ім’я, телефон, адреса та вільний текст не передаються.",
-    accept: "Дозволити аналітику",
-    decline: "Лише необхідне",
+    title: "Налаштування приватності",
+    body: "Google Tag Manager завантажується лише після вашого дозволу. Ми не передаємо ім’я, телефон, адресу, вільний текст форми або медичні відомості в аналітику.",
+    choices: "Оберіть необов’язкові категорії",
+    analytics: "Аналітика",
+    analyticsDescription:
+      "Допомагає зрозуміти неперсональні взаємодії із сайтом.",
+    advertising: "Реклама",
+    advertisingDescription:
+      "Дозволяє вимірювання реклами та персоналізацію за налаштуваннями Google.",
+    acceptAll: "Дозволити все",
+    save: "Зберегти вибір",
+    reject: "Лише необхідне",
+    saved: "Налаштування приватності збережено.",
   },
   en: {
-    title: "Analytics settings",
-    body: "With your permission, Google Tag Manager will load for non-personal interaction events. Names, phone numbers, addresses and free text are not sent.",
-    accept: "Allow analytics",
-    decline: "Necessary only",
+    title: "Privacy settings",
+    body: "Google Tag Manager loads only after your permission. We do not send names, phone numbers, addresses, free-text form content or medical information to analytics.",
+    choices: "Choose optional categories",
+    analytics: "Analytics",
+    analyticsDescription:
+      "Helps us understand non-personal interactions with the website.",
+    advertising: "Advertising",
+    advertisingDescription:
+      "Allows advertising measurement and personalisation according to Google settings.",
+    acceptAll: "Allow all",
+    save: "Save selection",
+    reject: "Necessary only",
+    saved: "Privacy settings saved.",
   },
   sk: {
-    title: "Nastavenia analytiky",
-    body: "S vaším súhlasom načítame Google Tag Manager pre neosobné udalosti interakcie. Meno, telefón, adresa ani voľný text sa neposielajú.",
-    accept: "Povoliť analytiku",
-    decline: "Len nevyhnutné",
+    title: "Nastavenia súkromia",
+    body: "Google Tag Manager sa načíta až po vašom súhlase. Do analytiky neposielame meno, telefón, adresu, voľný text formulára ani zdravotné údaje.",
+    choices: "Vyberte voliteľné kategórie",
+    analytics: "Analytika",
+    analyticsDescription:
+      "Pomáha nám porozumieť neosobným interakciám s webom.",
+    advertising: "Reklama",
+    advertisingDescription:
+      "Umožňuje meranie reklamy a personalizáciu podľa nastavení Google.",
+    acceptAll: "Povoliť všetko",
+    save: "Uložiť výber",
+    reject: "Len nevyhnutné",
+    saved: "Nastavenia súkromia boli uložené.",
   },
   hu: {
-    title: "Analitikai beállítások",
-    body: "Engedélyével a Google Tag Manager nem személyes interakciós eseményekhez töltődik be. Név, telefonszám, cím és szabad szöveg nem kerül továbbításra.",
-    accept: "Analitika engedélyezése",
-    decline: "Csak szükséges",
+    title: "Adatvédelmi beállítások",
+    body: "A Google Tag Manager csak az engedélye után töltődik be. Nevet, telefonszámot, címet, szabad szöveges űrlaptartalmat vagy egészségügyi adatot nem küldünk az analitikának.",
+    choices: "Válassza ki az opcionális kategóriákat",
+    analytics: "Analitika",
+    analyticsDescription:
+      "Segít megérteni a webhely nem személyes interakcióit.",
+    advertising: "Hirdetés",
+    advertisingDescription:
+      "Lehetővé teszi a hirdetési mérést és a személyre szabást a Google beállításai szerint.",
+    acceptAll: "Összes engedélyezése",
+    save: "Kiválasztás mentése",
+    reject: "Csak szükséges",
+    saved: "Az adatvédelmi beállításokat mentettük.",
   },
 } as const;
 const localized = copy[locale];
@@ -41,45 +77,116 @@ const localized = copy[locale];
 
 <analytics-consent
   data-container-id={containerId}
-  data-enabled={containerId.length > 0 ? "true" : "false"}
+  data-loader-enabled={containerId.length > 0 ? "true" : "false"}
 >
   <aside
     class="fixed inset-x-3 bottom-[calc(5.5rem+env(safe-area-inset-bottom))] z-40 mx-auto max-w-2xl border border-border bg-card p-5 text-card-foreground shadow-concierge md:bottom-5 md:p-6"
     aria-labelledby="analytics-consent-title"
-    aria-live="polite"
+    aria-describedby="analytics-consent-description"
+    data-consent-dialog
     data-consent-panel
     hidden
   >
     <h2 id="analytics-consent-title" class="text-xl font-medium text-primary">
       {localized.title}
     </h2>
-    <p class="mt-2 text-sm leading-6 text-muted-foreground">
+    <p
+      id="analytics-consent-description"
+      class="mt-2 text-sm leading-6 text-muted-foreground"
+    >
       {localized.body}
     </p>
-    <div class="mt-5 flex flex-col gap-2 sm:flex-row sm:justify-end">
+
+    <fieldset class="mt-5 space-y-3">
+      <legend class="text-sm font-semibold text-primary">
+        {localized.choices}
+      </legend>
+
+      <label
+        class="focus-within:ring-primary/30 flex min-h-11 cursor-pointer gap-3 border border-border p-3 focus-within:ring-2"
+      >
+        <input
+          class="mt-1 size-4 shrink-0 accent-primary"
+          type="checkbox"
+          data-consent-analytics
+        />
+        <span class="min-w-0">
+          <span class="block text-sm font-semibold text-primary">
+            {localized.analytics}
+          </span>
+          <span class="mt-1 block text-xs leading-5 text-muted-foreground">
+            {localized.analyticsDescription}
+          </span>
+        </span>
+      </label>
+
+      <label
+        class="focus-within:ring-primary/30 flex min-h-11 cursor-pointer gap-3 border border-border p-3 focus-within:ring-2"
+      >
+        <input
+          class="mt-1 size-4 shrink-0 accent-primary"
+          type="checkbox"
+          data-consent-advertising
+        />
+        <span class="min-w-0">
+          <span class="block text-sm font-semibold text-primary">
+            {localized.advertising}
+          </span>
+          <span class="mt-1 block text-xs leading-5 text-muted-foreground">
+            {localized.advertisingDescription}
+          </span>
+        </span>
+      </label>
+    </fieldset>
+
+    <div class="mt-5 grid gap-2 sm:grid-cols-3">
       <button
-        class="focus-ring-primary inline-flex min-h-11 items-center justify-center border border-primary px-5 text-sm font-semibold text-primary transition-colors hover:bg-muted"
+        class="focus-ring-primary inline-flex min-h-11 items-center justify-center border border-border px-4 text-sm font-semibold text-primary transition-colors hover:bg-muted"
         type="button"
         data-consent-decline
+        data-consent-reject
       >
-        {localized.decline}
+        {localized.reject}
       </button>
       <button
-        class="focus-ring-primary inline-flex min-h-11 items-center justify-center bg-primary px-5 text-sm font-semibold text-primary-foreground transition-colors hover:bg-primary/90"
+        class="focus-ring-primary inline-flex min-h-11 items-center justify-center border border-primary px-4 text-sm font-semibold text-primary transition-colors hover:bg-muted"
+        type="button"
+        data-consent-save
+      >
+        {localized.save}
+      </button>
+      <button
+        class="focus-ring-primary inline-flex min-h-11 items-center justify-center bg-primary px-4 text-sm font-semibold text-primary-foreground transition-colors hover:bg-primary/90"
         type="button"
         data-consent-accept
+        data-consent-accept-all
       >
-        {localized.accept}
+        {localized.acceptAll}
       </button>
     </div>
   </aside>
+
+  <p
+    class="sr-only"
+    aria-live="polite"
+    data-consent-status
+    data-saved-message={localized.saved}
+  ></p>
 </analytics-consent>
 
 <script>
   import {
-    getAnalyticsConsent,
-    setAnalyticsConsent,
+    ANALYTICS_CONSENT_STORAGE_KEY,
+    clearSiteOwnedGoogleStorage,
+    getConsentState,
+    initializeGoogleConsentDefaults,
+    setConsentPreferences,
+    shouldLoadGoogleScripts,
+    synchronizeConsentStateFromStorage,
     trackPhoneClick,
+    updateGoogleConsent,
+    type ConsentPreferences,
+    type ConsentState,
     type PhonePlacement,
   } from "../../lib/analytics";
 
@@ -92,33 +199,61 @@ const localized = copy[locale];
 
   class AnalyticsConsentElement extends HTMLElement {
     #panel: HTMLElement | null = null;
+    #analyticsInput: HTMLInputElement | null = null;
+    #advertisingInput: HTMLInputElement | null = null;
+    #status: HTMLElement | null = null;
+    #opener: HTMLButtonElement | null = null;
+    #state: ConsentState | null = null;
     #containerId = "";
+    #loaderEnabled = false;
 
     connectedCallback(): void {
       const panel = this.querySelector("[data-consent-panel]");
-      if (!(panel instanceof HTMLElement) || this.dataset.bound === "true") {
+      const analyticsInput = this.querySelector("[data-consent-analytics]");
+      const advertisingInput = this.querySelector(
+        "[data-consent-advertising]",
+      );
+      const status = this.querySelector("[data-consent-status]");
+      if (
+        !(panel instanceof HTMLElement) ||
+        !(analyticsInput instanceof HTMLInputElement) ||
+        !(advertisingInput instanceof HTMLInputElement) ||
+        !(status instanceof HTMLElement) ||
+        this.dataset.bound === "true"
+      ) {
         return;
       }
 
       this.dataset.bound = "true";
       this.#panel = panel;
+      this.#analyticsInput = analyticsInput;
+      this.#advertisingInput = advertisingInput;
+      this.#status = status;
       this.#containerId = this.dataset.containerId ?? "";
-      this.addEventListener("click", this.#handleClick);
-      document.addEventListener("click", this.#handleDocumentClick);
+      this.#loaderEnabled = this.dataset.loaderEnabled === "true";
 
-      if (this.dataset.enabled !== "true") {
-        panel.hidden = true;
-        return;
+      this.addEventListener("click", this.#handleClick);
+      this.addEventListener("keydown", this.#handleKeydown);
+      document.addEventListener("click", this.#handleDocumentClick);
+      window.addEventListener("storage", this.#handleStorage);
+
+      initializeGoogleConsentDefaults();
+      this.#state = getConsentState();
+      this.#syncControls();
+
+      if (this.#state !== null) {
+        updateGoogleConsent(this.#state);
+        this.#loadGtmIfAllowed();
       }
 
-      const consent = getAnalyticsConsent();
-      panel.hidden = consent !== null;
-      if (consent === "granted") this.#loadGtm();
+      panel.hidden = this.#state !== null || !this.#loaderEnabled;
     }
 
     disconnectedCallback(): void {
       this.removeEventListener("click", this.#handleClick);
+      this.removeEventListener("keydown", this.#handleKeydown);
       document.removeEventListener("click", this.#handleDocumentClick);
+      window.removeEventListener("storage", this.#handleStorage);
       this.dataset.bound = "false";
     }
 
@@ -126,15 +261,32 @@ const localized = copy[locale];
       const target = event.target;
       if (!(target instanceof Element)) return;
 
-      if (target.closest("[data-consent-accept]")) {
-        setAnalyticsConsent("granted");
-        if (getAnalyticsConsent() === "granted") this.#loadGtm();
-        if (this.#panel) this.#panel.hidden = true;
-      } else if (target.closest("[data-consent-decline]")) {
-        const wasGranted = getAnalyticsConsent() === "granted";
-        setAnalyticsConsent("denied");
-        if (this.#panel) this.#panel.hidden = true;
-        if (wasGranted) window.location.reload();
+      if (target.closest("[data-consent-accept-all]")) {
+        this.#applyPreferences({ analytics: true, advertising: true });
+        return;
+      }
+
+      if (target.closest("[data-consent-reject]")) {
+        this.#applyPreferences({ analytics: false, advertising: false });
+        return;
+      }
+
+      if (target.closest("[data-consent-save]")) {
+        this.#applyPreferences({
+          analytics: this.#analyticsInput?.checked === true,
+          advertising: this.#advertisingInput?.checked === true,
+        });
+      }
+    };
+
+    #handleKeydown = (event: KeyboardEvent): void => {
+      if (
+        event.key === "Escape" &&
+        this.#state !== null &&
+        this.#panel?.hidden === false
+      ) {
+        event.preventDefault();
+        this.#hidePanel();
       }
     };
 
@@ -144,10 +296,8 @@ const localized = copy[locale];
 
       const settingsButton = target.closest("[data-analytics-settings]");
       if (settingsButton instanceof HTMLButtonElement) {
-        if (this.#panel) {
-          this.#panel.hidden = false;
-          this.#panel.querySelector<HTMLButtonElement>("button")?.focus();
-        }
+        this.#opener = settingsButton;
+        this.#openPanel();
         return;
       }
 
@@ -157,10 +307,92 @@ const localized = copy[locale];
       }
     };
 
-    #loadGtm(): void {
+    #handleStorage = (event: StorageEvent): void => {
       if (
+        event.key !== ANALYTICS_CONSENT_STORAGE_KEY &&
+        event.key !== null
+      ) {
+        return;
+      }
+
+      const previous = this.#state;
+      this.#state = synchronizeConsentStateFromStorage();
+      updateGoogleConsent(this.#state);
+      this.#clearRevokedStorage(previous, this.#state);
+      this.#syncControls();
+      this.#loadGtmIfAllowed();
+      if (this.#panel) {
+        this.#panel.hidden = this.#state !== null || !this.#loaderEnabled;
+      }
+    };
+
+    #applyPreferences(preferences: ConsentPreferences): void {
+      const previous = this.#state;
+      const state = setConsentPreferences(preferences);
+      this.#state = state;
+
+      // The consent update is queued before the first GTM bootstrap/event.
+      updateGoogleConsent(state);
+      this.#clearRevokedStorage(previous, state);
+      this.#syncControls();
+      this.#loadGtmIfAllowed();
+      if (this.#status) {
+        this.#status.textContent = "";
+        requestAnimationFrame(() => {
+          if (this.#status) {
+            this.#status.textContent = this.#status.dataset.savedMessage ?? "";
+          }
+        });
+      }
+      this.#hidePanel();
+    }
+
+    #clearRevokedStorage(
+      previous: ConsentState | null,
+      next: ConsentState | null,
+    ): void {
+      const analyticsRevoked =
+        next?.analytics !== true && previous?.analytics !== false;
+      const advertisingRevoked =
+        next?.advertising !== true && previous?.advertising !== false;
+      clearSiteOwnedGoogleStorage({
+        analytics: analyticsRevoked,
+        advertising: advertisingRevoked,
+      });
+    }
+
+    #syncControls(): void {
+      if (this.#analyticsInput) {
+        this.#analyticsInput.checked = this.#state?.analytics === true;
+      }
+      if (this.#advertisingInput) {
+        this.#advertisingInput.checked = this.#state?.advertising === true;
+      }
+    }
+
+    #openPanel(): void {
+      if (!this.#panel) return;
+      this.#syncControls();
+      this.#panel.hidden = false;
+      this.#panel
+        .querySelector<HTMLInputElement>("[data-consent-analytics]")
+        ?.focus();
+    }
+
+    #hidePanel(): void {
+      if (this.#panel) this.#panel.hidden = true;
+      this.#opener?.focus();
+      this.#opener = null;
+    }
+
+    #loadGtmIfAllowed(): void {
+      if (
+        !this.#loaderEnabled ||
         this.#containerId.length === 0 ||
-        document.querySelector("script[data-gtm-loader]") !== null
+        !shouldLoadGoogleScripts(this.#state) ||
+        document.querySelector(
+          'script[data-google-tag-manager-loader], script[src^="https://www.googletagmanager.com/gtm.js"]',
+        ) !== null
       ) {
         return;
       }
@@ -172,7 +404,7 @@ const localized = copy[locale];
       });
       const script = document.createElement("script");
       script.async = true;
-      script.dataset.gtmLoader = "true";
+      script.dataset.googleTagManagerLoader = "true";
       script.src = `https://www.googletagmanager.com/gtm.js?id=${encodeURIComponent(this.#containerId)}`;
       document.head.append(script);
     }

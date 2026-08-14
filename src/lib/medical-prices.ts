@@ -17,8 +17,8 @@ interface MedicalPriceGroupDefinition {
   readonly titleKey: TranslationKey;
 }
 
-type MedicalServiceTranslation = Readonly<
-  Partial<Record<LocalizedLocale, string>>
+export type MedicalServiceTranslation = Readonly<
+  Record<LocalizedLocale, string>
 >;
 
 const medicalPriceGroupDefinitions = [
@@ -44,49 +44,202 @@ const medicalPriceGroupDefinitions = [
   },
 ] as const satisfies readonly MedicalPriceGroupDefinition[];
 
-/**
- * Numeric IDs are the translation boundary. Empty entries explicitly retain the
- * official Ukrainian wording until the clinic approves a localized medical label.
- */
+/** Numeric IDs are the stable translation boundary for all rendered locales. */
 export const MEDICAL_SERVICE_TRANSLATIONS: Readonly<
   Record<MedicalPriceId, MedicalServiceTranslation>
 > = {
-  1: {},
-  2: {},
-  3: {},
-  4: {},
-  5: {},
-  6: {},
-  7: {},
-  8: {},
-  9: {},
-  10: {},
-  11: {},
-  12: {},
-  13: {},
-  14: {},
-  15: {},
-  16: {},
-  17: {},
-  18: {},
-  19: {},
-  20: {},
-  21: {},
-  22: {},
-  23: {},
-  24: {},
-  25: {},
-  26: {},
-  27: {},
-  28: {},
-  29: {},
-  30: {},
-  31: {},
-  32: {},
-  33: {},
-  38: {},
-  39: {},
-  40: {},
+  1: {
+    en: "Chief physician consultation",
+    sk: "Konzultácia hlavnej lekárky",
+    hu: "Főorvosi konzultáció",
+  },
+  2: {
+    en: "Initial ophthalmologist consultation* + intraocular pressure measurement (age 40+)",
+    sk: "Vstupná konzultácia oftalmológa* + meranie vnútroočného tlaku (od 40 rokov)",
+    hu: "Első szemészeti konzultáció* + szemnyomásmérés (40 éves kortól)",
+  },
+  3: {
+    en: "Initial ophthalmologist consultation",
+    sk: "Vstupná konzultácia oftalmológa",
+    hu: "Első szemészeti konzultáció",
+  },
+  4: {
+    en: "Initial pediatric ophthalmologist consultation",
+    sk: "Vstupná konzultácia detského oftalmológa",
+    hu: "Első gyermek-szemészeti konzultáció",
+  },
+  5: {
+    en: "Follow-up pediatric ophthalmologist consultation",
+    sk: "Kontrolná konzultácia detského oftalmológa",
+    hu: "Kontroll gyermek-szemészeti konzultáció",
+  },
+  6: {
+    en: "Follow-up ophthalmologist consultation",
+    sk: "Kontrolná konzultácia oftalmológa",
+    hu: "Kontroll szemészeti konzultáció",
+  },
+  7: {
+    en: "Autorefraction, both eyes",
+    sk: "Autorefraktometria oboch očí",
+    hu: "Autorefraktometria, mindkét szem",
+  },
+  8: {
+    en: "Autokeratorefractometry, both eyes",
+    sk: "Autokeratorefraktometria oboch očí",
+    hu: "Autokeratorefraktometria, mindkét szem",
+  },
+  9: {
+    en: "Visual acuity testing, both eyes",
+    sk: "Vyšetrenie zrakovej ostrosti oboch očí",
+    hu: "Látásélesség-vizsgálat, mindkét szem",
+  },
+  10: {
+    en: "Maklakov tonometry, both eyes",
+    sk: "Maklakovova tonometria oboch očí",
+    hu: "Maklakov-tonometria, mindkét szem",
+  },
+  11: {
+    en: "Biomicroscopy, both eyes",
+    sk: "Biomikroskopia oboch očí",
+    hu: "Biomikroszkópia, mindkét szem",
+  },
+  12: {
+    en: "Biomicroscopy, one eye",
+    sk: "Biomikroskopia jedného oka",
+    hu: "Biomikroszkópia, egy szem",
+  },
+  13: {
+    en: "Ophthalmoscopy with a VOLK-90D aspheric lens, one eye",
+    sk: "Oftalmoskopia asférickou šošovkou VOLK-90D, jedno oko",
+    hu: "Szemfenékvizsgálat aszférikus VOLK-90D lencsével, egy szem",
+  },
+  14: {
+    en: "Ophthalmoscopy with a VOLK-90D aspheric lens, both eyes",
+    sk: "Oftalmoskopia asférickou šošovkou VOLK-90D, obe oči",
+    hu: "Szemfenékvizsgálat aszférikus VOLK-90D lencsével, mindkét szem",
+  },
+  15: {
+    en: "Mirror ophthalmoscopy, both eyes",
+    sk: "Zrkadlová oftalmoskopia oboch očí",
+    hu: "Tükrös szemfenékvizsgálat, mindkét szem",
+  },
+  16: {
+    en: "Direct ophthalmoscopy, both eyes",
+    sk: "Priama oftalmoskopia oboch očí",
+    hu: "Közvetlen szemfenékvizsgálat, mindkét szem",
+  },
+  17: {
+    en: "Retinoscopy, both eyes",
+    sk: "Retinoskopia oboch očí",
+    hu: "Retinoszkópia, mindkét szem",
+  },
+  18: {
+    en: "Retinoscopy, one eye",
+    sk: "Retinoskopia jedného oka",
+    hu: "Retinoszkópia, egy szem",
+  },
+  19: {
+    en: "Transpalpebral tonometry, both eyes",
+    sk: "Transpalpebrálna tonometria oboch očí",
+    hu: "Transzpalpebrális tonometria, mindkét szem",
+  },
+  20: {
+    en: "Spherical spectacle correction selection, both eyes",
+    sk: "Výber sférickej okuliarovej korekcie pre obe oči",
+    hu: "Szférikus szemüvegkorrekció kiválasztása, mindkét szem",
+  },
+  21: {
+    en: "Sphero-cylindrical spectacle correction selection, both eyes",
+    sk: "Výber sféro-cylindrickej okuliarovej korekcie pre obe oči",
+    hu: "Szferocilindrikus szemüvegkorrekció kiválasztása, mindkét szem",
+  },
+  22: {
+    en: "Contact lens fitting, both eyes",
+    sk: "Výber kontaktných šošoviek pre obe oči",
+    hu: "Kontaktlencse-illesztés, mindkét szem",
+  },
+  23: {
+    en: "Training in soft contact lens handling (insertion/removal/care)",
+    sk: "Nácvik manipulácie s mäkkými kontaktnými šošovkami (nasadenie/vybratie/starostlivosť)",
+    hu: "Betanítás a lágy kontaktlencse használatára (felhelyezés/eltávolítás/ápolás)",
+  },
+  24: {
+    en: "Removal of a foreign body from the superficial corneal and conjunctival layers, one eye",
+    sk: "Odstránenie cudzieho telieska z povrchových vrstiev rohovky a spojovky, jedno oko",
+    hu: "Idegentest eltávolítása a szaruhártya és a kötőhártya felszíni rétegeiből, egy szem",
+  },
+  25: {
+    en: "Strabismus angle assessment using the Hirschberg method",
+    sk: "Určenie uhla strabizmu Hirschbergovou metódou",
+    hu: "A kancsalsági szög meghatározása Hirschberg-módszerrel",
+  },
+  26: {
+    en: "Colour vision assessment using Rabkin polychromatic tables",
+    sk: "Vyšetrenie farbocitu pomocou Rabkinových polychromatických tabuliek",
+    hu: "Színlátásvizsgálat Rabkin-féle polikromatikus táblákkal",
+  },
+  27: {
+    en: "Schirmer test",
+    sk: "Schirmerov test",
+    hu: "Schirmer-teszt",
+  },
+  28: {
+    en: "Injection of a medicinal product into the chalazion area",
+    sk: "Injekcia lieku do oblasti chalaziónu",
+    hu: "Gyógyszer injekciója a chalazion területére",
+  },
+  29: {
+    en: "Eyelid massage, both eyes",
+    sk: "Masáž viečok oboch očí",
+    hu: "Szemhéjmasszázs, mindkét szem",
+  },
+  30: {
+    en: "Lacrimal duct probing, one eye",
+    sk: "Sondáž slzných kanálikov, jedno oko",
+    hu: "Könnycsatorna-szondázás, egy szem",
+  },
+  31: {
+    en: "Lacrimal duct probing, both eyes",
+    sk: "Sondáž slzných kanálikov, obe oči",
+    hu: "Könnycsatorna-szondázás, mindkét szem",
+  },
+  32: {
+    en: "Canalicular and lacrimal-nasal drainage tests",
+    sk: "Kanáliková a slzno-nosová skúška",
+    hu: "Könnycsatorna- és könny-orrjárati próba",
+  },
+  33: {
+    en: "Dry eye syndrome tests",
+    sk: "Testy na syndróm suchého oka",
+    hu: "Szárazszem-szindróma vizsgálatok",
+  },
+  38: {
+    en: "Ocular bacterial culture with antibiogram, one eye",
+    sk: "Bakteriálna kultivácia z oka s antibiogramom, jedno oko",
+    hu: "Szemváladék bakteriológiai tenyésztése antibiotikum-érzékenységi vizsgálattal, egy szem",
+  },
+  39: {
+    en: "Demodex microscopy (detection of Demodex skin mites)",
+    sk: "Mikroskopia na Demodex (detekcia kožného roztoča rodu Demodex)",
+    hu: "Demodex-mikroszkópia (a Demodex nemzetségbe tartozó bőratka kimutatása)",
+  },
+  40: {
+    en: "Specimen collection for bacterial culture in transport medium",
+    sk: "Odber materiálu na bakteriologické vyšetrenie do transportného média",
+    hu: "Mintavétel bakteriológiai tenyésztéshez transzportközegbe",
+  },
+};
+
+export const MEDICAL_SERVICE_NOTE_TRANSLATIONS: Readonly<
+  Partial<
+    Record<MedicalPriceId, Readonly<Record<LocalizedLocale, string>>>
+  >
+> = {
+  2: {
+    en: "*promotional comprehensive (extended) examination",
+    sk: "*akciové komplexné (rozšírené) vyšetrenie",
+    hu: "*akciós komplex (részletes) vizsgálat",
+  },
 };
 
 const localeTags: Readonly<Record<Locale, string>> = {
@@ -114,11 +267,22 @@ export function getMedicalServiceDisplayName(
     return item.officialNameUk;
   }
 
-  return MEDICAL_SERVICE_TRANSLATIONS[item.id][locale] ?? item.officialNameUk;
+  return MEDICAL_SERVICE_TRANSLATIONS[item.id][locale];
 }
 
-export function usesOfficialUkrainianNameFallback(locale: Locale): boolean {
-  return locale !== "uk";
+export function getMedicalServiceDisplayNote(
+  item: CanonicalMedicalPriceItem,
+  locale: Locale,
+): string | undefined {
+  if (item.noteUk === undefined || locale === "uk") {
+    return item.noteUk;
+  }
+
+  return MEDICAL_SERVICE_NOTE_TRANSLATIONS[item.id]?.[locale];
+}
+
+export function usesOfficialUkrainianNameFallback(_locale: Locale): boolean {
+  return false;
 }
 
 export function formatMedicalPrice(priceUah: number, locale: Locale): string {

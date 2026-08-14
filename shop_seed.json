@@ -6,8 +6,10 @@
     "brand": "Alcon",
     "price": 850,
     "inStock": true,
-    "image": "/images/shop/lenses/air-optix-night-day.jpg",
-    "description": "Контактні лінзи безперервного носіння до 30 днів із високим рівнем киснепроникності."
+    "image": "/images/shop/lenses/lens-air-optix-night-day-1.webp",
+    "description": "Контактні лінзи безперервного носіння до 30 днів із високим рівнем киснепроникності.",
+    "slug": "lens-air-optix-night-day-1",
+    "sku": "MED-INTERNAL-LENS-AIR-OPTIX-NIGHT-DAY-1"
   },
   {
     "id": "lens-biofinity-2",
@@ -16,8 +18,10 @@
     "brand": "CooperVision",
     "price": 1150,
     "inStock": true,
-    "image": "/images/shop/lenses/biofinity.jpg",
-    "description": "Силікон-гідрогелеві лінзи щомісячної заміни для природного зволоження очей."
+    "image": "/images/shop/lenses/lens-biofinity-2.png",
+    "description": "Силікон-гідрогелеві лінзи щомісячної заміни для природного зволоження очей.",
+    "slug": "lens-biofinity-2",
+    "sku": "MED-INTERNAL-LENS-BIOFINITY-2"
   },
   {
     "id": "lens-acuvue-oasys-3",
@@ -26,8 +30,10 @@
     "brand": "Johnson & Johnson",
     "price": 1280,
     "inStock": true,
-    "image": "/images/shop/lenses/acuvue-oasys.jpg",
-    "description": "Двотижневі лінзи з ультрагладенькою поверхнею для тривалої роботи за монітором."
+    "image": "/images/shop/lenses/lens-acuvue-oasys-3.webp",
+    "description": "Двотижневі лінзи з ультрагладенькою поверхнею для тривалої роботи за монітором.",
+    "slug": "lens-acuvue-oasys-3",
+    "sku": "MED-INTERNAL-LENS-ACUVUE-OASYS-3"
   },
   {
     "id": "lens-dailies-total-1-4",
@@ -36,8 +42,10 @@
     "brand": "Alcon",
     "price": 1650,
     "inStock": true,
-    "image": "/images/shop/lenses/dailies-total-1.jpg",
-    "description": "Одноденні водоградієнтні лінзи, що майже не відчуваються на оці."
+    "image": "/images/shop/lenses/lens-dailies-total-1-4.jpg",
+    "description": "Одноденні водоградієнтні лінзи, що майже не відчуваються на оці.",
+    "slug": "lens-dailies-total-1-4",
+    "sku": "MED-INTERNAL-LENS-DAILIES-TOTAL-1-4"
   },
   {
     "id": "lens-ultra-bausch-lomb-5",
@@ -46,8 +54,10 @@
     "brand": "Bausch & Lomb",
     "price": 790,
     "inStock": true,
-    "image": "/images/shop/lenses/bausch-ultra.jpg",
-    "description": "Лінзи з технологією MoistureSeal для підтримання 95% зволоження протягом 16 годин."
+    "image": "/images/shop/lenses/lens-ultra-bausch-lomb-5.webp",
+    "description": "Лінзи з технологією MoistureSeal для підтримання 95% зволоження протягом 16 годин.",
+    "slug": "lens-ultra-bausch-lomb-5",
+    "sku": "MED-INTERNAL-LENS-ULTRA-BAUSCH-LOMB-5"
   },
   {
     "id": "lens-clariti-1day-6",
@@ -56,8 +66,10 @@
     "brand": "CooperVision",
     "price": 980,
     "inStock": true,
-    "image": "/images/shop/lenses/clariti-1day.jpg",
-    "description": "Одноденні силікон-гідрогелеві лінзи з високим комфортом і UV-захистом."
+    "image": "/images/shop/lenses/lens-clariti-1day-6.webp",
+    "description": "Одноденні силікон-гідрогелеві лінзи з високим комфортом і UV-захистом.",
+    "slug": "lens-clariti-1day-6",
+    "sku": "MED-INTERNAL-LENS-CLARITI-1DAY-6"
   },
   {
     "id": "lens-acuvue-moist-7",
@@ -66,8 +78,10 @@
     "brand": "Johnson & Johnson",
     "price": 890,
     "inStock": true,
-    "image": "/images/shop/lenses/acuvue-moist.jpg",
-    "description": "Одноденні гідрогелеві лінзи з технологією Lacreon для тривалого зволоження."
+    "image": "/images/shop/lenses/lens-acuvue-moist-7.webp",
+    "description": "Одноденні гідрогелеві лінзи з технологією Lacreon для тривалого зволоження.",
+    "slug": "lens-acuvue-moist-7",
+    "sku": "MED-INTERNAL-LENS-ACUVUE-MOIST-7"
   },
   {
     "id": "lens-air-optix-plus-8",
@@ -76,8 +90,10 @@
     "brand": "Alcon",
     "price": 720,
     "inStock": true,
-    "image": "/images/shop/lenses/air-optix-hydra.jpg",
-    "description": "Місячні лінзи з подвійною технологією зволоження HydraGlyde."
+    "image": "/images/shop/lenses/lens-air-optix-plus-8.png",
+    "description": "Місячні лінзи з подвійною технологією зволоження HydraGlyde.",
+    "slug": "lens-air-optix-plus-8",
+    "sku": "MED-INTERNAL-LENS-AIR-OPTIX-PLUS-8"
   },
   {
     "id": "lens-air-optix-astigmatism-9",
@@ -86,8 +102,10 @@
     "brand": "Alcon",
     "price": 1050,
     "inStock": true,
-    "image": "/images/shop/lenses/air-optix-astigmatism.jpg",
-    "description": "Торичні лінзи для корекції астигматизму з технологією HydraGlyde."
+    "image": "/images/shop/lenses/lens-air-optix-astigmatism-9.jpg",
+    "description": "Торичні лінзи для корекції астигматизму з технологією HydraGlyde.",
+    "slug": "lens-air-optix-astigmatism-9",
+    "sku": "MED-INTERNAL-LENS-AIR-OPTIX-ASTIGMATISM-9"
   },
   {
     "id": "lens-purevision-2-10",
@@ -96,8 +114,10 @@
     "brand": "Bausch & Lomb",
     "price": 950,
     "inStock": true,
-    "image": "/images/shop/lenses/purevision-2.jpg",
-    "description": "Місячні лінзи з високою чіткістю зображення та ComfortMoist."
+    "image": "/images/shop/lenses/lens-purevision-2-10.webp",
+    "description": "Місячні лінзи з високою чіткістю зображення та ComfortMoist.",
+    "slug": "lens-purevision-2-10",
+    "sku": "MED-INTERNAL-LENS-PUREVISION-2-10"
   },
   {
     "id": "lens-menicon-z-11",
@@ -106,8 +126,10 @@
     "brand": "Menicon",
     "price": 2100,
     "inStock": true,
-    "image": "/images/shop/lenses/menicon-z.jpg",
-    "description": "Жорсткі газопроникні лінзи преміум-класу для складних випадків корекції."
+    "image": "/images/shop/lenses/lens-menicon-z-11.jpg",
+    "description": "Жорсткі газопроникні лінзи преміум-класу для складних випадків корекції.",
+    "slug": "lens-menicon-z-11",
+    "sku": "MED-INTERNAL-LENS-MENICON-Z-11"
   },
   {
     "id": "lens-seed-1day-pure-12",
@@ -116,8 +138,10 @@
     "brand": "SEED",
     "price": 920,
     "inStock": true,
-    "image": "/images/shop/lenses/seed-1day.jpg",
-    "description": "Японські одноденні лінзи з природним зволожувачем і UV-фільтром."
+    "image": "/images/shop/lenses/lens-seed-1day-pure-12.jpg",
+    "description": "Японські одноденні лінзи з природним зволожувачем і UV-фільтром.",
+    "slug": "lens-seed-1day-pure-12",
+    "sku": "MED-INTERNAL-LENS-SEED-1DAY-PURE-12"
   },
   {
     "id": "lens-rodenstock-cxl-13",
@@ -126,8 +150,10 @@
     "brand": "Rodenstock",
     "price": 1380,
     "inStock": true,
-    "image": "/images/shop/lenses/rodenstock-cxl.jpg",
-    "description": "Німецькі лінзи з високою киснепроникністю та антибактеріальним покриттям."
+    "image": "/images/shop/lenses/lens-rodenstock-cxl-13.jpg",
+    "description": "Німецькі лінзи з високою киснепроникністю та антибактеріальним покриттям.",
+    "slug": "lens-rodenstock-cxl-13",
+    "sku": "MED-INTERNAL-LENS-RODENSTOCK-CXL-13"
   },
   {
     "id": "lens-biotrue-oneday-14",
@@ -136,8 +162,10 @@
     "brand": "Bausch & Lomb",
     "price": 1100,
     "inStock": true,
-    "image": "/images/shop/lenses/biotrue-oneday.jpg",
-    "description": "Одноденні лінзи, що імітують природну сльозу та зберігають 98% зволоження."
+    "image": "/images/shop/lenses/lens-biotrue-oneday-14.png",
+    "description": "Одноденні лінзи, що імітують природну сльозу та зберігають 98% зволоження.",
+    "slug": "lens-biotrue-oneday-14",
+    "sku": "MED-INTERNAL-LENS-BIOTRUE-ONEDAY-14"
   },
   {
     "id": "lens-acuvue-vita-15",
@@ -146,8 +174,10 @@
     "brand": "Johnson & Johnson",
     "price": 1320,
     "inStock": true,
-    "image": "/images/shop/lenses/acuvue-vita.jpg",
-    "description": "Місячні лінзи з технологією HydraMax для комфорту протягом усього місяця."
+    "image": "/images/shop/lenses/lens-acuvue-vita-15.jpg",
+    "description": "Місячні лінзи з технологією HydraMax для комфорту протягом усього місяця.",
+    "slug": "lens-acuvue-vita-15",
+    "sku": "MED-INTERNAL-LENS-ACUVUE-VITA-15"
   },
   {
     "id": "care-biotrue-solution-1",
@@ -156,8 +186,10 @@
     "brand": "Bausch & Lomb",
     "price": 380,
     "inStock": true,
-    "image": "/images/shop/care/biotrue-300ml.jpg",
-    "description": "Розчин з природним зволожувачем гіалуронаном, який відповідає pH сльози людини."
+    "image": "/images/shop/care/care-biotrue-solution-1.jpg",
+    "description": "Розчин з природним зволожувачем гіалуронаном, який відповідає pH сльози людини.",
+    "slug": "care-biotrue-solution-1",
+    "sku": "MED-INTERNAL-CARE-BIOTRUE-SOLUTION-1"
   },
   {
     "id": "care-opti-free-puremoist-2",
@@ -166,8 +198,10 @@
     "brand": "Alcon",
     "price": 420,
     "inStock": true,
-    "image": "/images/shop/care/opti-free-puremoist.jpg",
-    "description": "Забезпечує зволоження поверхні лінзи до 16 годин завдяки матриці HydraGlyde."
+    "image": "/images/shop/care/care-opti-free-puremoist-2.webp",
+    "description": "Забезпечує зволоження поверхні лінзи до 16 годин завдяки матриці HydraGlyde.",
+    "slug": "care-opti-free-puremoist-2",
+    "sku": "MED-INTERNAL-CARE-OPTI-FREE-PUREMOIST-2"
   },
   {
     "id": "care-systane-ultra-drops-3",
@@ -176,8 +210,10 @@
     "brand": "Alcon",
     "price": 340,
     "inStock": true,
-    "image": "/images/shop/care/systane-ultra.jpg",
-    "description": "Швидке зняття синдрому сухого ока та подразнення під час носіння лінз."
+    "image": "/images/shop/care/care-systane-ultra-drops-3.jpg",
+    "description": "Швидке зняття синдрому сухого ока та подразнення під час носіння лінз.",
+    "slug": "care-systane-ultra-drops-3",
+    "sku": "MED-INTERNAL-CARE-SYSTANE-ULTRA-DROPS-3"
   },
   {
     "id": "care-hylo-comod-4",
@@ -186,8 +222,10 @@
     "brand": "URSAPHARM",
     "price": 490,
     "inStock": true,
-    "image": "/images/shop/care/hylo-comod.jpg",
-    "description": "Безконсервантні краплі з чистою гіалуроновою кислотою у флаконі системи COMOD."
+    "image": "/images/shop/care/care-hylo-comod-4.jpg",
+    "description": "Безконсервантні краплі з чистою гіалуроновою кислотою у флаконі системи COMOD.",
+    "slug": "care-hylo-comod-4",
+    "sku": "MED-INTERNAL-CARE-HYLO-COMOD-4"
   },
   {
     "id": "care-renu-multiplus-5",
@@ -196,8 +234,10 @@
     "brand": "Bausch & Lomb",
     "price": 310,
     "inStock": true,
-    "image": "/images/shop/care/renu-multiplus.jpg",
-    "description": "Класичний багатофункціональний розчин для очищення, дезінфекції та зберігання."
+    "image": "/images/shop/care/care-renu-multiplus-5.jpg",
+    "description": "Класичний багатофункціональний розчин для очищення, дезінфекції та зберігання.",
+    "slug": "care-renu-multiplus-5",
+    "sku": "MED-INTERNAL-CARE-RENU-MULTIPLUS-5"
   },
   {
     "id": "care-ao-sept-plus-6",
@@ -206,8 +246,10 @@
     "brand": "Alcon",
     "price": 520,
     "inStock": true,
-    "image": "/images/shop/care/aosept-plus.jpg",
-    "description": "Пероксидна система глибокого очищення з нейтралізатором каталази."
+    "image": "/images/shop/care/care-ao-sept-plus-6.jpg",
+    "description": "Пероксидна система глибокого очищення з нейтралізатором каталази.",
+    "slug": "care-ao-sept-plus-6",
+    "sku": "MED-INTERNAL-CARE-AO-SEPT-PLUS-6"
   },
   {
     "id": "care-blink-contacts-7",
@@ -216,8 +258,10 @@
     "brand": "Johnson & Johnson",
     "price": 290,
     "inStock": true,
-    "image": "/images/shop/care/blink-contacts.jpg",
-    "description": "Зволожуючі краплі спеціально для користувачів контактних лінз."
+    "image": "/images/shop/care/care-blink-contacts-7.png",
+    "description": "Зволожуючі краплі спеціально для користувачів контактних лінз.",
+    "slug": "care-blink-contacts-7",
+    "sku": "MED-INTERNAL-CARE-BLINK-CONTACTS-7"
   },
   {
     "id": "care-avizor-unica-8",
@@ -226,8 +270,10 @@
     "brand": "Avizor",
     "price": 390,
     "inStock": true,
-    "image": "/images/shop/care/avizor-unica.jpg",
-    "description": "Багатофункціональний розчин з гіалуроновою кислотою для чутливих очей."
+    "image": "/images/shop/care/care-avizor-unica-8.png",
+    "description": "Багатофункціональний розчин з гіалуроновою кислотою для чутливих очей.",
+    "slug": "care-avizor-unica-8",
+    "sku": "MED-INTERNAL-CARE-AVIZOR-UNICA-8"
   },
   {
     "id": "care-hylo-dual-9",
@@ -236,8 +282,10 @@
     "brand": "URSAPHARM",
     "price": 560,
     "inStock": true,
-    "image": "/images/shop/care/hylo-dual.jpg",
-    "description": "Безконсервантні краплі з гіалуроновою кислотою та ектоїном проти алергії."
+    "image": "/images/shop/care/care-hylo-dual-9.jpg",
+    "description": "Безконсервантні краплі з гіалуроновою кислотою та ектоїном проти алергії.",
+    "slug": "care-hylo-dual-9",
+    "sku": "MED-INTERNAL-CARE-HYLO-DUAL-9"
   },
   {
     "id": "care-hilens-optical-10",
@@ -246,8 +294,10 @@
     "brand": "Hilens",
     "price": 370,
     "inStock": true,
-    "image": "/images/shop/care/hilens-care.jpg",
-    "description": "Професійний розчин для глибокого очищення та зберігання контактних лінз."
+    "image": "/images/shop/care/care-hilens-optical-10.jpg",
+    "description": "Професійний розчин для глибокого очищення та зберігання контактних лінз.",
+    "slug": "care-hilens-optical-10",
+    "sku": "MED-INTERNAL-CARE-HILENS-OPTICAL-10"
   },
   {
     "id": "care-systane-balance-11",
@@ -256,8 +306,10 @@
     "brand": "Alcon",
     "price": 360,
     "inStock": true,
-    "image": "/images/shop/care/systane-balance.jpg",
-    "description": "Ліпідні краплі для відновлення слізної плівки при випаровуванні."
+    "image": "/images/shop/care/care-systane-balance-11.webp",
+    "description": "Ліпідні краплі для відновлення слізної плівки при випаровуванні.",
+    "slug": "care-systane-balance-11",
+    "sku": "MED-INTERNAL-CARE-SYSTANE-BALANCE-11"
   },
   {
     "id": "care-lens-case-12",
@@ -266,8 +318,10 @@
     "brand": "Bausch & Lomb",
     "price": 85,
     "inStock": true,
-    "image": "/images/shop/care/lens-case.jpg",
-    "description": "Компактний контейнер для зберігання лінз з вбудованим дзеркалом."
+    "image": "/images/shop/care/care-lens-case-12.jpg",
+    "description": "Компактний контейнер для зберігання лінз з вбудованим дзеркалом.",
+    "slug": "care-lens-case-12",
+    "sku": "MED-INTERNAL-CARE-LENS-CASE-12"
   },
   {
     "id": "care-tweezers-13",
@@ -276,8 +330,10 @@
     "brand": "SEED",
     "price": 65,
     "inStock": true,
-    "image": "/images/shop/care/tweezers.jpg",
-    "description": "М’який силіконовий пінцет для безпечного зняття та надягання лінз."
+    "image": "/images/shop/care/care-tweezers-13.jpg",
+    "description": "М’який силіконовий пінцет для безпечного зняття та надягання лінз.",
+    "slug": "care-tweezers-13",
+    "sku": "MED-INTERNAL-CARE-TWEEZERS-13"
   },
   {
     "id": "care-peroxide-neutralizer-14",
@@ -286,8 +342,10 @@
     "brand": "Menicon",
     "price": 280,
     "inStock": true,
-    "image": "/images/shop/care/peroxide-neutralizer.jpg",
-    "description": "Спеціальний розчин для повної нейтралізації перекису водню."
+    "image": "/images/shop/care/care-peroxide-neutralizer-14.jpg",
+    "description": "Спеціальний розчин для повної нейтралізації перекису водню.",
+    "slug": "care-peroxide-neutralizer-14",
+    "sku": "MED-INTERNAL-CARE-PEROXIDE-NEUTRALIZER-14"
   },
   {
     "id": "care-artificial-tears-15",
@@ -296,8 +354,10 @@
     "brand": "Thea",
     "price": 410,
     "inStock": true,
-    "image": "/images/shop/care/thealoz-duo.jpg",
-    "description": "Безконсервантні краплі з трегалозою та гіалуроновою кислотою."
+    "image": "/images/shop/care/care-artificial-tears-15.jpg",
+    "description": "Безконсервантні краплі з трегалозою та гіалуроновою кислотою.",
+    "slug": "care-artificial-tears-15",
+    "sku": "MED-INTERNAL-CARE-ARTIFICIAL-TEARS-15"
   },
   {
     "id": "frame-owlet-classic-1",
@@ -306,8 +366,10 @@
     "brand": "Owlet",
     "price": 2100,
     "inStock": true,
-    "image": "/images/shop/frames/owlet-classic.jpg",
-    "description": "Елегантна жіноча оправа з легкого ацетату в класичному дизайні."
+    "image": "/images/shop/frames/frame-owlet-classic-1.jpg",
+    "description": "Елегантна жіноча оправа з легкого ацетату в класичному дизайні.",
+    "slug": "frame-owlet-classic-1",
+    "sku": "MED-INTERNAL-FRAME-OWLET-CLASSIC-1"
   },
   {
     "id": "frame-polo-club-elegant-2",
@@ -316,8 +378,10 @@
     "brand": "Polo Club",
     "price": 2800,
     "inStock": true,
-    "image": "/images/shop/frames/polo-club-elegant.jpg",
-    "description": "Тонка металева оправа з гнучкими завушниками та класичною формою."
+    "image": "/images/shop/frames/frame-polo-club-elegant-2.jpg",
+    "description": "Тонка металева оправа з гнучкими завушниками та класичною формою.",
+    "slug": "frame-polo-club-elegant-2",
+    "sku": "MED-INTERNAL-FRAME-POLO-CLUB-ELEGANT-2"
   },
   {
     "id": "frame-oliver-black-premium-3",
@@ -326,8 +390,10 @@
     "brand": "Oliver Black",
     "price": 3200,
     "inStock": true,
-    "image": "/images/shop/frames/oliver-black-premium.jpg",
-    "description": "Преміальна оправа стриманого дизайну з високоякісного гіпоалергенного матеріалу."
+    "image": "/images/shop/frames/frame-oliver-black-premium-3.jpg",
+    "description": "Преміальна оправа стриманого дизайну з високоякісного гіпоалергенного матеріалу.",
+    "slug": "frame-oliver-black-premium-3",
+    "sku": "MED-INTERNAL-FRAME-OLIVER-BLACK-PREMIUM-3"
   },
   {
     "id": "frame-maxima-titanium-4",
@@ -336,8 +402,10 @@
     "brand": "Maxima & Co",
     "price": 2400,
     "inStock": true,
-    "image": "/images/shop/frames/maxima-titanium.jpg",
-    "description": "Ультралегка титанова оправа для комфортного щоденного носіння."
+    "image": "/images/shop/frames/frame-maxima-titanium-4.jpg",
+    "description": "Ультралегка титанова оправа для комфортного щоденного носіння.",
+    "slug": "frame-maxima-titanium-4",
+    "sku": "MED-INTERNAL-FRAME-MAXIMA-TITANIUM-4"
   },
   {
     "id": "frame-twenty-retro-5",
@@ -346,8 +414,10 @@
     "brand": "Twenty",
     "price": 1900,
     "inStock": true,
-    "image": "/images/shop/frames/twenty-retro.jpg",
-    "description": "Квадратна оправа в ретро-стилі з виразними лініями."
+    "image": "/images/shop/frames/frame-twenty-retro-5.jpg",
+    "description": "Квадратна оправа в ретро-стилі з виразними лініями.",
+    "slug": "frame-twenty-retro-5",
+    "sku": "MED-INTERNAL-FRAME-TWENTY-RETRO-5"
   },
   {
     "id": "frame-shadow-minimalist-6",
@@ -356,8 +426,10 @@
     "brand": "Shadow",
     "price": 1750,
     "inStock": true,
-    "image": "/images/shop/frames/shadow-minimalist.jpg",
-    "description": "Мінімалістична безобідкова оправа, що майже непомітна на обличчі."
+    "image": "/images/shop/frames/frame-shadow-minimalist-6.jpg",
+    "description": "Мінімалістична безобідкова оправа, що майже непомітна на обличчі.",
+    "slug": "frame-shadow-minimalist-6",
+    "sku": "MED-INTERNAL-FRAME-SHADOW-MINIMALIST-6"
   },
   {
     "id": "frame-dacchi-square-7",
@@ -366,8 +438,10 @@
     "brand": "Dacchi",
     "price": 1500,
     "inStock": true,
-    "image": "/images/shop/frames/dacchi-square.jpg",
-    "description": "Надійна пластикова оправа прямокутної форми для офісу та читання."
+    "image": "/images/shop/frames/frame-dacchi-square-7.jpg",
+    "description": "Надійна пластикова оправа прямокутної форми для офісу та читання.",
+    "slug": "frame-dacchi-square-7",
+    "sku": "MED-INTERNAL-FRAME-DACCHI-SQUARE-7"
   },
   {
     "id": "frame-vido-round-8",
@@ -376,8 +450,10 @@
     "brand": "Vido",
     "price": 1600,
     "inStock": false,
-    "image": "/images/shop/frames/vido-round.jpg",
-    "description": "Кругла оправа у вінтажному стилі з тонкими металевими елементами."
+    "image": "/images/shop/frames/frame-vido-round-8.jpg",
+    "description": "Кругла оправа у вінтажному стилі з тонкими металевими елементами.",
+    "slug": "frame-vido-round-8",
+    "sku": "MED-INTERNAL-FRAME-VIDO-ROUND-8"
   },
   {
     "id": "frame-seiko-precision-9",
@@ -386,8 +462,10 @@
     "brand": "SEIKO",
     "price": 6500,
     "inStock": true,
-    "image": "/images/shop/frames/seiko-precision.jpg",
-    "description": "Бездоганна японська якість: титанова оправа високої міцності."
+    "image": "/images/shop/frames/frame-seiko-precision-9.jpg",
+    "description": "Бездоганна японська якість: титанова оправа високої міцності.",
+    "slug": "frame-seiko-precision-9",
+    "sku": "MED-INTERNAL-FRAME-SEIKO-PRECISION-9"
   },
   {
     "id": "frame-alvaro-sport-10",
@@ -396,8 +474,10 @@
     "brand": "Alvaro",
     "price": 1650,
     "inStock": true,
-    "image": "/images/shop/frames/alvaro-sport.jpg",
-    "description": "Легка оправа з гнучкого пластику для активного способу життя."
+    "image": "/images/shop/frames/frame-alvaro-sport-10.jpg",
+    "description": "Легка оправа з гнучкого пластику для активного способу життя.",
+    "slug": "frame-alvaro-sport-10",
+    "sku": "MED-INTERNAL-FRAME-ALVARO-SPORT-10"
   },
   {
     "id": "frame-pro-lightweight-11",
@@ -406,8 +486,10 @@
     "brand": "Pro",
     "price": 1400,
     "inStock": true,
-    "image": "/images/shop/frames/pro-lightweight.jpg",
-    "description": "Бюджетна, але надзвичайно легка комбінована оправа."
+    "image": "/images/shop/frames/frame-pro-lightweight-11.jpg",
+    "description": "Бюджетна, але надзвичайно легка комбінована оправа.",
+    "slug": "frame-pro-lightweight-11",
+    "sku": "MED-INTERNAL-FRAME-PRO-LIGHTWEIGHT-11"
   },
   {
     "id": "frame-owlet-cateye-12",
@@ -416,8 +498,10 @@
     "brand": "Owlet",
     "price": 2200,
     "inStock": true,
-    "image": "/images/shop/frames/owlet-cateye.jpg",
-    "description": "Витончена форма «котяче око» у глибокому відтінку."
+    "image": "/images/shop/frames/frame-owlet-cateye-12.jpg",
+    "description": "Витончена форма «котяче око» у глибокому відтінку.",
+    "slug": "frame-owlet-cateye-12",
+    "sku": "MED-INTERNAL-FRAME-OWLET-CATEYE-12"
   },
   {
     "id": "frame-polo-club-wayfarer-13",
@@ -426,8 +510,10 @@
     "brand": "Polo Club",
     "price": 2900,
     "inStock": true,
-    "image": "/images/shop/frames/polo-club-wayfarer.jpg",
-    "description": "Класичний силует з надійними шарнірами та товстим ацетатом."
+    "image": "/images/shop/frames/frame-polo-club-wayfarer-13.jpg",
+    "description": "Класичний силует з надійними шарнірами та товстим ацетатом.",
+    "slug": "frame-polo-club-wayfarer-13",
+    "sku": "MED-INTERNAL-FRAME-POLO-CLUB-WAYFARER-13"
   },
   {
     "id": "frame-oliver-black-gold-14",
@@ -436,8 +522,10 @@
     "brand": "Oliver Black",
     "price": 3400,
     "inStock": true,
-    "image": "/images/shop/frames/oliver-black-gold.jpg",
-    "description": "Металева оправа з елегантним золотим напиленням та тонкими завушниками."
+    "image": "/images/shop/frames/frame-oliver-black-gold-14.jpg",
+    "description": "Металева оправа з елегантним золотим напиленням та тонкими завушниками.",
+    "slug": "frame-oliver-black-gold-14",
+    "sku": "MED-INTERNAL-FRAME-OLIVER-BLACK-GOLD-14"
   },
   {
     "id": "frame-maxima-acetate-15",
@@ -446,8 +534,10 @@
     "brand": "Maxima",
     "price": 1800,
     "inStock": true,
-    "image": "/images/shop/frames/maxima-acetate.jpg",
-    "description": "Стильна пластикова оправа для повсякденного комфорту."
+    "image": "/images/shop/frames/frame-maxima-acetate-15.jpg",
+    "description": "Стильна пластикова оправа для повсякденного комфорту.",
+    "slug": "frame-maxima-acetate-15",
+    "sku": "MED-INTERNAL-FRAME-MAXIMA-ACETATE-15"
   },
   {
     "id": "sunglass-polo-club-aviator-1",
@@ -456,8 +546,10 @@
     "brand": "Polo Club",
     "price": 2800,
     "inStock": true,
-    "image": "/images/shop/sunglasses/polo-club-aviator.jpg",
-    "description": "Класичні авіатори з поляризованими лінзами та 100% захистом від UV."
+    "image": "/images/shop/sunglasses/sunglass-polo-club-aviator-1.jpg",
+    "description": "Класичні авіатори з поляризованими лінзами та 100% захистом від UV.",
+    "slug": "sunglass-polo-club-aviator-1",
+    "sku": "MED-INTERNAL-SUNGLASS-POLO-CLUB-AVIATOR-1"
   },
   {
     "id": "sunglass-owlet-cateye-2",
@@ -466,8 +558,10 @@
     "brand": "Owlet",
     "price": 2400,
     "inStock": true,
-    "image": "/images/shop/sunglasses/owlet-sun-cateye.jpg",
-    "description": "Жіночі сонцезахисні окуляри з градієнтними лінзами у стилі «котяче око»."
+    "image": "/images/shop/sunglasses/sunglass-owlet-cateye-2.jpg",
+    "description": "Жіночі сонцезахисні окуляри з градієнтними лінзами у стилі «котяче око».",
+    "slug": "sunglass-owlet-cateye-2",
+    "sku": "MED-INTERNAL-SUNGLASS-OWLET-CATEYE-2"
   },
   {
     "id": "sunglass-maxima-oversize-3",
@@ -476,8 +570,10 @@
     "brand": "Maxima",
     "price": 2100,
     "inStock": true,
-    "image": "/images/shop/sunglasses/maxima-oversize.jpg",
-    "description": "Великі сонцезахисні окуляри для максимального захисту та стильного образу."
+    "image": "/images/shop/sunglasses/sunglass-maxima-oversize-3.jpg",
+    "description": "Великі сонцезахисні окуляри для максимального захисту та стильного образу.",
+    "slug": "sunglass-maxima-oversize-3",
+    "sku": "MED-INTERNAL-SUNGLASS-MAXIMA-OVERSIZE-3"
   },
   {
     "id": "sunglass-oliver-black-classic-4",
@@ -486,8 +582,10 @@
     "brand": "Oliver Black",
     "price": 3100,
     "inStock": true,
-    "image": "/images/shop/sunglasses/oliver-black-classic.jpg",
-    "description": "Преміальні сонцезахисні окуляри стриманого дизайну з антибліковим покриттям."
+    "image": "/images/shop/sunglasses/sunglass-oliver-black-classic-4.jpg",
+    "description": "Преміальні сонцезахисні окуляри стриманого дизайну з антибліковим покриттям.",
+    "slug": "sunglass-oliver-black-classic-4",
+    "sku": "MED-INTERNAL-SUNGLASS-OLIVER-BLACK-CLASSIC-4"
   },
   {
     "id": "sunglass-twenty-sport-5",
@@ -496,8 +594,10 @@
     "brand": "Twenty",
     "price": 1800,
     "inStock": true,
-    "image": "/images/shop/sunglasses/twenty-sport.jpg",
-    "description": "Спортивні сонцезахисні окуляри з обтічною формою для активного відпочинку."
+    "image": "/images/shop/sunglasses/sunglass-twenty-sport-5.jpg",
+    "description": "Спортивні сонцезахисні окуляри з обтічною формою для активного відпочинку.",
+    "slug": "sunglass-twenty-sport-5",
+    "sku": "MED-INTERNAL-SUNGLASS-TWENTY-SPORT-5"
   },
   {
     "id": "sunglass-shadow-retro-6",
@@ -506,8 +606,10 @@
     "brand": "Shadow",
     "price": 1900,
     "inStock": true,
-    "image": "/images/shop/sunglasses/shadow-retro.jpg",
-    "description": "Вінтажна оправа та круглі затемнені лінзи у стилі 70-х."
+    "image": "/images/shop/sunglasses/sunglass-shadow-retro-6.jpg",
+    "description": "Вінтажна оправа та круглі затемнені лінзи у стилі 70-х.",
+    "slug": "sunglass-shadow-retro-6",
+    "sku": "MED-INTERNAL-SUNGLASS-SHADOW-RETRO-6"
   },
   {
     "id": "sunglass-dacchi-square-7",
@@ -516,8 +618,10 @@
     "brand": "Dacchi",
     "price": 1600,
     "inStock": true,
-    "image": "/images/shop/sunglasses/dacchi-square.jpg",
-    "description": "Класичні квадратні сонцезахисні окуляри з надійного матеріалу."
+    "image": "/images/shop/sunglasses/sunglass-dacchi-square-7.jpg",
+    "description": "Класичні квадратні сонцезахисні окуляри з надійного матеріалу.",
+    "slug": "sunglass-dacchi-square-7",
+    "sku": "MED-INTERNAL-SUNGLASS-DACCHI-SQUARE-7"
   },
   {
     "id": "sunglass-vido-round-8",
@@ -526,8 +630,10 @@
     "brand": "Vido",
     "price": 1700,
     "inStock": false,
-    "image": "/images/shop/sunglasses/vido-round.jpg",
-    "description": "Круглі сонцезахисні окуляри з тонкими металевими дужками."
+    "image": "/images/shop/sunglasses/sunglass-vido-round-8.jpg",
+    "description": "Круглі сонцезахисні окуляри з тонкими металевими дужками.",
+    "slug": "sunglass-vido-round-8",
+    "sku": "MED-INTERNAL-SUNGLASS-VIDO-ROUND-8"
   },
   {
     "id": "sunglass-alvaro-gradient-9",
@@ -536,8 +642,10 @@
     "brand": "Alvaro",
     "price": 1650,
     "inStock": true,
-    "image": "/images/shop/sunglasses/alvaro-gradient.jpg",
-    "description": "Окуляри з градієнтним затемненням для комфортного водіння."
+    "image": "/images/shop/sunglasses/sunglass-alvaro-gradient-9.jpg",
+    "description": "Окуляри з градієнтним затемненням для комфортного водіння.",
+    "slug": "sunglass-alvaro-gradient-9",
+    "sku": "MED-INTERNAL-SUNGLASS-ALVARO-GRADIENT-9"
   },
   {
     "id": "sunglass-polo-club-wayfarer-10",
@@ -546,8 +654,10 @@
     "brand": "Polo Club",
     "price": 2700,
     "inStock": true,
-    "image": "/images/shop/sunglasses/polo-club-wayfarer.jpg",
-    "description": "Стиль Wayfarer з дзеркальними поляризованими лінзами."
+    "image": "/images/shop/sunglasses/sunglass-polo-club-wayfarer-10.jpg",
+    "description": "Стиль Wayfarer з дзеркальними поляризованими лінзами.",
+    "slug": "sunglass-polo-club-wayfarer-10",
+    "sku": "MED-INTERNAL-SUNGLASS-POLO-CLUB-WAYFARER-10"
   },
   {
     "id": "sunglass-owlet-fashion-11",
@@ -556,8 +666,10 @@
     "brand": "Owlet",
     "price": 2300,
     "inStock": true,
-    "image": "/images/shop/sunglasses/owlet-fashion.jpg",
-    "description": "Модні сонцезахисні окуляри з унікальною геометрією оправи."
+    "image": "/images/shop/sunglasses/sunglass-owlet-fashion-11.jpg",
+    "description": "Модні сонцезахисні окуляри з унікальною геометрією оправи.",
+    "slug": "sunglass-owlet-fashion-11",
+    "sku": "MED-INTERNAL-SUNGLASS-OWLET-FASHION-11"
   },
   {
     "id": "sunglass-maxima-polarized-12",
@@ -566,8 +678,10 @@
     "brand": "Maxima",
     "price": 2200,
     "inStock": true,
-    "image": "/images/shop/sunglasses/maxima-polarized.jpg",
-    "description": "Надійний захист від відблисків завдяки високоякісному поляризаційному фільтру."
+    "image": "/images/shop/sunglasses/sunglass-maxima-polarized-12.jpg",
+    "description": "Надійний захист від відблисків завдяки високоякісному поляризаційному фільтру.",
+    "slug": "sunglass-maxima-polarized-12",
+    "sku": "MED-INTERNAL-SUNGLASS-MAXIMA-POLARIZED-12"
   },
   {
     "id": "sunglass-oliver-black-premium-13",
@@ -576,8 +690,10 @@
     "brand": "Oliver Black",
     "price": 3500,
     "inStock": true,
-    "image": "/images/shop/sunglasses/oliver-black-premium.jpg",
-    "description": "Ексклюзивний дизайн та максимальний комфорт від преміум-бренду."
+    "image": "/images/shop/sunglasses/sunglass-oliver-black-premium-13.jpg",
+    "description": "Ексклюзивний дизайн та максимальний комфорт від преміум-бренду.",
+    "slug": "sunglass-oliver-black-premium-13",
+    "sku": "MED-INTERNAL-SUNGLASS-OLIVER-BLACK-PREMIUM-13"
   },
   {
     "id": "sunglass-twenty-metal-14",
@@ -586,8 +702,10 @@
     "brand": "Twenty",
     "price": 2000,
     "inStock": true,
-    "image": "/images/shop/sunglasses/twenty-metal.jpg",
-    "description": "Стильні сонцезахисні окуляри у легкій металевій оправі."
+    "image": "/images/shop/sunglasses/sunglass-twenty-metal-14.jpg",
+    "description": "Стильні сонцезахисні окуляри у легкій металевій оправі.",
+    "slug": "sunglass-twenty-metal-14",
+    "sku": "MED-INTERNAL-SUNGLASS-TWENTY-METAL-14"
   },
   {
     "id": "sunglass-shadow-elegant-15",
@@ -596,7 +714,9 @@
     "brand": "Shadow",
     "price": 1850,
     "inStock": true,
-    "image": "/images/shop/sunglasses/shadow-elegant.jpg",
-    "description": "Елегантна модель для щоденного захисту ваших очей."
+    "image": "/images/shop/sunglasses/sunglass-shadow-elegant-15.jpg",
+    "description": "Елегантна модель для щоденного захисту ваших очей.",
+    "slug": "sunglass-shadow-elegant-15",
+    "sku": "MED-INTERNAL-SUNGLASS-SHADOW-ELEGANT-15"
   }
 ]

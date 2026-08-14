@@ -1,251 +1,84 @@
-import { createHash } from "node:crypto";
+import { createHash, randomBytes } from "node:crypto";
 import fs from "node:fs";
+import net from "node:net";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { z } from "astro/zod";
-import { productSchema } from "../src/schemas/product.ts";
+import { productSchema, type ProductContent } from "../src/schemas/product.ts";
 
 const SCRIPT_DIR = path.dirname(fileURLToPath(import.meta.url));
 const PROJECT_ROOT = path.resolve(SCRIPT_DIR, "..");
-const SEED_FILE = path.join(PROJECT_ROOT, "shop_seed.json");
-const CONTENT_DIR = path.join(PROJECT_ROOT, "src", "content", "products");
 const PUBLIC_DIR = path.join(PROJECT_ROOT, "public");
+const SEED_FILE = path.join(PROJECT_ROOT, "shop_seed.json");
+const SOURCE_MANIFEST_FILE = path.join(
+  SCRIPT_DIR,
+  "product-image-sources.json",
+);
+const GENERATED_MANIFEST_FILE = path.join(
+  SCRIPT_DIR,
+  "seed-products.manifest.json",
+);
+const CONTENT_DIR = path.join(PROJECT_ROOT, "src", "content", "products");
 const SHOP_IMAGE_DIR = path.join(PUBLIC_DIR, "images", "shop");
-const PROVENANCE_FILE = path.join(SHOP_IMAGE_DIR, "image-sources.tsv");
-const MANIFEST_FILE = path.join(SCRIPT_DIR, "seed-products.manifest.json");
-const REPORT_JSON = path.join(PROJECT_ROOT, "docs", "product-image-coverage.json");
-const REPORT_MARKDOWN = path.join(PROJECT_ROOT, "docs", "product-image-coverage.md");
-const EXPECTED_SEED_COUNT = 60;
+const JSON_REPORT = path.join(PROJECT_ROOT, "docs", "product-image-coverage.json");
+const MARKDOWN_REPORT = path.join(
+  PROJECT_ROOT,
+  "docs",
+  "product-image-coverage.md",
+);
+const EXPECTED_PRODUCT_COUNT = 60;
 
-interface VisualReview {
-  readonly assessment: string;
-  readonly note: string;
-}
-
-// Human review of the actual bytes in this repository. These observations identify
-// what is visibly present; they do not grant usage rights or prove local inventory.
-const VISUAL_REVIEW_BY_PUBLIC_PATH = {
-  "/images/shop/care/care-solution-01.jpg": {
-    assessment: "model-family-volume-unverified",
-    note: "Biotrue solution packaging is visible; the seed's exact 300 ml variant is not legible.",
-  },
-  "/images/shop/care/care-solution-02.jpg": {
-    assessment: "different-product",
-    note: "The image shows Multison, which is not an intended seed product.",
-  },
-  "/images/shop/care/care-solution-03.jpg": {
-    assessment: "pack-volume-mismatch",
-    note: "ReNu MultiPlus packaging is visible, but the pictured small pack does not support the 360 ml seed claim.",
-  },
-  "/images/shop/frames/frames-catalog-01.jpeg": {
-    assessment: "generic-unbranded-frame",
-    note: "One unbranded frame is shown outdoors; no seeded model or SKU can be identified.",
-  },
-  "/images/shop/frames/frames-catalog-02.webp": {
-    assessment: "not-a-product-photo",
-    note: "The image is a clinic/interior scene, not a frame product.",
-  },
-  "/images/shop/frames/frames-showcase-01.jpg": {
-    assessment: "category-display-only",
-    note: "A multi-frame display is shown; no single seeded model can be bound.",
-  },
-  "/images/shop/lenses/lens-product-01.jpg": {
-    assessment: "different-product",
-    note: "The image shows CooperVision MyDay daily disposable.",
-  },
-  "/images/shop/lenses/lens-product-02.jpg": {
-    assessment: "different-product",
-    note: "The image shows Bausch + Lomb Optima FW.",
-  },
-  "/images/shop/lenses/lens-product-03.jpg": {
-    assessment: "model-family-match-pack-unverified",
-    note: "Dailies Total1 packaging is visible; exact pack count is not established by the image.",
-  },
-  "/images/shop/lenses/lens-product-04.jpg": {
-    assessment: "different-variant",
-    note: "The image shows Biofinity multifocal, not plain Biofinity.",
-  },
-  "/images/shop/lenses/lens-product-05.jpg": {
-    assessment: "different-variant",
-    note: "The image shows Biofinity toric, not plain Biofinity.",
-  },
-  "/images/shop/lenses/lens-product-06.jpg": {
-    assessment: "different-product",
-    note: "The image shows Bausch + Lomb SofLens Multi-Focal.",
-  },
-  "/images/shop/lenses/lens-product-07.jpg": {
-    assessment: "different-category-product",
-    note: "The image shows Opti-Free Express lens solution, not contact lenses.",
-  },
-  "/images/shop/lenses/lens-product-08.jpg": {
-    assessment: "different-variant",
-    note: "The image shows Air Optix plus HydraGlyde for Astigmatism.",
-  },
-  "/images/shop/lenses/lens-product-09.jpg": {
-    assessment: "different-variant",
-    note: "The image shows Air Optix plus HydraGlyde Multifocal.",
-  },
-  "/images/shop/lenses/lens-product-10.jpg": {
-    assessment: "different-product",
-    note: "The image shows Dailies AquaComfort Plus.",
-  },
-  "/images/shop/lenses/lens-product-11.jpg": {
-    assessment: "model-family-match-pack-unverified",
-    note: "Plain Biofinity packaging is visible; pack count is not established.",
-  },
-  "/images/shop/lenses/lens-product-12.jpg": {
-    assessment: "different-product",
-    note: "The image shows SofLens Natural Colors.",
-  },
-  "/images/shop/lenses/lens-product-13.jpg": {
-    assessment: "different-product",
-    note: "The image shows Air Optix Colors.",
-  },
-  "/images/shop/lenses/lens-product-14.jpg": {
-    assessment: "different-product",
-    note: "The image shows SofLens 59.",
-  },
-  "/images/shop/lenses/lens-product-15.jpg": {
-    assessment: "different-category-product",
-    note: "The image shows AOSept lens-care solution, not contact lenses.",
-  },
-  "/images/shop/lenses/lens-product-16.jpg": {
-    assessment: "different-category-product",
-    note: "The image shows Avizor Unica lens-care solution.",
-  },
-  "/images/shop/lenses/lens-product-17.jpg": {
-    assessment: "different-category-product",
-    note: "The image shows an Avizor lens-care system, not contact lenses.",
-  },
-  "/images/shop/lenses/lens-product-18.jpg": {
-    assessment: "different-category-product",
-    note: "The image shows Avizor Aqua Soft lens-care solution.",
-  },
-  "/images/shop/lenses/lens-product-19.jpg": {
-    assessment: "model-family-match-pack-unverified",
-    note: "Air Optix Night & Day Aqua packaging is visible; pack count is not established.",
-  },
-  "/images/shop/lenses/lens-product-20.jpg": {
-    assessment: "model-family-match-pack-unverified",
-    note: "Air Optix plus HydraGlyde packaging is visible; pack count is not established.",
-  },
-  "/images/shop/lenses/lens-product-21.jpg": {
-    assessment: "different-product",
-    note: "The image shows ClearLux Premium.",
-  },
-  "/images/shop/lenses/lens-product-22.jpg": {
-    assessment: "model-family-match-pack-unverified",
-    note: "Bausch + Lomb ULTRA packaging is visible; the required pack count is not established.",
-  },
-  "/images/shop/sunglasses/sunglass-oakley-sport-03.jpg": {
-    assessment: "invalid-raster",
-    note: "The .jpg file contains HTML bytes.",
-  },
-  "/images/shop/sunglasses/sunglass-polaroid-classic-02.jpg": {
-    assessment: "generic-unbranded-lifestyle",
-    note: "Lifestyle sunglasses photo with no visible Polaroid model/SKU evidence.",
-  },
-  "/images/shop/sunglasses/sunglass-rayban-aviator-01.jpg": {
-    assessment: "generic-unbranded-different-shape",
-    note: "Round unbranded sunglasses are shown, not a verified Ray-Ban Aviator model.",
-  },
-  "/images/shop/sunglasses/sunglass-tomford-luxury-05.jpg": {
-    assessment: "invalid-raster",
-    note: "The .jpg file contains HTML bytes.",
-  },
-  "/images/shop/sunglasses/sunglass-vogue-fashion-04.jpg": {
-    assessment: "brand-filename-mismatch",
-    note: "A Ray-Ban-marked frame is visible under a Vogue filename; no exact seeded model match exists.",
-  },
-  "/images/shop/care/care-avizor-unica-8.png": {
-    assessment: "model-identified-non-packshot",
-    note: "Unica Sensitive promotional artwork is visible, but not the exact 350 ml product pack.",
-  },
-  "/images/shop/care/care-biotrue-solution-1.jpg": {
-    assessment: "model-family-volume-unverified",
-    note: "Biotrue solution bottle is visible; 300 ml is not legible.",
-  },
-  "/images/shop/care/care-blink-contacts-7.png": {
-    assessment: "brand-attribution-and-pack-need-review",
-    note: "The current official source is Bausch + Lomb while the seed attributes Johnson & Johnson; the rear pack also does not establish the exact 10 ml item.",
-  },
-  "/images/shop/care/care-opti-free-puremoist-2.webp": {
-    assessment: "not-a-product-photo",
-    note: "The asset is a product comparison table, not a PureMoist 360 ml packshot.",
-  },
-  "/images/shop/care/care-systane-balance-11.webp": {
-    assessment: "exact-model-volume",
-    note: "Systane Balance 10 ml box and bottle are visibly identified.",
-  },
-  "/images/shop/care/care-systane-ultra-drops-3.jpg": {
-    assessment: "exact-model-volume",
-    note: "Systane Ultra 10 ml box and bottle are visibly identified.",
-  },
-  "/images/shop/lenses/lens-acuvue-moist-7.webp": {
-    assessment: "pack-count-mismatch",
-    note: "The acquired ACUVUE asset identifies a 90-pack while the seed requests 30.",
-  },
-  "/images/shop/lenses/lens-acuvue-oasys-3.webp": {
-    assessment: "pack-count-mismatch",
-    note: "The acquired ACUVUE asset identifies a 24-pack while the seed requests 6.",
-  },
-  "/images/shop/lenses/lens-air-optix-night-day-1.webp": {
-    assessment: "model-family-match-pack-unverified",
-    note: "Air Optix Night & Day Aqua packaging is visible; the seed's 3-pack count is not visible.",
-  },
-  "/images/shop/lenses/lens-air-optix-plus-8.png": {
-    assessment: "model-family-match-pack-unverified",
-    note: "Air Optix plus HydraGlyde packaging is visible; the seed's 3-pack count is not visible.",
-  },
-  "/images/shop/lenses/lens-biofinity-2.png": {
-    assessment: "variant-composite",
-    note: "The asset combines Biofinity and Biofinity XR packaging, so it is not one exact seed packshot.",
-  },
-  "/images/shop/lenses/lens-biotrue-oneday-14.png": {
-    assessment: "model-family-match-pack-unverified",
-    note: "Biotrue ONEday packaging is visible; the seed's 30-pack count is not established.",
-  },
-  "/images/shop/lenses/lens-clariti-1day-6.webp": {
-    assessment: "not-a-product-photo",
-    note: "The asset is a lifestyle banner, not a Clariti 1 Day 30-pack product photo.",
-  },
-  "/images/shop/lenses/lens-menicon-z-11.jpg": {
-    assessment: "not-a-product-photo",
-    note: "The asset is a lifestyle group photo, not a Menicon Z product photo.",
-  },
-  "/images/shop/lenses/lens-purevision-2-10.webp": {
-    assessment: "model-pack-match-hd-marking-unverified",
-    note: "PureVision2 six-lens packaging is visible, but the seed's HD wording is not visible.",
-  },
-  "/images/shop/lenses/lens-seed-1day-pure-12.jpg": {
-    assessment: "pack-count-mismatch",
-    note: "The image visibly identifies 32 lenses while the seed requests 30.",
-  },
-  "/images/shop/lenses/lens-ultra-bausch-lomb-5.webp": {
-    assessment: "pack-count-mismatch",
-    note: "The image visibly identifies 6 lenses while the seed requests 3.",
-  },
-} as const satisfies Readonly<Record<string, VisualReview>>;
-
-function visualReviewFor(publicPath: string): VisualReview | undefined {
-  return (VISUAL_REVIEW_BY_PUBLIC_PATH as Readonly<Record<string, VisualReview>>)[
-    publicPath
-  ];
-}
+const mimeSchema = z.enum(["image/jpeg", "image/png", "image/webp"]);
+type AllowedMime = z.infer<typeof mimeSchema>;
 
 const seedProductSchema = z
   .object({
     id: z.string().regex(/^[a-z0-9]+(?:-[a-z0-9]+)*$/),
+    slug: z.string().regex(/^[a-z0-9]+(?:-[a-z0-9]+)*$/),
+    sku: z.string().regex(/^MED-INTERNAL-[A-Z0-9]+(?:-[A-Z0-9]+)*$/),
     title: z.string().trim().min(1),
-    category: z.enum(["lenses", "frames", "sunglasses", "care"]),
+    category: z.enum(["lenses", "care", "frames", "sunglasses"]),
     brand: z.string().trim().min(1),
     price: z.number().int().positive().refine(Number.isSafeInteger),
     inStock: z.boolean(),
-    image: z.string().startsWith("/images/shop/"),
+    image: z
+      .string()
+      .regex(
+        /^\/images\/shop\/(?:lenses|care|frames|sunglasses)\/[a-z0-9]+(?:-[a-z0-9]+)*\.(?:jpg|png|webp)$/,
+      ),
     description: z.string().trim().min(1),
   })
   .strict();
-const seedSchema = z.array(seedProductSchema).length(EXPECTED_SEED_COUNT);
+const seedSchema = z.array(seedProductSchema).length(EXPECTED_PRODUCT_COUNT);
+type SeedProduct = z.infer<typeof seedProductSchema>;
+
+const sourceEntrySchema = z
+  .object({
+    productId: z.string().regex(/^[a-z0-9]+(?:-[a-z0-9]+)*$/),
+    slug: z.string().regex(/^[a-z0-9]+(?:-[a-z0-9]+)*$/),
+    sku: z.string().regex(/^MED-INTERNAL-[A-Z0-9]+(?:-[A-Z0-9]+)*$/),
+    brand: z.string().trim().min(1),
+    model: z.string().trim().min(1),
+    sourcePageUrl: z.string(),
+    directImageUrl: z.string(),
+    expectedFile: seedProductSchema.shape.image,
+    expectedMime: mimeSchema,
+    matchBasis: z.string().trim().min(1),
+    rightsBasis: z.string().trim().min(1),
+    exactMatchConfirmed: z.boolean(),
+    rightsConfirmed: z.boolean(),
+    retrievedAt: z.string().datetime({ offset: true }).optional(),
+    sha256: z.string().regex(/^[a-f0-9]{64}$/).optional(),
+  })
+  .strict();
+const sourceManifestSchema = z
+  .object({
+    version: z.literal(1),
+    products: z.array(sourceEntrySchema).length(EXPECTED_PRODUCT_COUNT),
+  })
+  .strict();
+type SourceEntry = z.infer<typeof sourceEntrySchema>;
+
 const generatedManifestSchema = z
   .object({
     version: z.literal(1),
@@ -255,114 +88,94 @@ const generatedManifestSchema = z
   })
   .strict();
 
-type ProductData = z.infer<typeof productSchema>;
-type SeedProduct = z.infer<typeof seedProductSchema>;
-type ProvenanceRow = Readonly<Record<string, string>>;
+interface FileInspection {
+  readonly exists: boolean;
+  readonly bytes: number;
+  readonly detectedMime: AllowedMime | null;
+  readonly rasterMagicValid: boolean;
+  readonly sha256: string | null;
+}
+
+type CoverageStatus =
+  | "ready"
+  | "missing-local-file"
+  | "invalid-local-file"
+  | "manifest-mapping-invalid"
+  | "sha256-mismatch"
+  | "duplicate-or-misleading-mapping"
+  | "source-provenance-unresolved"
+  | "exact-match-unconfirmed"
+  | "usage-rights-unconfirmed"
+  | "generated-binding-not-ready";
 
 interface CoverageRow {
-  readonly slugSku: string;
-  readonly recordKind: "generated-seed" | "manual-draft-placeholder" | "manual-other";
+  readonly product: string;
+  readonly sku: string;
   readonly brandModel: string;
-  readonly category: ProductData["category"];
-  readonly referencedPath: string;
+  readonly localPath: string;
   readonly fileExists: boolean;
-  readonly rasterMagicValid: boolean;
-  readonly detectedMime: string | null;
-  readonly imageKind: ProductData["imageKind"];
-  readonly sourceUrl: string | null;
-  readonly sourceAssetUrl: string | null;
-  readonly provider: string | null;
-  readonly exactMatchConfidence: string;
-  readonly usageRights: string;
-  readonly duplicateUseCount: number;
-  readonly status:
-    | "exact-product-evidence-approved"
-    | "verified-category-fallback"
-    | "product-image-evidence-gap"
-    | "missing-referenced-file"
-    | "invalid-referenced-file";
-  readonly seedRequestedPath: string | null;
-  readonly seedRequestedFileExists: boolean | null;
-  readonly candidateSourceUrl: string | null;
-  readonly candidateProvider: string | null;
-  readonly candidateUsageRights: string | null;
-  readonly candidateExactMatchConfidence: string | null;
-  readonly candidateVisualAssessment: string | null;
-  readonly candidateVisualNote: string | null;
+  readonly fileValid: boolean;
+  readonly detectedMime: AllowedMime | null;
+  readonly expectedMime: AllowedMime;
+  readonly exactMatch: boolean;
+  readonly exactMatchConfirmedInManifest: boolean;
+  readonly matchBasis: string;
+  readonly sourcePageUrl: string | null;
+  readonly directImageUrl: string | null;
+  readonly provenanceConfirmed: boolean;
+  readonly rightsBasis: string;
+  readonly rightsConfirmed: boolean;
+  readonly sha256: string | null;
+  readonly manifestSha256: string | null;
+  readonly renderedPath: string | null;
+  readonly renderedImageKind: ProductContent["imageKind"] | null;
+  readonly generatedBindingReady: boolean;
+  readonly categoryFallback: boolean;
+  readonly duplicateOrMisleading: boolean;
+  readonly status: CoverageStatus;
 }
 
-interface ShopAssetRow {
-  readonly path: string;
-  readonly bytes: number;
-  readonly sha256: string;
-  readonly detectedMime: string | null;
-  readonly rasterMagicValid: boolean;
-  readonly provenanceRecorded: boolean;
-  readonly referencedByProducts: number;
-  readonly visualAssessment: string;
-  readonly visualNote: string;
-  readonly status:
-    | "referenced"
-    | "unreferenced-provenance-recorded"
-    | "unreferenced-unknown-provenance"
-    | "invalid-raster";
-}
-
-function fail(message: string): never {
-  throw new Error(message);
-}
-
-function parseJson(filePath: string): unknown {
+function parseJsonUnknown(filePath: string): unknown {
   try {
-    return JSON.parse(fs.readFileSync(filePath, "utf8")) as unknown;
+    const parsed: unknown = JSON.parse(fs.readFileSync(filePath, "utf8"));
+    return parsed;
   } catch (error) {
-    fail(
-      `${path.relative(PROJECT_ROOT, filePath)} is not valid JSON: ${
-        error instanceof Error ? error.message : String(error)
-      }`,
-    );
+    const detail = error instanceof Error ? error.message : "unknown parse error";
+    throw new Error(`${path.relative(PROJECT_ROOT, filePath)} is invalid JSON: ${detail}`);
   }
 }
 
-function parseTsv(filePath: string): readonly ProvenanceRow[] {
-  if (!fs.existsSync(filePath)) return [];
-  const lines = fs
-    .readFileSync(filePath, "utf8")
-    .split(/\r?\n/)
-    .filter((line) => line.length > 0);
-  if (lines.length === 0) return [];
-  const headers = (lines[0] ?? "").split("\t");
-  return lines.slice(1).map((line) => {
-    const cells = line.split("\t");
-    return Object.freeze(
-      Object.fromEntries(headers.map((header, index) => [header, cells[index] ?? ""])),
-    );
-  });
+function formatZodError(error: z.ZodError): string {
+  return error.issues
+    .map((issue) => `${issue.path.join(".") || "root"}: ${issue.message}`)
+    .join("\n");
 }
 
-function resolvePublicPath(publicUrl: string): string | null {
-  if (!publicUrl.startsWith("/images/") || publicUrl.includes("\\")) return null;
-  const absolute = path.resolve(PUBLIC_DIR, publicUrl.slice(1));
-  const root = `${path.resolve(PUBLIC_DIR)}${path.sep}`;
-  return absolute.startsWith(root) ? absolute : null;
+function parseOrThrow<T>(schema: z.ZodType<T>, value: unknown, label: string): T {
+  const parsed = schema.safeParse(value);
+  if (!parsed.success) {
+    throw new Error(`${label} failed validation:\n${formatZodError(parsed.error)}`);
+  }
+  return parsed.data;
 }
 
-function detectRasterMime(filePath: string): string | null {
-  if (!fs.existsSync(filePath) || !fs.statSync(filePath).isFile()) return null;
-  const bytes = fs.readFileSync(filePath);
-  if (bytes.length < 512) return null;
+function detectMime(bytes: Buffer): AllowedMime | null {
   if (
-    bytes.length >= 3 &&
+    bytes.length >= 4 &&
     bytes[0] === 0xff &&
     bytes[1] === 0xd8 &&
-    bytes[2] === 0xff
+    bytes[2] === 0xff &&
+    bytes.at(-2) === 0xff &&
+    bytes.at(-1) === 0xd9
   ) {
     return "image/jpeg";
   }
   if (
+    bytes.length >= 12 &&
     bytes.subarray(0, 8).equals(
       Buffer.from([0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a]),
-    )
+    ) &&
+    bytes.includes(Buffer.from("IEND"))
   ) {
     return "image/png";
   }
@@ -373,72 +186,112 @@ function detectRasterMime(filePath: string): string | null {
   ) {
     return "image/webp";
   }
-  if (
-    bytes.length >= 12 &&
-    bytes.toString("ascii", 4, 8) === "ftyp" &&
-    ["avif", "avis"].includes(bytes.toString("ascii", 8, 12))
-  ) {
-    return "image/avif";
-  }
   return null;
 }
 
-function sha256(filePath: string): string {
-  return createHash("sha256").update(fs.readFileSync(filePath)).digest("hex");
+function resolvePublicFile(publicUrl: string): string | null {
+  if (!publicUrl.startsWith("/") || publicUrl.includes("\\")) return null;
+  const absolute = path.resolve(PUBLIC_DIR, publicUrl.slice(1));
+  const publicRoot = `${path.resolve(PUBLIC_DIR)}${path.sep}`;
+  return absolute.startsWith(publicRoot) ? absolute : null;
 }
 
-function publicUrlForProvenance(row: ProvenanceRow): string | null {
-  const category = row.category ?? "";
-  const filename = row.file ?? "";
-  if (
-    !["lenses", "frames", "sunglasses", "care"].includes(category) ||
-    filename.length === 0 ||
-    path.basename(filename) !== filename
-  ) {
-    return null;
+function inspectPublicFile(publicUrl: string): FileInspection {
+  const filePath = resolvePublicFile(publicUrl);
+  if (filePath === null || !fs.existsSync(filePath) || !fs.statSync(filePath).isFile()) {
+    return {
+      exists: false,
+      bytes: 0,
+      detectedMime: null,
+      rasterMagicValid: false,
+      sha256: null,
+    };
   }
-  return `/images/shop/${category}/${filename}`;
+  const bytes = fs.readFileSync(filePath);
+  const detectedMime = detectMime(bytes);
+  return {
+    exists: true,
+    bytes: bytes.length,
+    detectedMime,
+    rasterMagicValid: bytes.length >= 512 && detectedMime !== null,
+    sha256: createHash("sha256").update(bytes).digest("hex"),
+  };
 }
 
-function provenanceApprovesExactBytes(
-  row: ProvenanceRow | undefined,
-  referencedFile: string,
-): boolean {
-  if (
-    row === undefined ||
-    row.usage_rights !== "approved-for-site" ||
-    row.exact_match_confidence !== "exact" ||
-    !/^https:\/\//.test(row.source_page ?? "") ||
-    !/^https:\/\//.test(row.source_asset ?? "") ||
-    !/^[a-f0-9]{64}$/.test(row.sha256 ?? "") ||
-    !fs.existsSync(referencedFile)
-  ) {
+function isPublicHttpsUrl(raw: string): boolean {
+  try {
+    const url = new URL(raw);
+    if (url.protocol !== "https:" || url.username || url.password) return false;
+    const host = url.hostname.toLowerCase().replace(/\.$/, "");
+    if (
+      host === "localhost" ||
+      host.endsWith(".localhost") ||
+      host.endsWith(".local") ||
+      host.endsWith(".internal") ||
+      host.endsWith(".home.arpa") ||
+      net.isIP(host) !== 0
+    ) {
+      return false;
+    }
+    return true;
+  } catch {
     return false;
   }
-  return sha256(referencedFile) === row.sha256;
 }
 
-function walkFiles(root: string): readonly string[] {
-  if (!fs.existsSync(root)) return [];
-  const result: string[] = [];
-  const visit = (directory: string): void => {
-    for (const entry of fs.readdirSync(directory, { withFileTypes: true })) {
-      const entryPath = path.join(directory, entry.name);
-      if (entry.isDirectory()) visit(entryPath);
-      else if (entry.isFile()) result.push(entryPath);
+function readProductCollection(): ReadonlyMap<string, ProductContent> {
+  const products = new Map<string, ProductContent>();
+  if (!fs.existsSync(CONTENT_DIR)) return products;
+  for (const filename of fs.readdirSync(CONTENT_DIR).filter((name) => name.endsWith(".json"))) {
+    const filePath = path.join(CONTENT_DIR, filename);
+    const parsed = productSchema.safeParse(parseJsonUnknown(filePath));
+    if (!parsed.success) {
+      throw new Error(`${filename} failed product schema:\n${formatZodError(parsed.error)}`);
     }
-  };
-  visit(root);
-  return result.sort();
+    products.set(filename.slice(0, -5), parsed.data);
+  }
+  return products;
+}
+
+function readGeneratedFiles(): ReadonlySet<string> {
+  const parsed = parseOrThrow(
+    generatedManifestSchema,
+    parseJsonUnknown(GENERATED_MANIFEST_FILE),
+    "seed-products.manifest.json",
+  );
+  return new Set(parsed.generatedFiles);
+}
+
+function extensionForMime(mime: AllowedMime): "jpg" | "png" | "webp" {
+  if (mime === "image/jpeg") return "jpg";
+  if (mime === "image/png") return "png";
+  return "webp";
+}
+
+function coverageStatus(
+  inspection: FileInspection,
+  mappingValid: boolean,
+  shaMatches: boolean,
+  duplicateOrMisleading: boolean,
+  provenanceConfirmed: boolean,
+  exactMatch: boolean,
+  rightsConfirmed: boolean,
+  generatedBindingReady: boolean,
+): CoverageStatus {
+  if (!inspection.exists) return "missing-local-file";
+  if (!inspection.rasterMagicValid) return "invalid-local-file";
+  if (!mappingValid) return "manifest-mapping-invalid";
+  if (!shaMatches) return "sha256-mismatch";
+  if (duplicateOrMisleading) return "duplicate-or-misleading-mapping";
+  if (!provenanceConfirmed) return "source-provenance-unresolved";
+  if (!exactMatch) return "exact-match-unconfirmed";
+  if (!rightsConfirmed) return "usage-rights-unconfirmed";
+  if (!generatedBindingReady) return "generated-binding-not-ready";
+  return "ready";
 }
 
 function escapeMarkdown(value: string): string {
-  return value.replaceAll("|", "\\|").replaceAll("\n", " ");
-}
-
-function markdownLink(url: string | null, label: string): string {
-  if (url === null || !/^https:\/\//.test(url)) return "—";
-  return `[${escapeMarkdown(label)}](${url})`;
+  return value.replace(/\|/g, "\\|").replace(/[\r\n]+/g, " ");
 }
 
 function writeAtomicIfChanged(filePath: string, content: string): boolean {
@@ -448,10 +301,10 @@ function writeAtomicIfChanged(filePath: string, content: string): boolean {
   fs.mkdirSync(path.dirname(filePath), { recursive: true });
   const temporary = path.join(
     path.dirname(filePath),
-    `.${path.basename(filePath)}.${process.pid}.tmp`,
+    `.${path.basename(filePath)}.${process.pid}.${randomBytes(6).toString("hex")}.tmp`,
   );
   try {
-    fs.writeFileSync(temporary, content, { encoding: "utf8", mode: 0o644 });
+    fs.writeFileSync(temporary, content, { encoding: "utf8", mode: 0o644, flag: "wx" });
     fs.renameSync(temporary, filePath);
   } finally {
     if (fs.existsSync(temporary)) fs.unlinkSync(temporary);
@@ -459,351 +312,239 @@ function writeAtomicIfChanged(filePath: string, content: string): boolean {
   return true;
 }
 
-function buildReport(): {
+function buildCoverage(): {
   readonly json: Readonly<Record<string, unknown>>;
   readonly markdown: string;
+  readonly acceptancePass: boolean;
 } {
-  if (process.argv.slice(2).length > 0) {
-    fail("This coverage generator accepts no flags.");
-  }
-
-  const seedResult = seedSchema.safeParse(parseJson(SEED_FILE));
-  if (!seedResult.success) {
-    fail(`shop_seed.json failed coverage validation: ${seedResult.error.message}`);
-  }
-  const seed = seedResult.data;
-  const seedById = new Map<string, SeedProduct>();
-  for (const product of seed) {
-    if (seedById.has(product.id)) fail(`Duplicate seed ID: ${product.id}`);
-    seedById.set(product.id, product);
-  }
-
-  const manifestResult = generatedManifestSchema.safeParse(parseJson(MANIFEST_FILE));
-  if (!manifestResult.success) {
-    fail(`seed-products.manifest.json is invalid: ${manifestResult.error.message}`);
-  }
-  const generatedFiles = new Set(manifestResult.data.generatedFiles);
-  const expectedGeneratedFiles = new Set(seed.map(({ id }) => `${id}.json`));
-  if (
-    generatedFiles.size !== EXPECTED_SEED_COUNT ||
-    [...expectedGeneratedFiles].some((filename) => !generatedFiles.has(filename)) ||
-    [...generatedFiles].some((filename) => !expectedGeneratedFiles.has(filename))
-  ) {
-    fail("Generated manifest does not exactly match the 60 intended seed IDs.");
-  }
-
-  const provenance = parseTsv(PROVENANCE_FILE);
-  const provenanceByProduct = new Map<string, ProvenanceRow[]>();
-  const provenanceByPath = new Map<string, ProvenanceRow[]>();
-  for (const row of provenance) {
-    const productId = row.product_id ?? "";
-    if (productId) {
-      const items = provenanceByProduct.get(productId) ?? [];
-      items.push(row);
-      provenanceByProduct.set(productId, items);
-    }
-    const publicUrl = publicUrlForProvenance(row);
-    if (publicUrl !== null) {
-      const items = provenanceByPath.get(publicUrl) ?? [];
-      items.push(row);
-      provenanceByPath.set(publicUrl, items);
-    }
-  }
-
-  const productFiles = fs
-    .readdirSync(CONTENT_DIR)
-    .filter((filename) => filename.endsWith(".json"))
-    .sort();
-  const parsedProducts: Array<{
-    readonly filename: string;
-    readonly slug: string;
-    readonly data: ProductData;
-  }> = [];
-  for (const filename of productFiles) {
-    const result = productSchema.safeParse(parseJson(path.join(CONTENT_DIR, filename)));
-    if (!result.success) {
-      fail(`${filename} failed productSchema: ${result.error.message}`);
-    }
-    parsedProducts.push({
-      filename,
-      slug: filename.slice(0, -".json".length),
-      data: result.data,
-    });
-  }
-
-  const imageUseCounts = new Map<string, number>();
-  for (const { data } of parsedProducts) {
-    imageUseCounts.set(data.image, (imageUseCounts.get(data.image) ?? 0) + 1);
-  }
-
-  const coverageRows: CoverageRow[] = parsedProducts.map(
-    ({ filename, slug, data }): CoverageRow => {
-      const seedProduct = seedById.get(slug);
-      const isGenerated = generatedFiles.has(filename);
-      const recordKind: CoverageRow["recordKind"] = isGenerated
-        ? "generated-seed"
-        : data.status === "draft" &&
-            data.verificationStatus === "pending-clinic-confirmation"
-          ? "manual-draft-placeholder"
-          : "manual-other";
-      const referencedFile = resolvePublicPath(data.image);
-      const fileExists =
-        referencedFile !== null &&
-        fs.existsSync(referencedFile) &&
-        fs.statSync(referencedFile).isFile();
-      const detectedMime =
-        referencedFile !== null && fileExists
-          ? detectRasterMime(referencedFile)
-          : null;
-      const rasterMagicValid = detectedMime !== null;
-      const sourceEvidence = provenanceByPath.get(data.image)?.[0];
-      const candidateEvidence = provenanceByProduct.get(slug)?.[0];
-      const candidatePath =
-        candidateEvidence === undefined
-          ? null
-          : publicUrlForProvenance(candidateEvidence);
-      const candidateVisualReview =
-        candidatePath === null
-          ? undefined
-          : visualReviewFor(candidatePath);
-      const exactApproved =
-        data.imageKind === "product" &&
-        referencedFile !== null &&
-        provenanceApprovesExactBytes(sourceEvidence, referencedFile);
-
-      let status: CoverageRow["status"];
-      if (!fileExists) status = "missing-referenced-file";
-      else if (!rasterMagicValid) status = "invalid-referenced-file";
-      else if (data.imageKind === "editorial") status = "verified-category-fallback";
-      else if (exactApproved) status = "exact-product-evidence-approved";
-      else status = "product-image-evidence-gap";
-
-      const requestedFile = seedProduct
-        ? resolvePublicPath(seedProduct.image)
-        : null;
-
-      return Object.freeze({
-        slugSku: slug,
-        recordKind,
-        brandModel: `${data.brand} — ${data.title}`,
-        category: data.category,
-        referencedPath: data.image,
-        fileExists,
-        rasterMagicValid,
-        detectedMime,
-        imageKind: data.imageKind,
-        sourceUrl: sourceEvidence?.source_page || null,
-        sourceAssetUrl: sourceEvidence?.source_asset || null,
-        provider: sourceEvidence?.provider || null,
-        exactMatchConfidence:
-          data.imageKind === "editorial"
-            ? "not-applicable-editorial"
-            : sourceEvidence?.exact_match_confidence || "unverified",
-        usageRights:
-          data.imageKind === "editorial"
-            ? "local-editorial-asset"
-            : sourceEvidence?.usage_rights || "unknown",
-        duplicateUseCount: imageUseCounts.get(data.image) ?? 0,
-        status,
-        seedRequestedPath: seedProduct?.image ?? null,
-        seedRequestedFileExists:
-          seedProduct === undefined
-            ? null
-            : requestedFile !== null && detectRasterMime(requestedFile) !== null,
-        candidateSourceUrl: candidateEvidence?.source_page || null,
-        candidateProvider: candidateEvidence?.provider || null,
-        candidateUsageRights: candidateEvidence?.usage_rights || null,
-        candidateExactMatchConfidence:
-          candidateEvidence?.exact_match_confidence || null,
-        candidateVisualAssessment:
-          candidateVisualReview?.assessment ?? null,
-        candidateVisualNote: candidateVisualReview?.note ?? null,
-      });
-    },
+  const seed = parseOrThrow(seedSchema, parseJsonUnknown(SEED_FILE), "shop_seed.json");
+  const sourceManifest = parseOrThrow(
+    sourceManifestSchema,
+    parseJsonUnknown(SOURCE_MANIFEST_FILE),
+    "product-image-sources.json",
   );
+  const collection = readProductCollection();
+  const generatedFiles = readGeneratedFiles();
+  const seedById = new Map<string, SeedProduct>();
+  const sourceById = new Map<string, SourceEntry>();
+  const seedSlugs = new Set<string>();
+  const seedSkus = new Set<string>();
+  const sourceSlugs = new Set<string>();
+  const sourceSkus = new Set<string>();
 
-  const referencedPaths = new Set(coverageRows.map(({ referencedPath }) => referencedPath));
-  const shopAssets: ShopAssetRow[] = walkFiles(SHOP_IMAGE_DIR)
-    .filter((filePath) => /\.(?:jpe?g|png|webp|avif|gif)$/i.test(filePath))
-    .map((filePath): ShopAssetRow => {
-      const publicUrl = `/${path.relative(PUBLIC_DIR, filePath).split(path.sep).join("/")}`;
-      const detectedMime = detectRasterMime(filePath);
-      const rasterMagicValid = detectedMime !== null;
-      const provenanceRecorded = provenanceByPath.has(publicUrl);
-      const visualReview = visualReviewFor(publicUrl);
-      const referencedByProducts = coverageRows.filter(
-        ({ referencedPath }) => referencedPath === publicUrl,
-      ).length;
-      let status: ShopAssetRow["status"];
-      if (!rasterMagicValid) status = "invalid-raster";
-      else if (referencedPaths.has(publicUrl)) status = "referenced";
-      else if (provenanceRecorded) status = "unreferenced-provenance-recorded";
-      else status = "unreferenced-unknown-provenance";
-      return Object.freeze({
-        path: publicUrl,
-        bytes: fs.statSync(filePath).size,
-        sha256: sha256(filePath),
-        detectedMime,
-        rasterMagicValid,
-        provenanceRecorded,
-        referencedByProducts,
-        visualAssessment:
-          visualReview?.assessment ?? "not-individually-reviewed",
-        visualNote:
-          visualReview?.note ??
-          "No product-specific visual conclusion is recorded for this asset.",
-        status,
-      });
+  for (const product of seed) {
+    if (seedById.has(product.id)) throw new Error(`Duplicate seed ID: ${product.id}`);
+    if (seedSlugs.has(product.slug)) throw new Error(`Duplicate seed slug: ${product.slug}`);
+    if (seedSkus.has(product.sku)) throw new Error(`Duplicate seed SKU: ${product.sku}`);
+    if (product.slug !== product.id) throw new Error(`Seed ID/slug mismatch: ${product.id}`);
+    seedById.set(product.id, product);
+    seedSlugs.add(product.slug);
+    seedSkus.add(product.sku);
+  }
+  for (const source of sourceManifest.products) {
+    if (sourceById.has(source.productId)) {
+      throw new Error(`Duplicate source productId: ${source.productId}`);
+    }
+    if (sourceSlugs.has(source.slug)) throw new Error(`Duplicate source slug: ${source.slug}`);
+    if (sourceSkus.has(source.sku)) throw new Error(`Duplicate source SKU: ${source.sku}`);
+    sourceById.set(source.productId, source);
+    sourceSlugs.add(source.slug);
+    sourceSkus.add(source.sku);
+  }
+
+  const pathCounts = new Map<string, number>();
+  const shaCounts = new Map<string, number>();
+  for (const source of sourceManifest.products) {
+    pathCounts.set(source.expectedFile, (pathCounts.get(source.expectedFile) ?? 0) + 1);
+    const inspection = inspectPublicFile(source.expectedFile);
+    if (inspection.sha256 !== null && inspection.rasterMagicValid) {
+      shaCounts.set(inspection.sha256, (shaCounts.get(inspection.sha256) ?? 0) + 1);
+    }
+  }
+
+  const rows: CoverageRow[] = [];
+  for (const product of seed) {
+    const source = sourceById.get(product.id);
+    if (source === undefined) throw new Error(`Missing source manifest entry: ${product.id}`);
+    const inspection = inspectPublicFile(source.expectedFile);
+    const sourcePageValid = isPublicHttpsUrl(source.sourcePageUrl);
+    const directImageValid = isPublicHttpsUrl(source.directImageUrl);
+    const shaMatches =
+      source.sha256 !== undefined && inspection.sha256 === source.sha256;
+    const mappingValid =
+      source.productId === product.id &&
+      source.slug === product.id &&
+      source.sku === product.sku &&
+      source.brand === product.brand &&
+      source.model === product.title &&
+      source.expectedFile === product.image &&
+      source.expectedFile.startsWith(`/images/shop/${product.category}/`) &&
+      source.expectedFile.endsWith(
+        `/${source.slug}.${extensionForMime(source.expectedMime)}`,
+      ) &&
+      inspection.detectedMime === source.expectedMime;
+    const provenanceConfirmed =
+      sourcePageValid && directImageValid && shaMatches && source.retrievedAt !== undefined;
+    const exactMatch =
+      inspection.rasterMagicValid &&
+      mappingValid &&
+      provenanceConfirmed &&
+      source.exactMatchConfirmed;
+    const rightsConfirmed = source.rightsConfirmed;
+    const rendered = collection.get(product.id);
+    const generatedBindingReady =
+      rendered !== undefined &&
+      rendered.imageKind === "product" &&
+      rendered.image === source.expectedFile;
+    const categoryFallback =
+      rendered !== undefined &&
+      (rendered.imageKind === "editorial" || rendered.image !== source.expectedFile);
+    const isDuplicate =
+      (pathCounts.get(source.expectedFile) ?? 0) > 1 ||
+      (inspection.sha256 !== null && (shaCounts.get(inspection.sha256) ?? 0) > 1);
+    const duplicateOrMisleading =
+      isDuplicate || (inspection.rasterMagicValid && !exactMatch);
+
+    rows.push({
+      product: product.id,
+      sku: product.sku,
+      brandModel: `${product.brand} — ${product.title}`,
+      localPath: source.expectedFile,
+      fileExists: inspection.exists,
+      fileValid:
+        inspection.rasterMagicValid && inspection.detectedMime === source.expectedMime,
+      detectedMime: inspection.detectedMime,
+      expectedMime: source.expectedMime,
+      exactMatch,
+      exactMatchConfirmedInManifest: source.exactMatchConfirmed,
+      matchBasis: source.matchBasis,
+      sourcePageUrl: sourcePageValid ? source.sourcePageUrl : null,
+      directImageUrl: directImageValid ? source.directImageUrl : null,
+      provenanceConfirmed,
+      rightsBasis: source.rightsBasis,
+      rightsConfirmed,
+      sha256: inspection.sha256,
+      manifestSha256: source.sha256 ?? null,
+      renderedPath: rendered?.image ?? null,
+      renderedImageKind: rendered?.imageKind ?? null,
+      generatedBindingReady,
+      categoryFallback,
+      duplicateOrMisleading,
+      status: coverageStatus(
+        inspection,
+        mappingValid,
+        shaMatches,
+        duplicateOrMisleading,
+        provenanceConfirmed,
+        exactMatch,
+        rightsConfirmed,
+        generatedBindingReady,
+      ),
     });
+  }
+
+  for (const source of sourceManifest.products) {
+    if (!seedById.has(source.productId)) {
+      throw new Error(`Orphan source manifest entry: ${source.productId}`);
+    }
+  }
+
+  const manualCollectionFiles = [...collection.keys()].filter(
+    (slug) => !generatedFiles.has(`${slug}.json`),
+  );
+  const manualDraftFiles = manualCollectionFiles.filter((slug) => {
+    const product = collection.get(slug);
+    return product?.status === "draft";
+  });
+  const canonicalExpectedPaths = new Set(rows.map((row) => row.localPath));
+  const legacyRasterFiles = fs
+    .readdirSync(SHOP_IMAGE_DIR, { recursive: true, withFileTypes: true })
+    .filter((entry) => entry.isFile() && /\.(?:jpe?g|png|webp)$/i.test(entry.name))
+    .map((entry) => path.join(entry.parentPath, entry.name))
+    .filter((filePath) => {
+      const publicPath = `/${path.relative(PUBLIC_DIR, filePath).split(path.sep).join("/")}`;
+      return !canonicalExpectedPaths.has(publicPath);
+    });
+  const invalidLegacyFiles = legacyRasterFiles.filter((filePath) => {
+    const bytes = fs.readFileSync(filePath);
+    return bytes.length < 512 || detectMime(bytes) === null;
+  });
 
   const summary = Object.freeze({
-    expectedSeedRecords: EXPECTED_SEED_COUNT,
-    seedRecords: seed.length,
-    uniqueSeedIds: seedById.size,
-    generatedManifestFiles: generatedFiles.size,
-    productCollectionFiles: coverageRows.length,
-    generatedSeedProducts: coverageRows.filter(
-      ({ recordKind }) => recordKind === "generated-seed",
+    canonicalProducts: rows.length,
+    validLocalImageFiles: rows.filter((row) => row.fileValid).length,
+    exactProductMatches: rows.filter((row) => row.exactMatch).length,
+    categoryFallbacks: rows.filter((row) => row.categoryFallback).length,
+    missingImages: rows.filter((row) => !row.fileExists).length,
+    invalidFiles: rows.filter((row) => row.fileExists && !row.fileValid).length,
+    duplicateOrMisleadingMappings: rows.filter(
+      (row) => row.duplicateOrMisleading,
     ).length,
-    manualDraftPlaceholders: coverageRows.filter(
-      ({ recordKind }) => recordKind === "manual-draft-placeholder",
-    ).length,
-    manualOtherProducts: coverageRows.filter(
-      ({ recordKind }) => recordKind === "manual-other",
-    ).length,
-    zodValidProductFiles: coverageRows.length,
-    exactProductImagesApproved: coverageRows.filter(
-      ({ status }) => status === "exact-product-evidence-approved",
-    ).length,
-    honestEditorialFallbacks: coverageRows.filter(
-      ({ status }) => status === "verified-category-fallback",
-    ).length,
-    productImageEvidenceGaps: coverageRows.filter(
-      ({ status }) => status === "product-image-evidence-gap",
-    ).length,
-    productsWithoutApprovedExactPhoto: coverageRows.filter(
-      ({ status }) => status !== "exact-product-evidence-approved",
-    ).length,
-    missingReferencedFiles: coverageRows.filter(
-      ({ status }) => status === "missing-referenced-file",
-    ).length,
-    invalidReferencedFiles: coverageRows.filter(
-      ({ status }) => status === "invalid-referenced-file",
-    ).length,
-    provenanceRows: provenance.length,
-    approvedForSiteProvenanceRows: provenance.filter(
-      (row) => row.usage_rights === "approved-for-site",
-    ).length,
-    permissionUnverifiedProvenanceRows: provenance.filter(
-      (row) => row.usage_rights === "permission-unverified",
-    ).length,
-    visuallyExactCandidateRows: provenance.filter(
-      (row) => row.exact_match_confidence === "exact",
-    ).length,
-    partialVisualCandidateRows: provenance.filter(
-      (row) => row.exact_match_confidence === "partial",
-    ).length,
-    mismatchedVisualCandidateRows: provenance.filter(
-      (row) => row.exact_match_confidence === "mismatch",
-    ).length,
-    shopRasterFilenameCount: shopAssets.length,
-    invalidShopRasterFiles: shopAssets.filter(
-      ({ status }) => status === "invalid-raster",
-    ).length,
-    unreferencedShopAssets: shopAssets.filter(
-      ({ referencedByProducts }) => referencedByProducts === 0,
-    ).length,
+    provenanceConfirmed: rows.filter((row) => row.provenanceConfirmed).length,
+    rightsBasisConfirmed: rows.filter((row) => row.rightsConfirmed).length,
+    generatedExactBindings: rows.filter((row) => row.generatedBindingReady).length,
+    manualDraftFiles: manualDraftFiles.length,
+    invalidUnreferencedLegacyFiles: invalidLegacyFiles.length,
   });
 
-  const json = Object.freeze({
-    version: 1,
-    notes: Object.freeze([
-      "slugSku uses the product content slug because the current schema has no distinct SKU field.",
-      "A downloaded manufacturer asset is not bound as an exact product image unless provenance records exact visual review, byte hash, and approved-for-site usage rights.",
-      "Editorial category fallbacks are intentionally non-exact and remain visible as such through imageKind=editorial.",
-      "visualAssessment records a human inspection of repository bytes and is independent from copyright or usage approval.",
-    ]),
-    summary,
-    products: coverageRows,
-    shopAssets,
-  });
+  const acceptancePass =
+    summary.canonicalProducts === EXPECTED_PRODUCT_COUNT &&
+    summary.validLocalImageFiles === summary.canonicalProducts &&
+    summary.exactProductMatches === summary.canonicalProducts &&
+    summary.categoryFallbacks === 0 &&
+    summary.missingImages === 0 &&
+    summary.invalidFiles === 0 &&
+    summary.duplicateOrMisleadingMappings === 0 &&
+    summary.provenanceConfirmed === summary.canonicalProducts &&
+    summary.rightsBasisConfirmed === summary.canonicalProducts &&
+    summary.generatedExactBindings === summary.canonicalProducts;
 
-  const summaryRows = Object.entries(summary)
-    .map(([key, value]) => `| ${key} | ${value} |`)
-    .join("\n");
-  const coverageTable = coverageRows
+  const tableRows = rows
     .map((row) => {
-      const source = row.sourceUrl
-        ? markdownLink(row.sourceUrl, row.provider ?? "source")
-        : row.candidateSourceUrl
-          ? `${markdownLink(row.candidateSourceUrl, row.candidateProvider ?? "candidate")} (candidate only)`
-          : "—";
-      const confidence = row.candidateVisualAssessment
-        ? `${row.exactMatchConfidence}; candidate: ${row.candidateExactMatchConfidence ?? "unverified"}/${row.candidateVisualAssessment}`
-        : row.exactMatchConfidence;
-      return `| ${escapeMarkdown(row.slugSku)} | ${escapeMarkdown(row.brandModel)} | \`${escapeMarkdown(row.referencedPath)}\` | ${row.fileExists && row.rasterMagicValid ? "yes" : "no"} | ${source} | ${escapeMarkdown(confidence)} | ${row.duplicateUseCount} | ${escapeMarkdown(row.status)} |`;
+      const source = row.sourcePageUrl === null ? "—" : `<${row.sourcePageUrl}>`;
+      const hash = row.sha256 === null ? "—" : `\`${row.sha256}\``;
+      return `| ${escapeMarkdown(`${row.product} / ${row.sku}`)} | ${escapeMarkdown(row.brandModel)} | \`${escapeMarkdown(row.localPath)}\` | ${row.fileValid ? "yes" : "no"} | ${row.exactMatch ? "yes" : "no"} | ${source} | ${escapeMarkdown(row.rightsBasis)} (${row.rightsConfirmed ? "confirmed" : "unconfirmed"}) | ${hash} | ${row.status} |`;
     })
     .join("\n");
-  const invalidAssets = shopAssets.filter(({ rasterMagicValid }) => !rasterMagicValid);
-  const invalidAssetSection =
-    invalidAssets.length === 0
-      ? "No raster-filename files with invalid magic bytes were found."
-      : [
-          "| Path | Bytes | Status |",
-          "|---|---:|---|",
-          ...invalidAssets.map(
-            (asset) =>
-              `| \`${escapeMarkdown(asset.path)}\` | ${asset.bytes} | ${asset.status} |`,
-          ),
-        ].join("\n");
 
-  const visualReviewRows = shopAssets
-    .filter(({ visualAssessment }) => visualAssessment !== "not-individually-reviewed")
-    .map(
-      (asset) =>
-        `| \`${escapeMarkdown(asset.path)}\` | ${escapeMarkdown(asset.visualAssessment)} | ${escapeMarkdown(asset.visualNote)} |`,
-    )
-    .join("\n");
+  const markdown = `# Product image coverage\n\nGenerated deterministically from \`shop_seed.json\`, \`scripts/product-image-sources.json\`, local raster bytes, the generated-file ownership manifest, and product collection records. A URL or downloaded byte sequence is not treated as proof of an exact model or publication rights. \`MED-INTERNAL-*\` values are unique internal catalog keys, not manufacturer SKUs.\n\n## Summary\n\n\`\`\`text\nTotal canonical products: ${summary.canonicalProducts}\nValid local image files: ${summary.validLocalImageFiles}/${summary.canonicalProducts}\nExact product matches: ${summary.exactProductMatches}/${summary.canonicalProducts}\nCategory fallbacks: ${summary.categoryFallbacks}\nMissing images: ${summary.missingImages}\nInvalid files: ${summary.invalidFiles}\nDuplicate/misleading mappings: ${summary.duplicateOrMisleadingMappings}\nRights/provenance confirmed: ${summary.rightsBasisConfirmed}/${summary.canonicalProducts}\n\`\`\`\n\nAdditional evidence: provenance-confirmed ${summary.provenanceConfirmed}/${summary.canonicalProducts}; generated exact bindings ${summary.generatedExactBindings}/${summary.canonicalProducts}; preserved manual drafts ${summary.manualDraftFiles}; invalid unreferenced legacy rasters ${summary.invalidUnreferencedLegacyFiles}.\n\n## Per-product evidence\n\n| Product / internal SKU | Brand/model | Local path | File valid | Exact match | Source | Rights basis | SHA-256 | Status |\n|---|---|---|---|---|---|---|---|---|\n${tableRows}\n`;
 
-  const markdown = `# Product image coverage\n\nThis report is generated from \`shop_seed.json\`, the product collection, \`seed-products.manifest.json\`, image magic bytes, and \`public/images/shop/image-sources.tsv\`. It does not grant copyright permission or infer an exact model from a filename.\n\nThe repository has no distinct SKU field, so **slug/SKU** below is the canonical content slug/seed ID. A manufacturer candidate link is labeled “candidate only” when it is not the provenance of the rendered fallback.\n\n## Summary\n\n| Metric | Count |\n|---|---:|\n${summaryRows}\n\nThe three non-manifest collection records are retained because they are explicit \`draft\` / \`pending-clinic-confirmation\` editorial placeholders, not accidental duplicates of the 60 generated seed IDs. Exact one-to-one photo coverage remains blocked until an asset has a visually reviewed model match and documented \`approved-for-site\` usage rights.\n\n## Per-product coverage\n\n| Slug / seed ID | Brand / model | Referenced path | Valid file | Referenced source / acquisition candidate | Exact confidence | Duplicate use | Status |\n|---|---|---|---|---|---|---:|---|\n${coverageTable}\n\n## Visual review of generic and acquired shop assets\n\n| Asset | Assessment | Visible evidence |\n|---|---|---|\n${visualReviewRows}\n\n## Invalid legacy shop assets\n\nThese files are not referenced by any generated product. They are reported rather than silently treated as images.\n\n${invalidAssetSection}\n`;
-
-  const brokenRows = coverageRows.filter(
-    ({ status }) =>
-      status === "missing-referenced-file" ||
-      status === "invalid-referenced-file" ||
-      status === "product-image-evidence-gap",
-  );
-  if (brokenRows.length > 0) {
-    fail(
-      `${brokenRows.length} product record(s) have a broken or misleading rendered image binding.`,
-    );
-  }
-
-  return { json, markdown };
+  const json = Object.freeze({
+    version: 2,
+    acceptancePass,
+    summary,
+    products: rows,
+    manualDraftFiles,
+    invalidUnreferencedLegacyFiles: invalidLegacyFiles.map(
+      (filePath) => `/${path.relative(PUBLIC_DIR, filePath).split(path.sep).join("/")}`,
+    ),
+  });
+  return { json, markdown, acceptancePass };
 }
 
 try {
-  const report = buildReport();
+  const report = buildCoverage();
   const jsonChanged = writeAtomicIfChanged(
-    REPORT_JSON,
+    JSON_REPORT,
     `${JSON.stringify(report.json, null, 2)}\n`,
   );
-  const markdownChanged = writeAtomicIfChanged(REPORT_MARKDOWN, report.markdown);
-  const summary = report.json.summary as Readonly<Record<string, unknown>>;
+  const markdownChanged = writeAtomicIfChanged(MARKDOWN_REPORT, report.markdown);
   console.log(
     JSON.stringify(
       {
-        jsonReport: path.relative(PROJECT_ROOT, REPORT_JSON),
-        markdownReport: path.relative(PROJECT_ROOT, REPORT_MARKDOWN),
+        jsonReport: path.relative(PROJECT_ROOT, JSON_REPORT),
+        markdownReport: path.relative(PROJECT_ROOT, MARKDOWN_REPORT),
         jsonChanged,
         markdownChanged,
-        summary,
+        acceptancePass: report.acceptancePass,
+        summary: report.json.summary,
       },
       null,
       2,
     ),
   );
+  if (!report.acceptancePass) process.exitCode = 2;
 } catch (error) {
-  console.error(error instanceof Error ? error.message : String(error));
+  console.error(error instanceof Error ? error.message : "Unexpected report failure");
   process.exitCode = 1;
 }

@@ -2,6 +2,7 @@
 import GoogleMap from "../clinic/GoogleMap.astro";
 import Wayfinding from "../clinic/Wayfinding.astro";
 import ReviewsPanel from "../clinic/ReviewsPanel.astro";
+import SocialLinks from "../clinic/SocialLinks.astro";
 import Container from "../ui/Container.astro";
 import BaseLayout from "../../layouts/BaseLayout.astro";
 import { clinicContact } from "../../lib/clinic";
@@ -121,6 +122,10 @@ const mapFrameTitles = {
         >
           {t(locale, "contacts.book")}
         </a>
+      </div>
+
+      <div class="mt-12 border-t border-border pt-10 lg:ml-[calc(33.333%+1.333rem)]">
+        <SocialLinks locale={locale} />
       </div>
     </Container>
   </section>

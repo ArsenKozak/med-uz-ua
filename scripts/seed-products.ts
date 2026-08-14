@@ -1,5 +1,6 @@
-import { createHash } from "node:crypto";
+import { createHash, randomBytes } from "node:crypto";
 import fs from "node:fs";
+import net from "node:net";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { z } from "astro/zod";
@@ -8,69 +9,77 @@ import {
   productSchema,
   type ProductCategory,
   type ProductContent,
-  type ProductImageKind,
 } from "../src/schemas/product.ts";
 
 const SCRIPT_DIR = path.dirname(fileURLToPath(import.meta.url));
 const PROJECT_ROOT = path.resolve(SCRIPT_DIR, "..");
 const SEED_FILE = path.join(PROJECT_ROOT, "shop_seed.json");
-const TARGET_DIR = path.join(PROJECT_ROOT, "src", "content", "products");
-const MANIFEST_FILE = path.join(SCRIPT_DIR, "seed-products.manifest.json");
-const PROVENANCE_FILE = path.join(
-  PROJECT_ROOT,
-  "public",
-  "images",
-  "shop",
-  "image-sources.tsv",
+const SOURCE_MANIFEST_FILE = path.join(
+  SCRIPT_DIR,
+  "product-image-sources.json",
 );
+const GENERATED_MANIFEST_FILE = path.join(
+  SCRIPT_DIR,
+  "seed-products.manifest.json",
+);
+const TARGET_DIR = path.join(PROJECT_ROOT, "src", "content", "products");
 const PUBLIC_DIR = path.join(PROJECT_ROOT, "public");
-const EXPECTED_SEED_COUNT = 60;
+const EXPECTED_PRODUCT_COUNT = 60;
 
-const EDITORIAL_IMAGE_BY_CATEGORY = {
-  lenses: "/images/artificial/macro-lens-hydration.jpg",
-  care: "/images/artificial/macro-lens-hydration.jpg",
-  frames: "/images/artificial/shop-editorial-eyewear.jpg",
-  sunglasses: "/images/artificial/shop-editorial-eyewear.jpg",
-} as const satisfies Record<ProductCategory, string>;
+const mimeSchema = z.enum(["image/jpeg", "image/png", "image/webp"]);
+type AllowedMime = z.infer<typeof mimeSchema>;
 
 const sourceProductSchema = z
   .object({
-    id: z
-      .string()
-      .trim()
-      .min(1)
-      .regex(/^[a-z0-9]+(?:-[a-z0-9]+)*$/, "ID must already be a URL-safe slug."),
+    id: z.string().regex(/^[a-z0-9]+(?:-[a-z0-9]+)*$/),
+    slug: z.string().regex(/^[a-z0-9]+(?:-[a-z0-9]+)*$/),
+    sku: z.string().regex(/^MED-INTERNAL-[A-Z0-9]+(?:-[A-Z0-9]+)*$/),
     title: z.string().trim().min(1),
     category: z.enum(PRODUCT_CATEGORIES),
     brand: z.string().trim().min(1),
-    price: z
-      .number()
-      .int()
-      .positive()
-      .refine(Number.isSafeInteger, "Price must be a safe integer."),
+    price: z.number().int().positive().refine(Number.isSafeInteger),
     inStock: z.boolean(),
     image: z
       .string()
       .regex(
-        /^\/images\/shop\/(?:lenses|frames|sunglasses|care)\/[a-z0-9][a-z0-9._-]*\.(?:jpe?g|png|webp|avif)$/i,
-        "Image must be a local shop raster path.",
-      )
-      .refine(
-        (value) => !value.includes("..") && !value.includes("\\"),
-        "Image path traversal is forbidden.",
+        /^\/images\/shop\/(?:lenses|care|frames|sunglasses)\/[a-z0-9]+(?:-[a-z0-9]+)*\.(?:jpg|png|webp)$/,
       ),
     description: z.string().trim().min(1),
   })
   .strict();
-
 const sourceCatalogSchema = z
   .array(sourceProductSchema)
-  .length(
-    EXPECTED_SEED_COUNT,
-    `shop_seed.json must contain exactly ${EXPECTED_SEED_COUNT} products.`,
-  );
+  .length(EXPECTED_PRODUCT_COUNT);
+type SourceProduct = z.infer<typeof sourceProductSchema>;
 
-const manifestSchema = z
+const imageSourceSchema = z
+  .object({
+    productId: z.string().regex(/^[a-z0-9]+(?:-[a-z0-9]+)*$/),
+    slug: z.string().regex(/^[a-z0-9]+(?:-[a-z0-9]+)*$/),
+    sku: z.string().regex(/^MED-INTERNAL-[A-Z0-9]+(?:-[A-Z0-9]+)*$/),
+    brand: z.string().trim().min(1),
+    model: z.string().trim().min(1),
+    sourcePageUrl: z.string(),
+    directImageUrl: z.string(),
+    expectedFile: sourceProductSchema.shape.image,
+    expectedMime: mimeSchema,
+    matchBasis: z.string().trim().min(1),
+    rightsBasis: z.string().trim().min(1),
+    exactMatchConfirmed: z.boolean(),
+    rightsConfirmed: z.boolean(),
+    retrievedAt: z.string().datetime({ offset: true }).optional(),
+    sha256: z.string().regex(/^[a-f0-9]{64}$/).optional(),
+  })
+  .strict();
+const imageSourceManifestSchema = z
+  .object({
+    version: z.literal(1),
+    products: z.array(imageSourceSchema).length(EXPECTED_PRODUCT_COUNT),
+  })
+  .strict();
+type ImageSource = z.infer<typeof imageSourceSchema>;
+
+const generatedManifestSchema = z
   .object({
     version: z.literal(1),
     generatedFiles: z.array(
@@ -79,360 +88,258 @@ const manifestSchema = z
   })
   .strict();
 
-type SourceProduct = z.infer<typeof sourceProductSchema>;
-
-interface ApprovedImageEvidence {
-  readonly image: string;
-  readonly sha256: string;
-}
-
-interface ImageResolution {
-  readonly image: string;
-  readonly imageKind: ProductImageKind;
-  readonly requestedImageExists: boolean;
-  readonly usedApprovedExactImage: boolean;
-  readonly usedEditorialFallback: boolean;
-}
-
-interface NormalizedProduct {
+interface PreparedProduct {
   readonly id: string;
-  readonly product: ProductContent;
-  readonly imageResolution: ImageResolution;
+  readonly content: ProductContent;
 }
 
-interface CompilerStats {
-  readonly expectedSeedRecordCount: number;
-  readonly sourceRecordCount: number;
-  readonly validRecordCount: number;
-  readonly uniqueRecordCount: number;
-  readonly generatedRecordCount: number;
-  readonly requestedImageExistsCount: number;
-  readonly requestedImageMissingCount: number;
-  readonly approvedExactImageCount: number;
-  readonly editorialImageFallbackCount: number;
-  readonly invalidGeneratedImageCount: number;
-  readonly filesCreatedOrUpdated: number;
-  readonly filesUnchanged: number;
-  readonly staleGeneratedFilesRemoved: number;
-  readonly categoryCounts: Readonly<Record<ProductCategory, number>>;
+function parseJsonUnknown(filePath: string): unknown {
+  try {
+    const parsed: unknown = JSON.parse(fs.readFileSync(filePath, "utf8"));
+    return parsed;
+  } catch (error) {
+    const detail = error instanceof Error ? error.message : "unknown parse error";
+    throw new Error(`${path.relative(PROJECT_ROOT, filePath)} is invalid JSON: ${detail}`);
+  }
 }
 
 function formatZodError(error: z.ZodError): string {
   return error.issues
-    .map((issue) => {
-      const pathLabel = issue.path.length > 0 ? issue.path.join(".") : "root";
-      return `${pathLabel}: ${issue.message}`;
-    })
+    .map((issue) => `${issue.path.join(".") || "root"}: ${issue.message}`)
     .join("\n");
 }
 
-function stripJsonComments(input: string): string {
-  let output = "";
-  let inString = false;
-  let escaped = false;
-  let inBlockComment = false;
-  let inLineComment = false;
-
-  for (let index = 0; index < input.length; index += 1) {
-    const character = input[index] ?? "";
-    const nextCharacter = input[index + 1] ?? "";
-
-    if (inBlockComment) {
-      if (character === "*" && nextCharacter === "/") {
-        inBlockComment = false;
-        index += 1;
-      } else if (character === "\n") {
-        output += "\n";
-      }
-      continue;
-    }
-
-    if (inLineComment) {
-      if (character === "\n") {
-        inLineComment = false;
-        output += "\n";
-      }
-      continue;
-    }
-
-    if (inString) {
-      output += character;
-      if (escaped) {
-        escaped = false;
-      } else if (character === "\\") {
-        escaped = true;
-      } else if (character === '"') {
-        inString = false;
-      }
-      continue;
-    }
-
-    if (character === '"') {
-      inString = true;
-      output += character;
-      continue;
-    }
-
-    if (character === "/" && nextCharacter === "*") {
-      inBlockComment = true;
-      index += 1;
-      continue;
-    }
-
-    if (character === "/" && nextCharacter === "/") {
-      inLineComment = true;
-      index += 1;
-      continue;
-    }
-
-    output += character;
+function parseOrThrow<T>(schema: z.ZodType<T>, value: unknown, label: string): T {
+  const parsed = schema.safeParse(value);
+  if (!parsed.success) {
+    throw new Error(`${label} failed validation:\n${formatZodError(parsed.error)}`);
   }
-
-  if (inBlockComment || inString) {
-    throw new Error("shop_seed.json contains an unterminated comment or string.");
-  }
-
-  return output;
+  return parsed.data;
 }
 
-function parseJsonUnknown(rawJson: string, sourceName: string): unknown {
-  try {
-    return JSON.parse(rawJson) as unknown;
-  } catch (error) {
-    const message = error instanceof Error ? error.message : "Unknown JSON error";
-    throw new Error(`${sourceName} is not valid JSON: ${message}`);
+function detectMime(bytes: Buffer): AllowedMime | null {
+  if (
+    bytes.length >= 4 &&
+    bytes[0] === 0xff &&
+    bytes[1] === 0xd8 &&
+    bytes[2] === 0xff &&
+    bytes.at(-2) === 0xff &&
+    bytes.at(-1) === 0xd9
+  ) {
+    return "image/jpeg";
   }
+  if (
+    bytes.length >= 12 &&
+    bytes.subarray(0, 8).equals(
+      Buffer.from([0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a]),
+    ) &&
+    bytes.includes(Buffer.from("IEND"))
+  ) {
+    return "image/png";
+  }
+  if (
+    bytes.length >= 12 &&
+    bytes.toString("ascii", 0, 4) === "RIFF" &&
+    bytes.toString("ascii", 8, 12) === "WEBP"
+  ) {
+    return "image/webp";
+  }
+  return null;
+}
+
+function extensionForMime(mime: AllowedMime): "jpg" | "png" | "webp" {
+  if (mime === "image/jpeg") return "jpg";
+  if (mime === "image/png") return "png";
+  return "webp";
+}
+
+function resolvePublicFile(publicUrl: string): string {
+  const absolute = path.resolve(PUBLIC_DIR, publicUrl.slice(1));
+  const publicRoot = `${path.resolve(PUBLIC_DIR)}${path.sep}`;
+  if (!publicUrl.startsWith("/") || !absolute.startsWith(publicRoot)) {
+    throw new Error(`Unsafe public image path: ${publicUrl}`);
+  }
+  return absolute;
+}
+
+function validPublicHttpsUrl(raw: string): boolean {
+  try {
+    const url = new URL(raw);
+    if (url.protocol !== "https:" || url.username || url.password) return false;
+    const host = url.hostname.toLowerCase().replace(/\.$/, "");
+    if (
+      host === "localhost" ||
+      host.endsWith(".localhost") ||
+      host.endsWith(".local") ||
+      host.endsWith(".internal") ||
+      host.endsWith(".home.arpa")
+    ) {
+      return false;
+    }
+    if (net.isIP(host) !== 0) return false;
+    return true;
+  } catch {
+    return false;
+  }
+}
+
+function hashBytes(bytes: Buffer): string {
+  return createHash("sha256").update(bytes).digest("hex");
 }
 
 function readSourceCatalog(): readonly SourceProduct[] {
-  if (!fs.existsSync(SEED_FILE)) {
-    throw new Error(`Seed file not found: ${SEED_FILE}`);
-  }
-
-  const rawData = fs.readFileSync(SEED_FILE, "utf8");
-  const parsedData = parseJsonUnknown(stripJsonComments(rawData), SEED_FILE);
-  const result = sourceCatalogSchema.safeParse(parsedData);
-
-  if (!result.success) {
-    throw new Error(`Invalid product seed:\n${formatZodError(result.error)}`);
-  }
-
-  for (const product of result.data) {
-    if (!product.image.startsWith(`/images/shop/${product.category}/`)) {
-      throw new Error(
-        `Seed image category does not match ${product.id}: ${product.image}`,
-      );
-    }
-  }
-
-  return result.data;
-}
-
-function resolvePublicFile(imageUrl: string): string | null {
-  if (!imageUrl.startsWith("/images/") || imageUrl.includes("\\")) {
-    return null;
-  }
-
-  const absolutePath = path.resolve(PUBLIC_DIR, imageUrl.slice(1));
-  const publicRoot = `${path.resolve(PUBLIC_DIR)}${path.sep}`;
-
-  return absolutePath.startsWith(publicRoot) ? absolutePath : null;
-}
-
-function isDecodableRasterImage(filePath: string): boolean {
-  if (!fs.existsSync(filePath) || !fs.statSync(filePath).isFile()) {
-    return false;
-  }
-
-  const bytes = fs.readFileSync(filePath);
-  if (bytes.length < 512) return false;
-
-  const isJpeg =
-    bytes.length >= 3 &&
-    bytes[0] === 0xff &&
-    bytes[1] === 0xd8 &&
-    bytes[2] === 0xff;
-  const isPng = bytes.subarray(0, 8).equals(
-    Buffer.from([0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a]),
+  return parseOrThrow(
+    sourceCatalogSchema,
+    parseJsonUnknown(SEED_FILE),
+    "shop_seed.json",
   );
-  const isWebp =
-    bytes.length >= 12 &&
-    bytes.toString("ascii", 0, 4) === "RIFF" &&
-    bytes.toString("ascii", 8, 12) === "WEBP";
-  const isAvif =
-    bytes.length >= 12 &&
-    bytes.toString("ascii", 4, 8) === "ftyp" &&
-    ["avif", "avis"].includes(bytes.toString("ascii", 8, 12));
-
-  return isJpeg || isPng || isWebp || isAvif;
 }
 
-function isValidPublicImage(imageUrl: string): boolean {
-  const filePath = resolvePublicFile(imageUrl);
-  return filePath !== null && isDecodableRasterImage(filePath);
-}
-
-function hashFile(filePath: string): string {
-  return createHash("sha256").update(fs.readFileSync(filePath)).digest("hex");
-}
-
-function parseTsv(filePath: string): readonly Readonly<Record<string, string>>[] {
-  if (!fs.existsSync(filePath)) return [];
-
-  const lines = fs
-    .readFileSync(filePath, "utf8")
-    .split(/\r?\n/)
-    .filter((line) => line.length > 0);
-  if (lines.length === 0) return [];
-
-  const headers = (lines[0] ?? "").split("\t");
-  return lines.slice(1).map((line) => {
-    const values = line.split("\t");
-    return Object.freeze(
-      Object.fromEntries(headers.map((header, index) => [header, values[index] ?? ""])),
-    );
-  });
-}
-
-function readApprovedExactImages(): ReadonlyMap<string, ApprovedImageEvidence> {
-  const approved = new Map<string, ApprovedImageEvidence>();
-
-  for (const row of parseTsv(PROVENANCE_FILE)) {
-    if (
-      row.usage_rights !== "approved-for-site" ||
-      row.exact_match_confidence !== "exact"
-    ) {
-      continue;
-    }
-
-    const productId = row.product_id ?? "";
-    const category = row.category ?? "";
-    const filename = row.file ?? "";
-    const sourcePage = row.source_page ?? "";
-    const sourceAsset = row.source_asset ?? "";
-    const expectedSha = row.sha256 ?? "";
-
-    if (
-      !/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(productId) ||
-      !PRODUCT_CATEGORIES.includes(category as ProductCategory) ||
-      path.basename(filename) !== filename ||
-      !/^https:\/\//.test(sourcePage) ||
-      !/^https:\/\//.test(sourceAsset) ||
-      !/^[a-f0-9]{64}$/.test(expectedSha)
-    ) {
-      throw new Error(
-        `Approved provenance row for ${productId || "unknown product"} is incomplete or unsafe.`,
-      );
-    }
-
-    const image = `/images/shop/${category}/${filename}`;
-    const filePath = resolvePublicFile(image);
-    if (
-      filePath === null ||
-      !isDecodableRasterImage(filePath) ||
-      hashFile(filePath) !== expectedSha
-    ) {
-      throw new Error(`Approved image evidence does not match bytes for ${productId}.`);
-    }
-
-    if (approved.has(productId)) {
-      throw new Error(`Multiple approved exact images are recorded for ${productId}.`);
-    }
-
-    approved.set(productId, Object.freeze({ image, sha256: expectedSha }));
-  }
-
-  return approved;
-}
-
-function resolveProductImage(
-  sourceProduct: SourceProduct,
-  approvedImages: ReadonlyMap<string, ApprovedImageEvidence>,
-): ImageResolution {
-  const requestedImageExists = isValidPublicImage(sourceProduct.image);
-  const approvedImage = approvedImages.get(sourceProduct.id);
-
-  if (approvedImage !== undefined) {
-    if (!approvedImage.image.startsWith(`/images/shop/${sourceProduct.category}/`)) {
-      throw new Error(
-        `Approved image category does not match ${sourceProduct.id}: ${approvedImage.image}`,
-      );
-    }
-    return {
-      image: approvedImage.image,
-      imageKind: "product",
-      requestedImageExists,
-      usedApprovedExactImage: true,
-      usedEditorialFallback: false,
-    };
-  }
-
-  const editorialImage = EDITORIAL_IMAGE_BY_CATEGORY[sourceProduct.category];
-  if (!isValidPublicImage(editorialImage)) {
-    throw new Error(
-      `No valid editorial fallback is available for ${sourceProduct.id}: ${editorialImage}`,
-    );
-  }
-
-  return {
-    image: editorialImage,
-    imageKind: "editorial",
-    requestedImageExists,
-    usedApprovedExactImage: false,
-    usedEditorialFallback: true,
-  };
-}
-
-function normalizeProduct(
-  sourceProduct: SourceProduct,
-  approvedImages: ReadonlyMap<string, ApprovedImageEvidence>,
-): NormalizedProduct {
-  const imageResolution = resolveProductImage(sourceProduct, approvedImages);
-  const priceMinor = sourceProduct.price * 100;
-
-  if (!Number.isSafeInteger(priceMinor)) {
-    throw new Error(`Unsafe price for product ${sourceProduct.id}.`);
-  }
-
-  const result = productSchema.safeParse({
-    title: sourceProduct.title,
-    description: sourceProduct.description,
-    category: sourceProduct.category,
-    brand: sourceProduct.brand,
-    priceMinor,
-    currency: "UAH",
-    image: imageResolution.image,
-    imageKind: imageResolution.imageKind,
-    inStock: sourceProduct.inStock,
-    status: "active",
-    verificationStatus: "verified",
-  });
-
-  if (!result.success) {
-    throw new Error(
-      `Normalized product ${sourceProduct.id} is invalid:\n${formatZodError(result.error)}`,
-    );
-  }
-
-  return { id: sourceProduct.id, product: result.data, imageResolution };
+function readImageSources(): readonly ImageSource[] {
+  return parseOrThrow(
+    imageSourceManifestSchema,
+    parseJsonUnknown(SOURCE_MANIFEST_FILE),
+    "product-image-sources.json",
+  ).products;
 }
 
 function readOwnedGeneratedFiles(): ReadonlySet<string> {
-  if (!fs.existsSync(MANIFEST_FILE)) {
-    return new Set<string>();
-  }
-
-  const parsedManifest = parseJsonUnknown(
-    fs.readFileSync(MANIFEST_FILE, "utf8"),
-    MANIFEST_FILE,
+  if (!fs.existsSync(GENERATED_MANIFEST_FILE)) return new Set<string>();
+  const manifest = parseOrThrow(
+    generatedManifestSchema,
+    parseJsonUnknown(GENERATED_MANIFEST_FILE),
+    "seed-products.manifest.json",
   );
-  const result = manifestSchema.safeParse(parsedManifest);
+  return new Set(manifest.generatedFiles);
+}
 
-  if (!result.success) {
-    throw new Error(`Invalid seed manifest:\n${formatZodError(result.error)}`);
+function prepareProducts(): readonly PreparedProduct[] {
+  const products = readSourceCatalog();
+  const imageSources = readImageSources();
+  const productById = new Map<string, SourceProduct>();
+  const sourceById = new Map<string, ImageSource>();
+  const seedSlugs = new Set<string>();
+  const seedSkus = new Set<string>();
+  const sourceSlugs = new Set<string>();
+  const sourceSkus = new Set<string>();
+  const expectedFiles = new Set<string>();
+  const shaOwners = new Map<string, string>();
+  const blockers: string[] = [];
+
+  for (const product of products) {
+    if (productById.has(product.id)) blockers.push(`${product.id}:duplicate-seed-id`);
+    if (seedSlugs.has(product.slug)) blockers.push(`${product.id}:duplicate-seed-slug`);
+    if (seedSkus.has(product.sku)) blockers.push(`${product.id}:duplicate-seed-internal-sku`);
+    if (product.slug !== product.id) blockers.push(`${product.id}:seed-id-slug-mismatch`);
+    productById.set(product.id, product);
+    seedSlugs.add(product.slug);
+    seedSkus.add(product.sku);
+  }
+  for (const source of imageSources) {
+    if (sourceById.has(source.productId)) {
+      blockers.push(`${source.productId}:duplicate-source-entry`);
+    }
+    if (sourceSlugs.has(source.slug)) {
+      blockers.push(`${source.productId}:duplicate-source-slug`);
+    }
+    if (sourceSkus.has(source.sku)) {
+      blockers.push(`${source.productId}:duplicate-source-internal-sku`);
+    }
+    sourceById.set(source.productId, source);
+    sourceSlugs.add(source.slug);
+    sourceSkus.add(source.sku);
   }
 
-  return new Set(result.data.generatedFiles);
+  const prepared: PreparedProduct[] = [];
+  for (const product of products) {
+    const source = sourceById.get(product.id);
+    if (source === undefined) {
+      blockers.push(`${product.id}:missing-source-manifest-entry`);
+      continue;
+    }
+    if (source.slug !== product.id) blockers.push(`${product.id}:slug-mismatch`);
+    if (source.sku !== product.sku) blockers.push(`${product.id}:internal-sku-mismatch`);
+    if (source.brand !== product.brand) blockers.push(`${product.id}:brand-mismatch`);
+    if (source.model !== product.title) blockers.push(`${product.id}:model-mismatch`);
+    if (source.expectedFile !== product.image) {
+      blockers.push(`${product.id}:seed-image-does-not-match-manifest`);
+    }
+    if (!source.expectedFile.startsWith(`/images/shop/${product.category}/`)) {
+      blockers.push(`${product.id}:image-category-mismatch`);
+    }
+    if (
+      !source.expectedFile.endsWith(
+        `/${source.slug}.${extensionForMime(source.expectedMime)}`,
+      )
+    ) {
+      blockers.push(`${product.id}:non-deterministic-image-filename`);
+    }
+    if (expectedFiles.has(source.expectedFile)) {
+      blockers.push(`${product.id}:duplicate-image-path`);
+    }
+    expectedFiles.add(source.expectedFile);
+    if (!validPublicHttpsUrl(source.sourcePageUrl)) {
+      blockers.push(`${product.id}:source-page-not-approved-https`);
+    }
+    if (!validPublicHttpsUrl(source.directImageUrl)) {
+      blockers.push(`${product.id}:direct-image-not-approved-https`);
+    }
+    if (!source.exactMatchConfirmed) blockers.push(`${product.id}:exact-match-unconfirmed`);
+    if (!source.rightsConfirmed) blockers.push(`${product.id}:usage-rights-unconfirmed`);
+    if (source.sha256 === undefined) blockers.push(`${product.id}:sha256-missing`);
+
+    const filePath = resolvePublicFile(source.expectedFile);
+    if (!fs.existsSync(filePath) || !fs.statSync(filePath).isFile()) {
+      blockers.push(`${product.id}:local-image-missing`);
+      continue;
+    }
+    const bytes = fs.readFileSync(filePath);
+    if (bytes.length < 512) blockers.push(`${product.id}:local-image-too-small`);
+    if (detectMime(bytes) !== source.expectedMime) {
+      blockers.push(`${product.id}:local-image-mime-or-magic-mismatch`);
+    }
+    const actualSha = hashBytes(bytes);
+    if (source.sha256 !== actualSha) blockers.push(`${product.id}:local-image-sha256-mismatch`);
+    const priorOwner = shaOwners.get(actualSha);
+    if (priorOwner !== undefined && priorOwner !== product.id) {
+      blockers.push(`${product.id}:duplicate-image-bytes-with:${priorOwner}`);
+    } else {
+      shaOwners.set(actualSha, product.id);
+    }
+
+    const normalized = productSchema.safeParse({
+      title: product.title,
+      description: product.description,
+      category: product.category,
+      brand: product.brand,
+      priceMinor: product.price * 100,
+      currency: "UAH",
+      image: source.expectedFile,
+      imageKind: "product",
+      inStock: product.inStock,
+      status: "active",
+      verificationStatus: "verified",
+    });
+    if (!normalized.success) {
+      blockers.push(`${product.id}:normalized-product-invalid`);
+      continue;
+    }
+    prepared.push({ id: product.id, content: normalized.data });
+  }
+
+  for (const source of imageSources) {
+    if (!productById.has(source.productId)) {
+      blockers.push(`${source.productId}:orphan-source-manifest-entry`);
+    }
+  }
+
+  if (blockers.length > 0 || prepared.length !== EXPECTED_PRODUCT_COUNT) {
+    const blockerLines = blockers.map((blocker) => `- ${blocker}`).join("\n");
+    throw new Error(
+      `Product generation is blocked until all ${EXPECTED_PRODUCT_COUNT} exact-model assets and publication rights are verified.\n${blockerLines}`,
+    );
+  }
+  return prepared.sort((left, right) => left.id.localeCompare(right.id));
 }
 
 function serializeJson(value: unknown): string {
@@ -443,155 +350,92 @@ function writeAtomicIfChanged(filePath: string, content: string): boolean {
   if (fs.existsSync(filePath) && fs.readFileSync(filePath, "utf8") === content) {
     return false;
   }
-
   fs.mkdirSync(path.dirname(filePath), { recursive: true });
   const temporary = path.join(
     path.dirname(filePath),
-    `.${path.basename(filePath)}.${process.pid}.tmp`,
+    `.${path.basename(filePath)}.${process.pid}.${randomBytes(6).toString("hex")}.tmp`,
   );
-
   try {
-    fs.writeFileSync(temporary, content, { encoding: "utf8", mode: 0o644 });
+    fs.writeFileSync(temporary, content, { encoding: "utf8", mode: 0o644, flag: "wx" });
     fs.renameSync(temporary, filePath);
   } finally {
     if (fs.existsSync(temporary)) fs.unlinkSync(temporary);
   }
-
   return true;
 }
 
-function verifyWrittenCatalog(generatedFiles: readonly string[]): void {
-  for (const filename of generatedFiles) {
-    const filePath = path.join(TARGET_DIR, filename);
-    const parsedProduct = parseJsonUnknown(
-      fs.readFileSync(filePath, "utf8"),
-      filePath,
-    );
-    const result = productSchema.safeParse(parsedProduct);
-
-    if (!result.success) {
-      throw new Error(
-        `Generated product ${filename} failed verification:\n${formatZodError(result.error)}`,
-      );
-    }
-
-    if (!isValidPublicImage(result.data.image)) {
-      throw new Error(
-        `Generated product ${filename} references an invalid image: ${result.data.image}`,
-      );
-    }
-  }
-}
-
-function compileProducts(): CompilerStats {
-  const cliArguments = process.argv.slice(2);
-  if (cliArguments.length > 0) {
+function compileProducts(): void {
+  const argumentsAfterScript = process.argv.slice(2);
+  if (argumentsAfterScript.length > 0) {
     throw new Error(
-      `Unsupported seed argument(s): ${cliArguments.join(" ")}. Missing exact images are handled only by labeled editorial fallbacks, never by an allow-missing flag.`,
+      `Unsupported argument(s): ${argumentsAfterScript.join(" ")}. There is no allow-missing or fallback mode.`,
     );
   }
+  const prepared = prepareProducts();
+  const ownedFiles = readOwnedGeneratedFiles();
+  const nextFiles = prepared.map(({ id }) => `${id}.json`);
 
-  const sourceProducts = readSourceCatalog();
-  const approvedImages = readApprovedExactImages();
-  const normalizedProducts = sourceProducts.map((product) =>
-    normalizeProduct(product, approvedImages),
-  );
-  const productsById = new Map<string, NormalizedProduct>();
-
-  for (const normalizedProduct of normalizedProducts) {
-    if (productsById.has(normalizedProduct.id)) {
-      throw new Error(`Duplicate canonical product ID: ${normalizedProduct.id}`);
-    }
-    productsById.set(normalizedProduct.id, normalizedProduct);
-  }
-
-  const sortedProducts = [...productsById.values()].sort((left, right) =>
-    left.id.localeCompare(right.id),
-  );
-  const generatedFiles = sortedProducts.map(({ id }) => `${id}.json`);
-  const ownedGeneratedFiles = readOwnedGeneratedFiles();
-
-  for (const filename of generatedFiles) {
-    const filePath = path.join(TARGET_DIR, filename);
-    if (fs.existsSync(filePath) && !ownedGeneratedFiles.has(filename)) {
-      throw new Error(
-        `Seed output would overwrite a non-seed-owned file: ${filePath}`,
-      );
+  for (const filename of nextFiles) {
+    const destination = path.join(TARGET_DIR, filename);
+    if (fs.existsSync(destination) && !ownedFiles.has(filename)) {
+      throw new Error(`Refusing to overwrite non-seed-owned product: ${destination}`);
     }
   }
 
-  let filesCreatedOrUpdated = 0;
+  let filesChanged = 0;
   let filesUnchanged = 0;
-
-  for (const { id, product } of sortedProducts) {
+  for (const product of prepared) {
     const changed = writeAtomicIfChanged(
-      path.join(TARGET_DIR, `${id}.json`),
-      serializeJson(product),
+      path.join(TARGET_DIR, `${product.id}.json`),
+      serializeJson(product.content),
     );
-    if (changed) filesCreatedOrUpdated += 1;
+    if (changed) filesChanged += 1;
     else filesUnchanged += 1;
   }
 
-  const nextGeneratedFileSet = new Set(generatedFiles);
+  const nextSet = new Set(nextFiles);
   let staleGeneratedFilesRemoved = 0;
-  for (const staleFilename of ownedGeneratedFiles) {
-    if (nextGeneratedFileSet.has(staleFilename)) continue;
-
-    const staleFilePath = path.join(TARGET_DIR, staleFilename);
-    if (fs.existsSync(staleFilePath)) {
-      fs.unlinkSync(staleFilePath);
+  for (const filename of ownedFiles) {
+    if (nextSet.has(filename)) continue;
+    const stalePath = path.join(TARGET_DIR, filename);
+    if (fs.existsSync(stalePath)) {
+      fs.unlinkSync(stalePath);
       staleGeneratedFilesRemoved += 1;
     }
   }
 
   writeAtomicIfChanged(
-    MANIFEST_FILE,
-    serializeJson({ version: 1, generatedFiles }),
+    GENERATED_MANIFEST_FILE,
+    serializeJson({ version: 1, generatedFiles: nextFiles }),
   );
-  verifyWrittenCatalog(generatedFiles);
 
   const categoryCounts: Record<ProductCategory, number> = {
     lenses: 0,
+    care: 0,
     frames: 0,
     sunglasses: 0,
-    care: 0,
   };
-  for (const { product } of sortedProducts) {
-    categoryCounts[product.category] += 1;
-  }
-
-  const requestedImageExistsCount = normalizedProducts.filter(
-    ({ imageResolution }) => imageResolution.requestedImageExists,
-  ).length;
-
-  return {
-    expectedSeedRecordCount: EXPECTED_SEED_COUNT,
-    sourceRecordCount: sourceProducts.length,
-    validRecordCount: normalizedProducts.length,
-    uniqueRecordCount: productsById.size,
-    generatedRecordCount: generatedFiles.length,
-    requestedImageExistsCount,
-    requestedImageMissingCount:
-      normalizedProducts.length - requestedImageExistsCount,
-    approvedExactImageCount: normalizedProducts.filter(
-      ({ imageResolution }) => imageResolution.usedApprovedExactImage,
-    ).length,
-    editorialImageFallbackCount: normalizedProducts.filter(
-      ({ imageResolution }) => imageResolution.usedEditorialFallback,
-    ).length,
-    invalidGeneratedImageCount: 0,
-    filesCreatedOrUpdated,
-    filesUnchanged,
-    staleGeneratedFilesRemoved,
-    categoryCounts,
-  };
+  for (const product of prepared) categoryCounts[product.content.category] += 1;
+  console.log(
+    JSON.stringify(
+      {
+        canonicalProducts: prepared.length,
+        exactProductImages: prepared.length,
+        categoryFallbacks: 0,
+        filesChanged,
+        filesUnchanged,
+        staleGeneratedFilesRemoved,
+        categoryCounts,
+      },
+      null,
+      2,
+    ),
+  );
 }
 
 try {
-  const stats = compileProducts();
-  console.log(JSON.stringify(stats, null, 2));
+  compileProducts();
 } catch (error) {
-  const message = error instanceof Error ? error.message : "Unknown seed error";
-  console.error(message);
+  console.error(error instanceof Error ? error.message : "Unexpected seed failure");
   process.exitCode = 1;
 }

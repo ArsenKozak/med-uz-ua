@@ -15,6 +15,7 @@ import {
   formatMedicalPrice,
   formatMedicalPriceApprovalDate,
   getMedicalServiceDisplayName,
+  getMedicalServiceDisplayNote,
   usesOfficialUkrainianNameFallback,
 } from "../../lib/medical-prices";
 
@@ -304,9 +305,9 @@ const physicianCopy = physicianCollageCopy[locale];
                         </span>
                       </span>
                       {
-                        item.noteUk && (
+                        getMedicalServiceDisplayNote(item, locale) && (
                           <span class="mt-1 block break-words pl-10 text-xs font-normal leading-5 text-muted-foreground">
-                            {item.noteUk}
+                            {getMedicalServiceDisplayNote(item, locale)}
                           </span>
                         )
                       }

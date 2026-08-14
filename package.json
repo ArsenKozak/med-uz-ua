@@ -12,6 +12,7 @@
     "start": "astro dev",
     "build": "astro build",
     "preview": "astro preview",
+    "fetch:product-images": "node scripts/fetch-product-images.ts",
     "seed:products": "node scripts/seed-products.ts",
     "report:product-images": "node scripts/generate-product-image-coverage.ts",
     "validate:prices": "node scripts/validate-medical-prices.ts",

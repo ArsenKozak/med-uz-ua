@@ -6,6 +6,14 @@ import {
   medicalPriceItemSchema,
   medicalPriceListMetaSchema,
 } from "../src/schemas/medical-price.ts";
+import {
+  MEDICAL_SERVICE_NOTE_TRANSLATIONS,
+  MEDICAL_SERVICE_TRANSLATIONS,
+} from "../src/lib/medical-prices.ts";
+import { en } from "../src/lib/i18n/dictionaries/en.ts";
+import { hu } from "../src/lib/i18n/dictionaries/hu.ts";
+import { sk } from "../src/lib/i18n/dictionaries/sk.ts";
+import { uk } from "../src/lib/i18n/dictionaries/uk.ts";
 import type {
   MedicalUiCategory,
   OfficialPriceSection,
@@ -19,6 +27,22 @@ const EXPECTED_IDS = [
 ] as const;
 const REMOVED_IDS = [34, 35, 36, 37] as const;
 const EXPECTED_ITEM_COUNT = EXPECTED_IDS.length;
+const LOCALIZED_LOCALES = ["en", "sk", "hu"] as const;
+const DICTIONARIES = { uk, en, sk, hu } as const;
+const REMOVED_TRANSLATION_KEYS = [
+  "services.groupTherapy",
+  "services.itemParabulbar",
+  "services.itemSubconjunctival",
+] as const;
+const ACTIVE_GROUP_TRANSLATION_KEYS = [
+  "services.groupConsultations",
+  "services.groupDiagnostics",
+  "services.groupOptics",
+  "services.groupProcedures",
+  "services.groupLaboratory",
+] as const;
+const REMOVED_MEDICAL_TEXT_PATTERN =
+  /(?:parabul|subconj|парабул|субкон|космет|cosmet|kozmet|ін[’'ʼ]?єкції та терап|injections?\s*(?:&|and)\s*therapy|injekcie a terapia|injekciók és terápia)/iu;
 
 const EXPECTED_PRICES_UAH: readonly number[] = [
   800, 700, 700, 700, 600, 600, 200, 200, 200, 300,
@@ -229,6 +253,107 @@ if (!itemsResult.success) {
       );
     }
   }
+
+  const canonicalIdSignature = EXPECTED_IDS.join(",");
+  const localeIdSignatures = {
+    uk: items.map(({ id }) => id).join(","),
+    en: items.map(({ id }) => id).join(","),
+    sk: items.map(({ id }) => id).join(","),
+    hu: items.map(({ id }) => id).join(","),
+  } as const;
+
+  for (const [locale, signature] of Object.entries(localeIdSignatures)) {
+    if (signature !== canonicalIdSignature) {
+      validationErrors.push(
+        `${locale.toUpperCase()} medical-service ID set differs from the canonical 36-ID set.`,
+      );
+    }
+  }
+
+  for (const item of items) {
+    if (REMOVED_MEDICAL_TEXT_PATTERN.test(item.officialNameUk) && item.id !== 28) {
+      validationErrors.push(
+        `Canonical medical item ${item.id} contains removed injection/cosmetology wording: ${JSON.stringify(item.officialNameUk)}.`,
+      );
+    }
+
+    const translations = MEDICAL_SERVICE_TRANSLATIONS[item.id as keyof typeof MEDICAL_SERVICE_TRANSLATIONS];
+    for (const locale of LOCALIZED_LOCALES) {
+      const translatedName = translations[locale];
+      if (translatedName.trim().length === 0) {
+        validationErrors.push(
+          `Missing ${locale.toUpperCase()} medical translation for ID ${item.id}.`,
+        );
+      }
+      if (
+        REMOVED_MEDICAL_TEXT_PATTERN.test(translatedName) &&
+        item.id !== 28
+      ) {
+        validationErrors.push(
+          `${locale.toUpperCase()} medical translation for ID ${item.id} contains removed injection/cosmetology wording: ${JSON.stringify(translatedName)}.`,
+        );
+      }
+    }
+
+    if (item.noteUk !== undefined) {
+      const noteTranslations = (MEDICAL_SERVICE_NOTE_TRANSLATIONS as Record<number, any>)[item.id];
+      for (const locale of LOCALIZED_LOCALES) {
+        const translatedNote = noteTranslations?.[locale];
+        if (translatedNote !== undefined && translatedNote.trim().length > 0) {
+          continue;
+        }
+        validationErrors.push(
+          `Missing ${locale.toUpperCase()} note translation for medical ID ${item.id}.`,
+        );
+      }
+    }
+  }
+}
+
+const canonicalDictionaryKeys = Object.keys(DICTIONARIES.uk).sort();
+for (const [locale, dictionary] of Object.entries(DICTIONARIES)) {
+  const dictionaryKeys = Object.keys(dictionary).sort();
+
+  if (
+    dictionaryKeys.length !== canonicalDictionaryKeys.length ||
+    dictionaryKeys.some(
+      (translationKey, index) =>
+        translationKey !== canonicalDictionaryKeys[index],
+    )
+  ) {
+    validationErrors.push(
+      `${locale.toUpperCase()} dictionary keys are not in parity with the Ukrainian dictionary.`,
+    );
+  }
+
+  for (const removedKey of REMOVED_TRANSLATION_KEYS) {
+    if (Object.prototype.hasOwnProperty.call(dictionary, removedKey)) {
+      validationErrors.push(
+        `${locale.toUpperCase()} dictionary still contains dead key ${removedKey}.`,
+      );
+    }
+  }
+
+  const groupKeys = dictionaryKeys.filter((key) =>
+    key.startsWith("services.group"),
+  );
+  const expectedGroupKeys = [...ACTIVE_GROUP_TRANSLATION_KEYS].sort();
+  if (
+    groupKeys.length !== expectedGroupKeys.length ||
+    groupKeys.some((key, index) => key !== expectedGroupKeys[index])
+  ) {
+    validationErrors.push(
+      `${locale.toUpperCase()} dictionary contains a missing or orphaned medical group key: ${groupKeys.join(", ")}.`,
+    );
+  }
+
+  for (const [translationKey, value] of Object.entries(dictionary)) {
+    if (REMOVED_MEDICAL_TEXT_PATTERN.test(value)) {
+      validationErrors.push(
+        `${locale.toUpperCase()} dictionary key ${translationKey} contains removed injection/cosmetology wording.`,
+      );
+    }
+  }
 }
 
 if (EXPECTED_PRICES_UAH.length !== EXPECTED_ITEM_COUNT) {
@@ -257,6 +382,6 @@ if (validationErrors.length > 0) {
   process.exitCode = 1;
 } else {
   console.log(
-    `Medical price validation passed: ${EXPECTED_ITEM_COUNT} retained canonical records matched; IDs 34–37 are absent and IDs 38–40 preserve their original numbering.`,
+    `Medical price validation passed: UK/SK/EN/HU each resolve the same ${EXPECTED_ITEM_COUNT} canonical IDs; IDs 34–37 and their dead translation keys are absent; IDs 38–40 preserve their original numbering; all localized names and notes are present.`,
   );
 }

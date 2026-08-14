@@ -5,6 +5,10 @@ import {
   MEDICAL_PRICE_ITEMS,
   MEDICAL_PRICE_LIST_META,
 } from "../src/data/medical-prices.ts";
+import {
+  MEDICAL_SERVICE_NOTE_TRANSLATIONS,
+  MEDICAL_SERVICE_TRANSLATIONS,
+} from "../src/lib/medical-prices.ts";
 import { productSchema } from "../src/schemas/product.ts";
 
 const PROJECT_ROOT = process.cwd();
@@ -53,6 +57,9 @@ const EXPECTED_PRICE_IDS = [
 ] as const;
 const REMOVED_PRICE_IDS = [34, 35, 36, 37] as const;
 const EXPECTED_PRICE_COUNT = EXPECTED_PRICE_IDS.length;
+const LOCALIZED_MEDICAL_LOCALES = ["sk", "en", "hu"] as const;
+const REMOVED_MEDICAL_TEXT_PATTERN =
+  /(?:parabul|subconj|парабул|субкон|космет|cosmet|kozmet|ін[’'ʼ]?єкції та терап|injections?\s*(?:&|and)\s*therapy|injekcie a terapia|injekciók és terápia)/iu;
 
 const EXPECTED_PRICES_UAH: readonly number[] = [
   800, 700, 700, 700, 600, 600, 200, 200, 200, 300, 400, 300, 200, 300,
@@ -441,6 +448,41 @@ function verifyMedicalPrices(): void {
     }
   }
 
+  for (const item of MEDICAL_PRICE_ITEMS) {
+    const translations = MEDICAL_SERVICE_TRANSLATIONS[item.id];
+
+    for (const locale of LOCALIZED_MEDICAL_LOCALES) {
+      const translatedName = translations[locale];
+      if (translatedName.trim().length === 0) {
+        fail(
+          "prices",
+          `Missing ${locale.toUpperCase()} medical translation for ID ${item.id}.`,
+        );
+      }
+      if (
+        item.id !== 28 &&
+        REMOVED_MEDICAL_TEXT_PATTERN.test(translatedName)
+      ) {
+        fail(
+          "prices",
+          `${locale.toUpperCase()} medical translation for ID ${item.id} retains removed therapy wording.`,
+        );
+      }
+    }
+
+    if ("noteUk" in item && (item as any).noteUk !== undefined) {
+      const noteTranslations = MEDICAL_SERVICE_NOTE_TRANSLATIONS[item.id];
+      for (const locale of LOCALIZED_MEDICAL_LOCALES) {
+        if (!noteTranslations?.[locale]?.trim()) {
+          fail(
+            "prices",
+            `Missing ${locale.toUpperCase()} medical note translation for ID ${item.id}.`,
+          );
+        }
+      }
+    }
+  }
+
   const verifyMetadataValue = (
     key: string,
     actualValue: string,
@@ -731,6 +773,12 @@ function verifyRoutesAndPrices(): Map<string, string> {
           `${routePublicPath(locale, "services")} still renders removed data-medical-price-id=${removedId}.`,
         );
       }
+    }
+    if (REMOVED_MEDICAL_TEXT_PATTERN.test(servicesHtml)) {
+      fail(
+        "prices",
+        `${routePublicPath(locale, "services")} still renders removed injection/cosmetology wording.`,
+      );
     }
   }
 
