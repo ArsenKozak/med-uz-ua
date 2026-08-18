@@ -4,6 +4,8 @@ import type { Locale } from "../../lib/i18n";
 
 interface Props {
   locale?: Locale;
+  tone?: "light" | "dark" | string;
+  compact?: boolean;
 }
 
 const { locale } = Astro.props;

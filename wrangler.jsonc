@@ -19,7 +19,8 @@
 	"kv_namespaces": [
 		{
 			"binding": "SESSION",
-			"id": "session_kv_placeholder"
+			"id": "dfc104c9f9724f6786fa8fc52f8682cc",
+			"remote": true
 		}
 	],
 	"observability": {
