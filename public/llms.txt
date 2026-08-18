@@ -1,0 +1,10 @@
+# Med.uz.ua — European Clinic
+
+> Офтальмологічна клініка та магазин оптики в Ужгороді, Україна.
+
+## Основні розділи
+
+- [Головна](https://med.uz.ua/)
+- [Послуги](https://med.uz.ua/services)
+- [Магазин](https://med.uz.ua/shop)
+- [Контакти](https://med.uz.ua/contacts)
