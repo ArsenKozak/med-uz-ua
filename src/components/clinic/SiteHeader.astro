@@ -32,7 +32,6 @@ const brandHomeLabel = {
   hu: "European Ophthalmological Clinic — kezdőlap",
 } as const;
 
-// Флаг для вмикання спеціальних програм за потреби
 const SHOW_SPECIAL_PROGRAMS = false;
 
 const headerNavigation: readonly NavigationItem[] = [
@@ -86,9 +85,9 @@ const initialCartLabel = t(locale, "a11y.openCartMany").replace(
   data-site-header
   data-scrolled="false"
 >
-  <Container class="flex h-20 items-center justify-between gap-2 transition-[height] duration-200 group-data-[scrolled=true]:h-16 xl:gap-4">
+  <Container class="flex h-20 items-center justify-between gap-3 transition-[height] duration-200 group-data-[scrolled=true]:h-16 xl:gap-5">
     <a
-      class="focus-ring-primary inline-flex min-h-11 min-w-0 shrink items-center gap-2.5 text-primary sm:gap-3"
+      class="focus-ring-primary inline-flex min-h-12 min-w-0 shrink items-center gap-2.5 text-primary sm:gap-3.5"
       href={localizePath("/", locale)}
       aria-label={brandHomeLabel[locale]}
       data-logo-mark
@@ -101,15 +100,15 @@ const initialCartLabel = t(locale, "a11y.openCartMany").replace(
         height={brandImageAssets.legacyClinicMark.height}
         loading="eager"
         decoding="async"
-        class="h-8 w-auto shrink-0 object-contain sm:h-9"
+        class="h-9 w-auto shrink-0 object-contain sm:h-10"
       />
       <ClinicWordmark compact />
     </a>
 
-    <div class="flex min-w-0 shrink-0 items-center gap-1.5 sm:gap-2 xl:gap-3">
+    <div class="flex min-w-0 shrink-0 items-center gap-2 sm:gap-2.5 xl:gap-3.5">
       <!-- Десктопна навігація -->
       <nav class="hidden xl:block" aria-label={t(locale, "a11y.primaryNavigation")}>
-        <ul class="flex items-center gap-0.5">
+        <ul class="flex items-center gap-1">
           {
             headerNavigation.map((item) => {
               const isActive = isHeaderItemActive(item);
@@ -119,10 +118,10 @@ const initialCartLabel = t(locale, "a11y.openCartMany").replace(
                 <li>
                   <a
                     class:list={[
-                      "focus-ring-primary inline-flex min-h-11 items-center border-b-2 px-2 text-[0.8125rem] font-medium transition-colors duration-200 2xl:px-3 2xl:text-sm",
+                      "focus-ring-primary inline-flex min-h-12 items-center border-b-2 px-3 text-sm font-medium transition-colors duration-200 2xl:px-4 2xl:text-base",
                       isActive
                         ? "border-accent text-primary"
-                        : "border-transparent text-foreground/70 hover:border-border hover:text-primary",
+                        : "border-transparent text-foreground/75 hover:border-border hover:text-primary",
                     ]}
                     href={item.href}
                     aria-current={isCurrent ? "page" : undefined}
@@ -136,20 +135,22 @@ const initialCartLabel = t(locale, "a11y.openCartMany").replace(
         </ul>
       </nav>
 
+      <!-- Мовний перемикач -->
       <LanguageSwitcher locale={locale} currentPath={currentPath} />
 
+      <!-- Кнопка дзвінка -->
       <a
-        class="focus-ring-primary hidden size-11 shrink-0 items-center justify-center border border-border bg-card text-primary transition-colors hover:border-primary hover:bg-muted xl:inline-flex"
+        class="focus-ring-primary hidden size-12 2xl:size-[3.25rem] shrink-0 items-center justify-center rounded-xl border border-border/80 bg-card text-primary shadow-xs transition-all duration-200 hover:-translate-y-0.5 hover:border-primary hover:bg-primary hover:text-primary-foreground hover:shadow-md active:translate-y-0 xl:inline-flex"
         href={clinicContact.phoneHref}
         aria-label={t(locale, "a11y.callClinic", { phone: clinicContact.phoneDisplay })}
         title={clinicContact.phoneDisplay}
       >
         <svg
-          class="size-[1.125rem]"
+          class="size-5 2xl:size-6"
           viewBox="0 0 24 24"
           fill="none"
           stroke="currentColor"
-          stroke-width="1.5"
+          stroke-width="1.75"
           stroke-linecap="round"
           stroke-linejoin="round"
           aria-hidden="true"
@@ -160,7 +161,7 @@ const initialCartLabel = t(locale, "a11y.openCartMany").replace(
 
       <!-- Кнопка кошика -->
       <button
-        class="focus-ring-primary relative inline-flex size-11 shrink-0 items-center justify-center border border-border bg-card text-primary transition-colors duration-200 hover:bg-muted"
+        class="focus-ring-primary relative inline-flex size-12 2xl:size-[3.25rem] shrink-0 items-center justify-center rounded-xl border border-border/80 bg-card text-primary shadow-xs transition-all duration-200 hover:-translate-y-0.5 hover:border-primary hover:bg-muted hover:shadow-md active:translate-y-0"
         type="button"
         aria-label={initialCartLabel}
         aria-haspopup="dialog"
@@ -170,11 +171,11 @@ const initialCartLabel = t(locale, "a11y.openCartMany").replace(
         data-cart-label-many={t(locale, "a11y.openCartMany")}
       >
         <svg
-          class="size-5"
+          class="size-5.5 2xl:size-6"
           viewBox="0 0 24 24"
           fill="none"
           stroke="currentColor"
-          stroke-width="1.5"
+          stroke-width="1.75"
           stroke-linecap="round"
           stroke-linejoin="round"
           aria-hidden="true"
@@ -184,24 +185,24 @@ const initialCartLabel = t(locale, "a11y.openCartMany").replace(
           <path d="M9 8.25V6a3 3 0 0 1 6 0v2.25"></path>
         </svg>
         <span
-          class="absolute -right-1.5 -top-1.5 inline-flex min-h-5 min-w-5 items-center justify-center rounded-full bg-accent px-1 text-[0.65rem] font-bold leading-none text-primary"
+          class="absolute -right-1 -top-1 inline-flex min-h-5.5 min-w-5.5 items-center justify-center rounded-full bg-accent px-1.5 text-xs font-bold leading-none text-primary shadow-xs"
           data-cart-count
           aria-hidden="true"
         >0</span>
       </button>
 
+      <!-- Головна кнопка CTA -->
       <a
-        class="focus-ring-primary hidden min-h-11 shrink-0 items-center justify-center bg-primary px-3 text-center text-xs font-semibold text-primary-foreground transition-colors duration-200 hover:bg-primary/90 xl:inline-flex 2xl:px-5 2xl:text-sm"
+        class="focus-ring-primary hidden min-h-12 2xl:min-h-[3.25rem] shrink-0 items-center justify-center rounded-xl bg-primary px-5 xl:px-6 2xl:px-8 text-center text-sm font-semibold text-primary-foreground shadow-md shadow-primary/15 transition-all duration-200 hover:-translate-y-0.5 hover:bg-primary/95 hover:shadow-lg hover:shadow-primary/25 active:translate-y-0 xl:inline-flex 2xl:text-base"
         href={bookingHref}
       >
-        <span class="2xl:hidden">{t(locale, "actions.bookShort")}</span>
-        <span class="hidden 2xl:inline">{t(locale, "actions.bookConsultation")}</span>
+        <span>{t(locale, "actions.bookConsultation")}</span>
       </a>
 
-      <!-- Кнопка відкриття мобільного меню (Burger) -->
+      <!-- Бургер -->
       <button
         type="button"
-        class="focus-ring-primary inline-flex size-11 items-center justify-center border border-border bg-card text-primary transition-colors duration-200 hover:bg-muted xl:hidden"
+        class="focus-ring-primary inline-flex size-12 items-center justify-center rounded-xl border border-border bg-card text-primary shadow-xs transition-colors duration-200 hover:bg-muted xl:hidden"
         aria-label={t(locale, "a11y.toggleNavigation")}
         aria-expanded="false"
         aria-controls="mobile-navigation-drawer"
@@ -209,11 +210,11 @@ const initialCartLabel = t(locale, "a11y.openCartMany").replace(
         data-mobile-menu-trigger
       >
         <svg
-          class="size-5"
+          class="size-6"
           viewBox="0 0 24 24"
           fill="none"
           stroke="currentColor"
-          stroke-width="1.75"
+          stroke-width="2"
           stroke-linecap="round"
           stroke-linejoin="round"
           aria-hidden="true"
@@ -224,10 +225,10 @@ const initialCartLabel = t(locale, "a11y.openCartMany").replace(
     </div>
   </Container>
 
-  <!-- Преміальний Concierge Slide-over Drawer для мобільних -->
+  <!-- Мобільне меню -->
   <div
     id="mobile-navigation-drawer"
-    class="fixed inset-0 z-50 hidden transition-opacity duration-300"
+    class="fixed inset-0 z-[9999] hidden h-[100dvh] w-screen"
     role="dialog"
     aria-modal="true"
     aria-label={t(locale, "a11y.mobileNavigation")}
@@ -235,17 +236,17 @@ const initialCartLabel = t(locale, "a11y.openCartMany").replace(
   >
     <!-- Затемнення фону -->
     <div
-      class="fixed inset-0 bg-primary/70 backdrop-blur-sm transition-opacity duration-300 opacity-0"
+      class="fixed inset-0 bg-black/75 backdrop-blur-xs transition-opacity duration-300 opacity-0"
       data-drawer-backdrop
     ></div>
 
-    <!-- Виїзна панель меню -->
+    <!-- Виїзна панель меню (100% непрозорий моноліт) -->
     <aside
-      class="fixed inset-y-0 right-0 flex w-full max-w-sm flex-col justify-between border-l border-primary-foreground/15 bg-primary p-6 text-primary-foreground shadow-2xl transition-transform duration-300 ease-out translate-x-full sm:max-w-md sm:p-8"
+      class="fixed inset-y-0 right-0 z-10 flex h-[100dvh] w-full max-w-sm flex-col justify-between border-l border-white/10 p-6 text-white shadow-2xl transition-transform duration-300 ease-out translate-x-full sm:max-w-md sm:p-8 overflow-y-auto"
       data-drawer-panel
+      style="background-color: #062c30 !important; opacity: 1 !important;"
     >
-      <!-- Верхній рядок: бренд + кнопка закриття -->
-      <div class="flex items-center justify-between border-b border-primary-foreground/15 pb-5">
+      <div class="flex items-center justify-between border-b border-white/10 pb-5 shrink-0">
         <div class="flex items-center gap-3 min-w-0 pr-2">
           <img
             src="/favicon.svg"
@@ -253,26 +254,25 @@ const initialCartLabel = t(locale, "a11y.openCartMany").replace(
             aria-hidden="true"
             class="size-7 shrink-0 object-contain"
           />
-          <span class="font-serif text-xs sm:text-sm font-medium tracking-wide text-primary-foreground line-clamp-2">
+          <span class="font-serif text-xs sm:text-sm font-medium tracking-wide text-white line-clamp-2">
             Європейська офтальмологічна клініка
           </span>
         </div>
 
         <button
           type="button"
-          class="flex size-10 items-center justify-center rounded-full border border-primary-foreground/20 text-primary-foreground/80 transition-colors hover:border-accent hover:bg-accent hover:text-foreground focus:outline-none focus-visible:ring-2 focus-visible:ring-accent"
+          class="flex size-11 items-center justify-center rounded-full border border-white/20 text-white transition-colors hover:border-accent hover:bg-accent hover:text-[#062c30] focus:outline-none"
           data-drawer-close
           aria-label="Закрити меню"
         >
-          <svg class="size-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.75">
+          <svg class="size-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
             <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
           </svg>
         </button>
       </div>
 
-      <!-- Список пунктів меню -->
-      <nav class="my-auto py-6" aria-label={t(locale, "a11y.mobileNavigation")}>
-        <ul class="space-y-3">
+      <nav class="py-8 my-auto shrink-0" aria-label={t(locale, "a11y.mobileNavigation")}>
+        <ul class="space-y-4">
           {
             headerNavigation.map((item, index) => {
               const isActive = isHeaderItemActive(item);
@@ -282,20 +282,20 @@ const initialCartLabel = t(locale, "a11y.openCartMany").replace(
                 <li>
                   <a
                     class:list={[
-                      "group flex min-h-14 items-center justify-between border-b border-primary-foreground/10 px-2 py-3 transition-colors duration-200",
+                      "group flex min-h-12 items-center justify-between border-b border-white/10 px-2 py-3 transition-colors duration-200",
                       isActive
                         ? "text-accent"
-                        : "text-primary-foreground/85 hover:text-accent",
+                        : "text-white/90 hover:text-accent",
                     ]}
                     href={item.href}
                     aria-current={isCurrent ? "page" : undefined}
                     data-drawer-link
                   >
                     <div class="flex items-baseline gap-3">
-                      <span class="text-[0.7rem] font-semibold tabular-nums tracking-widest text-primary-foreground/40 group-hover:text-accent">
+                      <span class="text-xs font-semibold tabular-nums tracking-widest text-white/40 group-hover:text-accent">
                         {String(index + 1).padStart(2, "0")}
                       </span>
-                      <span class="font-serif text-xl sm:text-2xl font-medium tracking-tight">
+                      <span class="font-serif text-2xl font-medium tracking-tight">
                         {item.label}
                       </span>
                     </div>
@@ -317,21 +317,20 @@ const initialCartLabel = t(locale, "a11y.openCartMany").replace(
         </ul>
       </nav>
 
-      <!-- Нижня частина: швидкі дії та контакти клініки -->
-      <div class="space-y-3 border-t border-primary-foreground/15 pt-5">
+      <div class="space-y-3 border-t border-white/10 pt-6 shrink-0">
         <a
-          class="flex min-h-12 items-center justify-center gap-2.5 rounded-sm border border-primary-foreground/30 px-4 text-center text-sm font-semibold text-primary-foreground transition-colors hover:border-accent hover:text-accent"
+          class="flex min-h-12 items-center justify-center gap-2.5 rounded-xl border border-white/20 px-4 text-center text-sm font-semibold text-white transition-colors hover:border-accent hover:text-accent"
           href={clinicContact.phoneHref}
           data-drawer-link
         >
-          <svg class="size-4 text-accent" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75">
+          <svg class="size-4 text-accent" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
             <path stroke-linecap="round" stroke-linejoin="round" d="M8.3 3.5 10.1 8 7.8 9.7a15 15 0 0 0 6.5 6.5l1.7-2.3 4.5 1.8v3.4a1.4 1.4 0 0 1-1.4 1.4A15.6 15.6 0 0 1 3.5 4.9a1.4 1.4 0 0 1 1.4-1.4h3.4Z"></path>
           </svg>
           <span>{clinicContact.phoneDisplay}</span>
         </a>
 
         <a
-          class="flex min-h-13 w-full items-center justify-center rounded-sm bg-primary-foreground px-5 text-center text-sm font-semibold text-primary transition-colors hover:bg-accent hover:text-foreground"
+          class="flex min-h-13 w-full items-center justify-center rounded-xl bg-white px-5 text-center text-sm font-semibold text-[#062c30] shadow-md transition-all duration-200 hover:bg-accent hover:text-[#062c30] active:scale-98"
           href={bookingHref}
           data-drawer-link
         >
@@ -346,7 +345,6 @@ const initialCartLabel = t(locale, "a11y.openCartMany").replace(
   import { $cartCount } from "../../store/cart";
 
   function initHeaderAndDrawer() {
-    // 1. Scroll State
     const header = document.querySelector<HTMLElement>("[data-site-header]");
     if (header && header.dataset.scrollBound !== "true") {
       header.dataset.scrollBound = "true";
@@ -367,7 +365,6 @@ const initialCartLabel = t(locale, "a11y.openCartMany").replace(
       window.addEventListener("scroll", scheduleScrollState, { passive: true });
     }
 
-    // 2. Concierge Mobile Drawer
     const trigger = document.querySelector<HTMLButtonElement>("[data-mobile-menu-trigger]");
     const drawer = document.querySelector<HTMLElement>("[data-mobile-drawer]");
     const backdrop = document.querySelector<HTMLElement>("[data-drawer-backdrop]");
@@ -377,55 +374,58 @@ const initialCartLabel = t(locale, "a11y.openCartMany").replace(
 
     if (!trigger || !drawer || !backdrop || !panel) return;
 
-    const menuTrigger = trigger;
-    const menuDrawer = drawer;
-    const menuBackdrop = backdrop;
-    const menuPanel = panel;
+    // Телепортуємо дровер безпосередньо в <body>, щоб вийти з CSS-пастки хедера
+    if (drawer.parentElement !== document.body) {
+      document.body.appendChild(drawer);
+    }
 
     function openMenu() {
-      if (drawer && backdrop && panel && trigger) {
-        menuDrawer.classList.remove("hidden");
-        menuBackdrop.classList.remove("opacity-0");
-        menuBackdrop.classList.add("opacity-100");
-        menuPanel.classList.remove("translate-x-full");
-        menuPanel.classList.add("translate-x-0");
-        menuTrigger.setAttribute("aria-expanded", "true");
-      }
-      document.documentElement.style.overflow = "hidden";
-      closeBtn?.focus();
+      if (!drawer || !backdrop || !panel) return;
+      drawer.classList.remove("hidden");
+      
+      // Примусовий reflow перед запуском CSS-анімації
+      void drawer.offsetWidth;
+
+      backdrop.classList.remove("opacity-0");
+      backdrop.classList.add("opacity-100");
+      panel.classList.remove("translate-x-full");
+      panel.classList.add("translate-x-0");
+
+      trigger?.setAttribute("aria-expanded", "true");
+      document.body.style.overflow = "hidden";
+      closeBtn?.focus({ preventScroll: true });
     }
 
     function closeMenu() {
-      menuBackdrop.classList.remove("opacity-100");
-      menuBackdrop.classList.add("opacity-0");
-      menuPanel.classList.remove("translate-x-0");
-      menuPanel.classList.add("translate-x-full");
+      if (!drawer || !backdrop || !panel) return;
+      backdrop.classList.remove("opacity-100");
+      backdrop.classList.add("opacity-0");
+      panel.classList.remove("translate-x-0");
+      panel.classList.add("translate-x-full");
 
       setTimeout(() => {
-        menuDrawer.classList.add("hidden");
-        document.documentElement.style.overflow = "";
+        drawer.classList.add("hidden");
+        document.body.style.overflow = "";
       }, 300);
 
-      menuTrigger.setAttribute("aria-expanded", "false");
-      menuTrigger.focus();
+      trigger?.setAttribute("aria-expanded", "false");
     }
 
-    trigger.addEventListener("click", openMenu);
-    closeBtn?.addEventListener("click", closeMenu);
-    backdrop.addEventListener("click", closeMenu);
+    trigger.onclick = openMenu;
+    if (closeBtn) closeBtn.onclick = closeMenu;
+    backdrop.onclick = closeMenu;
 
     drawerLinks.forEach((link) => {
-      link.addEventListener("click", closeMenu);
+      link.onclick = closeMenu;
     });
 
     window.addEventListener("keydown", (event) => {
-      if (event.key === "Escape" && !menuDrawer.classList.contains("hidden")) {
+      if (event.key === "Escape" && !drawer.classList.contains("hidden")) {
         closeMenu();
       }
     });
   }
 
-  // Cart Count Subscriber
   const countElements = document.querySelectorAll<HTMLElement>("[data-cart-count]");
   const cartTriggers = document.querySelectorAll<HTMLButtonElement>("button[data-cart-trigger]");
 

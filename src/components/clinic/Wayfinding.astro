@@ -40,8 +40,8 @@ const localizedImageCopy = {
       "Орієнтир біля АТБ із нанесеними підказками до входу",
     ],
     caption: [
-      "Головний орієнтир: фасад сучасної будівлі поруч із супермаркетом АТБ. Вхідні двері розташовані одразу ліворуч від вивіски.",
-      "Вхід до медичного центру: заходьте через скляні двері та піднімайтеся на 2-й поверх — на вас чекає рецепція клініки.",
+      "Головний орієнтир: фасад будівлі біля супермаркету АТБ. Вхідні двері розташовані одразу ліворуч від вивіски.",
+      "Вхід до клініки: заходьте через скляні двері та піднімайтеся на 2-й поверх до рецепції.",
     ],
   },
   en: {
@@ -50,8 +50,8 @@ const localizedImageCopy = {
       "ATB landmark with directional clues to the entrance",
     ],
     caption: [
-      "Main landmark: the modern building facade right next to ATB supermarket. The entrance is located immediately to the left.",
-      "Clinic entrance: step through the glass entrance doors and head up to the 2nd floor where our reception awaits you.",
+      "Main landmark: the modern building facade right next to ATB. The entrance is located immediately to the left.",
+      "Clinic entrance: step through the glass doors and head up to the 2nd floor reception.",
     ],
   },
   sk: {
@@ -60,8 +60,8 @@ const localizedImageCopy = {
       "Orientačný bod ATB so smerovými tipmi ku vchodu",
     ],
     caption: [
-      "Hlavný orientačný bod: fasáda budovy priamo vedľa supermarketu ATB. Vstupné dvere sa nachádzajú hneď naľavo od nápisu.",
-      "Vstup na kliniku: vojdite cez presklené dvere a vyjdite na 2. poschodie, kde vás privíta recepcia nášho centra.",
+      "Hlavný orientačný bod: fasáda budovy priamo vedľa supermarketu ATB. Vstupné dvere sú hneď naľavo.",
+      "Vstup na kliniku: vojdite cez presklené dvere a vyjdite na 2. poschodie k recepcii.",
     ],
   },
   hu: {
@@ -70,8 +70,8 @@ const localizedImageCopy = {
       "ATB tájékozódási pont a bejárathoz vezető jelzésekkel",
     ],
     caption: [
-      "Fő tájékozódási pont: az épület homlokzata közvetlenül az ATB szupermarket mellett. A bejárat a táblától balra található.",
-      "Klinika bejárata: lépjen be az üvegajtón, és menjen fel a 2. emeletre, ahol a klinika recepciója fogadja Önt.",
+      "Fő tájékozódási pont: az épület homlokzata közvetlenül az ATB szupermarket mellett.",
+      "Klinika bejárata: lépjen be az üvegajtón, és menjen fel a 2. emeleti recepcióra.",
     ],
   },
 } as const;
@@ -79,23 +79,25 @@ const localizedImageCopy = {
 const imageCopy = localizedImageCopy[locale];
 ---
 
-<div class="grid min-w-0 gap-8 lg:grid-cols-[minmax(0,0.82fr)_minmax(0,1.18fr)] lg:items-stretch">
+<div class="grid min-w-0 gap-8 lg:grid-cols-[minmax(0,0.85fr)_minmax(0,1.15fr)] lg:items-stretch">
   {
     images.length > 0 ? (
       <div class="grid min-w-0 gap-4 sm:grid-cols-2 lg:grid-cols-1 xl:grid-cols-2">
         {images.map((image, index) => (
-          <figure class="flex min-w-0 flex-col bg-muted">
-            <img
-              class="aspect-[3/4] h-auto w-full object-cover object-center"
-              src={image.src}
-              width={image.width}
-              height={image.height}
-              alt={imageCopy.alt[index] ?? imageCopy.alt[0]}
-              loading="lazy"
-              decoding="async"
-              sizes="(min-width: 1280px) 20vw, (min-width: 1024px) 40vw, (min-width: 640px) 48vw, 100vw"
-            />
-            <figcaption class="flex flex-1 flex-col justify-center border-x border-b border-border bg-card px-5 py-4 text-xs leading-relaxed text-muted-foreground">
+          <figure class="group flex min-w-0 flex-col overflow-hidden rounded-2xl border border-border/80 bg-card shadow-md transition-all duration-300 hover:shadow-xl hover:border-primary/40">
+            <div class="aspect-[3/4] w-full overflow-hidden bg-muted">
+              <img
+                class="size-full object-cover object-center transition-transform duration-500 ease-out group-hover:scale-105"
+                src={image.src}
+                width={image.width}
+                height={image.height}
+                alt={imageCopy.alt[index] ?? imageCopy.alt[0]}
+                loading="lazy"
+                decoding="async"
+                sizes="(min-width: 1280px) 20vw, (min-width: 1024px) 40vw, (min-width: 640px) 48vw, 100vw"
+              />
+            </div>
+            <figcaption class="flex flex-1 flex-col justify-center bg-card p-4 text-xs leading-relaxed text-muted-foreground border-t border-border/60">
               {imageCopy.caption[index] ?? imageCopy.caption[0]}
             </figcaption>
           </figure>
@@ -104,23 +106,24 @@ const imageCopy = localizedImageCopy[locale];
     ) : null
   }
 
-  <ol class="grid min-w-0 border-y border-border sm:grid-cols-2">
+  <!-- Список 4 кроків у вигляді стильних карток -->
+  <div class="grid min-w-0 gap-4 sm:grid-cols-2">
     {
       steps.map((step, index) => (
-        <li class="relative grid min-h-44 min-w-0 grid-cols-[3.25rem_minmax(0,1fr)] border-b border-border py-7 last:border-b-0 sm:min-h-52 sm:grid-cols-1 sm:border-r sm:px-7 sm:py-8 sm:[&:nth-child(2n)]:border-r-0 sm:[&:nth-last-child(-n+2)]:border-b-0 lg:min-h-56">
-          <span class="font-serif text-2xl tabular-nums text-primary/70 md:text-3xl">
-            {String(index + 1).padStart(2, "0")}
-          </span>
-          <div class="min-w-0 sm:self-end">
-            <h3 class="break-words text-xl font-medium leading-tight text-foreground">
+        <div class="flex flex-col justify-between rounded-2xl border border-border/80 bg-card p-6 shadow-xs transition-all duration-300 hover:border-primary/40 hover:shadow-md">
+          <div>
+            <span class="inline-flex size-8 items-center justify-center rounded-full bg-primary/10 text-xs font-bold tabular-nums text-primary">
+              {String(index + 1).padStart(2, "0")}
+            </span>
+            <h3 class="mt-4 font-serif text-xl font-medium leading-tight text-foreground">
               {t(locale, step.titleKey)}
             </h3>
-            <p class="mt-3 max-w-xs break-words text-sm leading-6 text-muted-foreground">
+            <p class="mt-2 text-sm leading-relaxed text-muted-foreground">
               {t(locale, step.bodyKey)}
             </p>
           </div>
-        </li>
+        </div>
       ))
     }
-  </ol>
+  </div>
 </div>

@@ -1,9 +1,7 @@
 ---
-import {
-  defaultLocale,
+import { defaultLocale,
     t,
-  type Locale,
-} from "../../lib/i18n";
+  type Locale, localizePath } from "../../lib/i18n";
 import { getActiveCartCatalogProducts } from "../../lib/cms";
 import { clinicContact } from "../../lib/clinic";
 
@@ -152,13 +150,13 @@ const copy = {
           <p class="mt-2 text-sm text-muted-foreground max-w-xs mx-auto">
             {copy.emptyDescription}
           </p>
-          <button
-            class="focus-ring-primary mt-6 inline-flex min-h-11 items-center justify-center rounded-sm bg-primary px-6 text-sm font-semibold text-primary-foreground transition-all hover:bg-primary/90"
-            type="button"
+          <a
+            href={localizePath("/shop", locale)}
+            class="focus-ring-primary mt-6 inline-flex min-h-12 items-center justify-center rounded-xl bg-primary px-7 text-sm font-semibold text-primary-foreground shadow-md transition-all duration-200 hover:-translate-y-0.5 hover:bg-primary/90 hover:shadow-lg active:translate-y-0"
             data-cart-close
           >
             {copy.continue}
-          </button>
+          </a>
         </div>
 
         <!-- Список карток товарів -->

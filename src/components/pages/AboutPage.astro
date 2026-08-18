@@ -37,151 +37,185 @@ const philosophyThemes: readonly CopyCard[] = [
   locale={locale}
 >
   <article>
+    <!-- Hero Header -->
     <header class="border-b border-primary-foreground/15 bg-primary text-primary-foreground">
-      <Container class="grid gap-12 py-16 sm:py-20 lg:grid-cols-12 lg:gap-16 lg:py-28">
-        <div class="lg:col-span-8">
-          <p class="text-xs font-semibold uppercase tracking-[0.24em] text-accent">
+      <Container class="grid gap-10 py-16 sm:py-20 lg:grid-cols-12 lg:gap-16 lg:py-24">
+        <div class="lg:col-span-7">
+          <span class="inline-flex items-center gap-2 rounded-full border border-accent/25 bg-accent/10 px-3.5 py-1 text-xs font-semibold uppercase tracking-[0.22em] text-accent">
+            <span class="size-1.5 rounded-full bg-accent animate-pulse" aria-hidden="true"></span>
             {t(locale, "about.clinicIdentity")}
-          </p>
-          <h1 class="mt-6 max-w-[12ch] text-balance text-[clamp(3rem,7vw,6.5rem)] font-medium leading-[0.94] tracking-[-0.04em]">
+          </span>
+          <h1 class="mt-6 text-balance font-serif text-4xl font-medium leading-[1.08] tracking-tight sm:text-5xl lg:text-6xl">
             {t(locale, "about.heroTitle")}
           </h1>
         </div>
 
-        <div class="border-t border-primary-foreground/20 pt-7 lg:col-span-4 lg:mt-auto">
-          <p class="max-w-lg font-serif text-2xl leading-snug text-primary-foreground/90 sm:text-3xl">
-            {t(locale, "about.heroQuote")}
+        <div class="flex flex-col justify-end border-t border-primary-foreground/20 pt-7 lg:col-span-5 lg:border-t-0 lg:border-l lg:border-primary-foreground/15 lg:pl-10 lg:pt-0">
+          <p class="font-serif text-xl leading-relaxed text-primary-foreground/90 sm:text-2xl">
+            "{t(locale, "about.heroQuote")}"
           </p>
-          <p class="mt-6 max-w-lg text-sm font-light leading-7 text-primary-foreground/70 sm:text-base">
+          <p class="mt-5 text-sm font-light leading-relaxed text-primary-foreground/75 sm:text-base">
             {t(locale, "about.heroIntro")}
           </p>
         </div>
       </Container>
     </header>
 
+    <!-- Головна лікарка та експертиза -->
     <section
-      class="border-b border-border bg-background py-20 sm:py-24 lg:py-32"
+      class="border-b border-border bg-background py-16 sm:py-20 lg:py-28"
       aria-labelledby="chief-physician-heading"
     >
-      <Container class="grid gap-12 lg:grid-cols-12 lg:items-start lg:gap-16">
+      <Container class="grid gap-12 lg:grid-cols-12 lg:items-center lg:gap-16">
+        <!-- Фотографія лікаря з м'якою тінню та скругленням -->
         <figure class="lg:col-span-5">
-          <div class="overflow-hidden bg-muted">
+          <div class="group relative overflow-hidden rounded-2xl border border-border/80 bg-muted/40 shadow-xl shadow-primary/5 transition-all duration-500 hover:shadow-2xl hover:shadow-primary/10 lg:rounded-3xl">
             <img
-              class="aspect-[4/5] h-full w-full object-cover object-center"
+              class="aspect-[4/5] size-full object-cover object-center transition-transform duration-700 ease-out group-hover:scale-[1.03]"
               src={siteImageAssets.miroslavaLeno.src}
               width={siteImageAssets.miroslavaLeno.width}
               height={siteImageAssets.miroslavaLeno.height}
               alt={t(locale, "about.portraitAlt")}
-              loading="lazy"
+              loading="eager"
               decoding="async"
               sizes="(min-width: 1024px) 38vw, 100vw"
             />
           </div>
-          <figcaption class="mt-4 text-xs font-semibold uppercase tracking-[0.16em] text-muted-foreground">
-            {t(locale, "clinic.chiefRole")}
-          </figcaption>
         </figure>
 
-        <div class="lg:col-span-7 lg:pt-8">
-          <p class="text-xs font-semibold uppercase tracking-[0.22em] text-primary">
+        <!-- Текстовий блок лікаря -->
+        <div class="flex flex-col justify-center lg:col-span-7">
+          <div class="inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.22em] text-primary">
+            <span class="size-2 rounded-full bg-primary" aria-hidden="true"></span>
             {t(locale, "about.doctorEyebrow")}
-          </p>
-          <p class="mt-5 max-w-sm text-sm leading-7 text-muted-foreground sm:text-base">
+          </div>
+
+          <h2
+            id="chief-physician-heading"
+            class="mt-4 font-serif text-3xl font-medium tracking-tight sm:text-4xl lg:text-5xl"
+          >
+            {t(locale, "clinic.chiefName")}
+          </h2>
+
+          <p class="mt-4 text-base leading-relaxed text-muted-foreground sm:text-lg">
             {t(locale, "about.doctorIntro")}
           </p>
-          <div class="border-y border-border py-8 sm:py-10">
-            <h2
-              id="chief-physician-heading"
-              class="max-w-3xl text-balance text-4xl font-medium leading-tight tracking-tight sm:text-5xl lg:text-6xl"
-            >
-              {t(locale, "clinic.chiefName")}
-            </h2>
 
-            <dl class="mt-10 grid gap-px border border-border bg-border sm:grid-cols-2">
-              <div class="bg-card p-6 sm:p-8">
-                <dt class="text-xs font-semibold uppercase tracking-[0.18em] text-muted-foreground">
-                  {t(locale, "about.roleLabel")}
-                </dt>
-                <dd class="mt-4 font-serif text-2xl text-card-foreground">
-                  {t(locale, "clinic.chiefRole")}
-                </dd>
-              </div>
-              <div class="bg-card p-6 sm:p-8">
-                <dt class="text-xs font-semibold uppercase tracking-[0.18em] text-muted-foreground">
-                  {t(locale, "about.experienceLabel")}
-                </dt>
-                <dd class="mt-4 font-serif text-2xl text-card-foreground">
-                  {t(locale, "clinic.chiefExperience")}
-                </dd>
-              </div>
-            </dl>
+          <!-- Картки характеристик -->
+          <dl class="mt-8 grid gap-4 sm:grid-cols-2">
+            <div class="rounded-2xl border border-border/80 bg-card p-5 sm:p-6 shadow-xs">
+              <dt class="text-xs font-semibold uppercase tracking-[0.18em] text-muted-foreground">
+                {t(locale, "about.roleLabel")}
+              </dt>
+              <dd class="mt-2 font-serif text-xl font-medium text-foreground sm:text-2xl">
+                {t(locale, "clinic.chiefRole")}
+              </dd>
+            </div>
+            <div class="rounded-2xl border border-border/80 bg-card p-5 sm:p-6 shadow-xs">
+              <dt class="text-xs font-semibold uppercase tracking-[0.18em] text-muted-foreground">
+                {t(locale, "about.experienceLabel")}
+              </dt>
+              <dd class="mt-2 font-serif text-xl font-medium text-primary sm:text-2xl">
+                {t(locale, "clinic.chiefExperience")}
+              </dd>
+            </div>
+          </dl>
+
+          <!-- Швидкі навігаційні кнопки -->
+          <div class="mt-8 flex flex-wrap items-center gap-3.5">
+            <a
+              class="inline-flex min-h-12 items-center justify-center gap-2 rounded-xl bg-primary px-6 text-sm font-semibold text-primary-foreground shadow-md shadow-primary/15 transition-all duration-200 hover:-translate-y-0.5 hover:bg-primary/95 hover:shadow-lg active:translate-y-0"
+              href={appointmentHref}
+            >
+              <span>{t(locale, "about.book")}</span>
+              <span class="text-accent" aria-hidden="true">→</span>
+            </a>
+
+            <a
+              class="inline-flex min-h-12 items-center justify-center gap-2 rounded-xl border border-border bg-card px-6 text-sm font-semibold text-foreground transition-all duration-200 hover:border-primary hover:bg-muted"
+              href={localizePath("/services", locale)}
+            >
+              <span>{t(locale, "nav.services")}</span>
+            </a>
+
+            <a
+              class="inline-flex min-h-12 items-center justify-center gap-2 rounded-xl border border-border bg-card px-6 text-sm font-semibold text-foreground transition-all duration-200 hover:border-primary hover:bg-muted"
+              href={localizePath("/shop", locale)}
+            >
+              <span>{t(locale, "nav.shop")}</span>
+            </a>
           </div>
         </div>
       </Container>
     </section>
 
+    <!-- Клінічні принципи -->
     <section
-      class="bg-muted py-20 sm:py-24 lg:py-32"
+      class="bg-muted/40 py-16 sm:py-20 lg:py-28 border-b border-border"
       aria-labelledby="philosophy-heading"
     >
       <Container>
         <div class="grid gap-10 lg:grid-cols-12 lg:gap-16">
           <div class="lg:col-span-4">
-            <p class="text-xs font-semibold uppercase tracking-[0.22em] text-primary">
+            <span class="text-xs font-semibold uppercase tracking-[0.22em] text-primary">
               {t(locale, "about.philosophyEyebrow")}
-            </p>
+            </span>
             <h2
               id="philosophy-heading"
-              class="mt-5 max-w-md text-balance text-4xl font-medium leading-tight tracking-tight sm:text-5xl"
+              class="mt-4 text-balance font-serif text-3xl font-medium tracking-tight sm:text-4xl"
             >
               {t(locale, "about.philosophyTitle")}
             </h2>
           </div>
 
-          <ol class="border-t border-border lg:col-span-8">
+          <div class="grid gap-4 sm:grid-cols-2 lg:col-span-8">
             {
               philosophyThemes.map((theme, index) => (
-                <li class="grid gap-5 border-b border-border py-7 sm:grid-cols-[3rem_1fr] sm:py-9">
-                  <span class="text-xs font-semibold tabular-nums tracking-[0.18em] text-primary/70">
-                    {String(index + 1).padStart(2, "0")}
-                  </span>
+                <div class="flex flex-col justify-between rounded-2xl border border-border/80 bg-card p-6 sm:p-7 shadow-xs transition-all duration-300 hover:border-primary/40 hover:shadow-md">
                   <div>
-                    <h3 class="text-2xl font-medium">{t(locale, theme.title)}</h3>
-                    <p class="mt-3 max-w-2xl text-sm leading-7 text-muted-foreground sm:text-base">
+                    <span class="text-xs font-bold tabular-nums tracking-widest text-primary/70">
+                      {String(index + 1).padStart(2, "0")}
+                    </span>
+                    <h3 class="mt-3 font-serif text-xl font-medium text-foreground">
+                      {t(locale, theme.title)}
+                    </h3>
+                    <p class="mt-2 text-sm leading-relaxed text-muted-foreground">
                       {t(locale, theme.body)}
                     </p>
                   </div>
-                </li>
+                </div>
               ))
             }
-          </ol>
+          </div>
         </div>
       </Container>
     </section>
 
-    <section class="bg-background py-20 sm:py-24 lg:py-32" aria-labelledby="credentials-heading">
+    <!-- Галерея сертифікатів -->
+    <section class="bg-background py-16 sm:py-20 lg:py-28" aria-labelledby="credentials-heading">
       <Container>
         <div class="max-w-3xl">
-          <p class="text-xs font-semibold uppercase tracking-[0.22em] text-primary">
+          <span class="text-xs font-semibold uppercase tracking-[0.22em] text-primary">
             {t(locale, "about.documentsEyebrow")}
-          </p>
+          </span>
           <h2
             id="credentials-heading"
-            class="mt-5 text-balance text-4xl font-medium leading-tight tracking-tight sm:text-5xl"
+            class="mt-4 text-balance font-serif text-3xl font-medium tracking-tight sm:text-4xl"
           >
             {t(locale, "about.documentsTitle")}
           </h2>
-          <p class="mt-6 max-w-2xl text-base leading-7 text-muted-foreground">
+          <p class="mt-3 max-w-2xl text-base leading-relaxed text-muted-foreground">
             {t(locale, "about.documentsIntro")}
           </p>
         </div>
 
-        <div class="mt-12 lg:mt-16">
+        <div class="mt-10 lg:mt-14">
           <CertificateGallery locale={locale} certificates={certificateAssets} />
         </div>
       </Container>
     </section>
 
+    <!-- CTA Секція -->
     <aside
       class="border-t border-primary-foreground/15 bg-primary text-primary-foreground"
       aria-label={t(locale, "about.actionsAria")}
@@ -191,19 +225,19 @@ const philosophyThemes: readonly CopyCard[] = [
           <p class="text-xs font-semibold uppercase tracking-[0.22em] text-accent">
             {t(locale, "about.actionEyebrow")}
           </p>
-          <h2 class="mt-4 text-3xl font-medium sm:text-4xl">
+          <h2 class="mt-3 font-serif text-3xl font-medium sm:text-4xl">
             {t(locale, "about.actionTitle")}
           </h2>
         </div>
-        <div class="flex flex-col gap-3 sm:flex-row lg:col-span-5 lg:justify-end">
+        <div class="flex flex-col gap-3.5 sm:flex-row lg:col-span-5 lg:justify-end">
           <a
-            class="inline-flex min-h-13 items-center justify-center rounded-lg bg-accent px-6 text-sm font-semibold text-primary transition-colors hover:bg-accent/90"
+            class="inline-flex min-h-13 items-center justify-center rounded-xl bg-accent px-7 text-sm font-semibold text-primary shadow-md transition-all duration-200 hover:-translate-y-0.5 hover:bg-accent/90 hover:shadow-lg active:translate-y-0"
             href={appointmentHref}
           >
             {t(locale, "about.book")}
           </a>
           <a
-            class="inline-flex min-h-13 items-center justify-center rounded-lg border border-primary-foreground/35 px-6 text-sm font-semibold text-primary-foreground transition-colors hover:border-primary-foreground"
+            class="inline-flex min-h-13 items-center justify-center rounded-xl border border-primary-foreground/35 px-7 text-sm font-semibold text-primary-foreground transition-all duration-200 hover:border-primary-foreground hover:bg-primary-foreground/10 active:translate-y-0"
             href={localizePath("/contacts", locale)}
           >
             {t(locale, "about.contact")}

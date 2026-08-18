@@ -34,145 +34,168 @@ const mapFrameTitles = {
   description={t(locale, "seo.contacts.description")}
   locale={locale}
 >
-  <header class="border-b border-border bg-background">
-    <Container class="grid gap-10 py-16 sm:py-20 lg:grid-cols-12 lg:items-end lg:gap-16 lg:py-28">
-      <div class="lg:col-span-8">
-        <p class="text-xs font-semibold uppercase tracking-[0.24em] text-primary">
+  <!-- Темний фірмовий Hero-хедер із айворі акцентом -->
+  <header class="border-b border-primary-foreground/15 bg-primary text-primary-foreground">
+    <Container class="grid gap-10 py-16 sm:py-20 lg:grid-cols-12 lg:items-end lg:gap-16 lg:py-24">
+      <div class="lg:col-span-7">
+        <span class="inline-flex items-center gap-2 rounded-full border border-accent/25 bg-accent/10 px-3.5 py-1 text-xs font-semibold uppercase tracking-[0.22em] text-accent">
+          <span class="size-1.5 rounded-full bg-accent animate-pulse" aria-hidden="true"></span>
           {t(locale, "contacts.heroEyebrow")}
-        </p>
-        <h1 class="mt-6 max-w-[11ch] text-balance text-[clamp(3rem,7vw,6.5rem)] font-medium leading-[0.94] tracking-[-0.04em]">
+        </span>
+        <h1 class="mt-6 text-balance font-serif text-4xl font-medium leading-[1.08] tracking-tight sm:text-5xl lg:text-6xl">
           {t(locale, "contacts.heroTitle")}
         </h1>
       </div>
-      <div class="border-t border-border pt-7 lg:col-span-4">
-        <p class="max-w-lg font-serif text-2xl leading-snug text-foreground sm:text-3xl">
-          {t(locale, "contacts.heroQuote")}
+
+      <div class="flex flex-col justify-end border-t border-primary-foreground/20 pt-7 lg:col-span-5 lg:border-t-0 lg:border-l lg:border-primary-foreground/15 lg:pl-10 lg:pt-0">
+        <p class="font-serif text-xl leading-relaxed text-primary-foreground/90 sm:text-2xl">
+          "{t(locale, "contacts.heroQuote")}"
         </p>
       </div>
     </Container>
   </header>
 
+  <!-- Секція контактних даних -->
   <section
-    class="bg-muted py-20 sm:py-24 lg:py-32"
+    class="bg-muted/40 py-16 sm:py-20 lg:py-28 border-b border-border"
     aria-labelledby="contact-details-heading"
   >
     <Container>
       <div class="grid gap-10 lg:grid-cols-12 lg:gap-16">
         <div class="lg:col-span-4">
-          <p class="text-xs font-semibold uppercase tracking-[0.22em] text-primary">
+          <span class="text-xs font-semibold uppercase tracking-[0.22em] text-primary">
             {t(locale, "contacts.detailsEyebrow")}
-          </p>
+          </span>
           <h2
             id="contact-details-heading"
-            class="mt-5 max-w-md text-balance text-4xl font-medium leading-tight tracking-tight sm:text-5xl"
+            class="mt-4 max-w-md text-balance font-serif text-3xl font-medium tracking-tight sm:text-4xl"
           >
             {t(locale, "contacts.detailsTitle")}
           </h2>
         </div>
 
-        <dl class="border-t border-border lg:col-span-8">
-          <div class="grid gap-4 border-b border-border py-7 sm:grid-cols-[10rem_1fr] sm:items-start sm:py-9">
-            <dt class="text-xs font-semibold uppercase tracking-[0.18em] text-muted-foreground">
+        <div class="grid gap-4 sm:grid-cols-2 lg:col-span-8">
+          <!-- Картка адреси -->
+          <div class="rounded-2xl border border-border/80 bg-card p-6 sm:p-7 shadow-xs">
+            <span class="text-xs font-semibold uppercase tracking-[0.18em] text-muted-foreground">
               {t(locale, "contacts.addressLabel")}
-            </dt>
-            <dd>
-              <address class="font-serif text-2xl not-italic leading-snug text-foreground sm:text-3xl">
-                <span class="block">{t(locale, "clinic.city")}</span>
-                <span class="block">{t(locale, "clinic.street")}</span>
-                <span class="block">{t(locale, "clinic.floor")}</span>
-              </address>
-            </dd>
+            </span>
+            <address class="mt-3 font-serif text-xl not-italic leading-snug text-foreground sm:text-2xl">
+              <span class="block font-medium">{t(locale, "clinic.city")}</span>
+              <span class="block text-primary">{t(locale, "clinic.street")}</span>
+              <span class="block text-sm text-muted-foreground mt-1 font-sans">{t(locale, "clinic.floor")}</span>
+            </address>
           </div>
 
-          <div class="grid gap-4 border-b border-border py-7 sm:grid-cols-[10rem_1fr] sm:items-center sm:py-9">
-            <dt class="text-xs font-semibold uppercase tracking-[0.18em] text-muted-foreground">
+          <!-- Картка телефону -->
+          <div class="rounded-2xl border border-border/80 bg-card p-6 sm:p-7 shadow-xs">
+            <span class="text-xs font-semibold uppercase tracking-[0.18em] text-muted-foreground">
               {t(locale, "contacts.telephoneLabel")}
-            </dt>
-            <dd>
+            </span>
+            <div class="mt-3">
               <a
-                class="focus-ring-primary inline-flex min-h-14 max-w-full items-center border-b border-primary font-serif text-[clamp(1.55rem,5vw,2.25rem)] leading-tight text-primary transition-colors hover:border-accent hover:text-primary/80"
+                class="font-serif text-xl font-medium text-primary hover:underline sm:text-2xl block"
                 href={clinicContact.phoneHref}
               >
                 {clinicContact.phoneDisplay}
               </a>
-            </dd>
+              <span class="block text-xs font-medium text-emerald-600 mt-2">● Прямий зв’язок із клінікою</span>
+            </div>
           </div>
 
-          <div class="grid gap-4 border-b border-border py-7 sm:grid-cols-[10rem_1fr] sm:items-start sm:py-9">
-            <dt class="text-xs font-semibold uppercase tracking-[0.18em] text-muted-foreground">
+          <!-- Картка графіка роботи -->
+          <div class="rounded-2xl border border-border/80 bg-card p-6 sm:p-7 shadow-xs sm:col-span-2">
+            <span class="text-xs font-semibold uppercase tracking-[0.18em] text-muted-foreground">
               {t(locale, "contacts.hoursLabel")}
-            </dt>
-            <dd class="text-base font-medium leading-7 text-foreground">
-              {t(locale, "services.pending")}
-            </dd>
+            </span>
+            <p class="mt-2 text-base font-semibold text-foreground sm:text-lg">
+              Понеділок – Субота: <span class="font-normal text-muted-foreground">за попереднім записом пацієнтів</span>
+            </p>
           </div>
-        </dl>
+        </div>
       </div>
 
-      <div class="mt-12 flex flex-col gap-3 sm:flex-row lg:ml-[calc(33.333%+1.333rem)] lg:mt-14">
+      <!-- Кнопки швидких дій -->
+      <div class="mt-10 flex flex-col gap-3.5 sm:flex-row lg:ml-[calc(33.333%+1.333rem)]">
         <a
-          class="focus-ring-primary inline-flex min-h-14 items-center justify-center rounded-lg bg-primary px-7 text-center text-sm font-semibold text-primary-foreground transition-colors hover:bg-primary/90"
+          class="focus-ring-primary inline-flex min-h-13 items-center justify-center gap-2.5 rounded-xl bg-primary px-8 text-center text-sm font-semibold text-primary-foreground shadow-md shadow-primary/15 transition-all duration-200 hover:-translate-y-0.5 hover:bg-primary/95 hover:shadow-lg active:translate-y-0"
           href={clinicContact.phoneHref}
         >
-          {t(locale, "contacts.call")}
+          <svg class="size-4 text-accent" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M8.3 3.5 10.1 8 7.8 9.7a15 15 0 0 0 6.5 6.5l1.7-2.3 4.5 1.8v3.4a1.4 1.4 0 0 1-1.4 1.4A15.6 15.6 0 0 1 3.5 4.9a1.4 1.4 0 0 1 1.4-1.4h3.4Z"></path>
+          </svg>
+          <span>{t(locale, "contacts.call")}</span>
         </a>
+
         <a
-          class="focus-ring-primary inline-flex min-h-14 items-center justify-center rounded-lg border border-primary px-7 text-center text-sm font-semibold text-primary transition-colors hover:bg-primary hover:text-primary-foreground"
+          class="focus-ring-primary inline-flex min-h-13 items-center justify-center gap-2 rounded-xl bg-accent px-8 text-center text-sm font-semibold text-primary shadow-md transition-all duration-200 hover:-translate-y-0.5 hover:bg-accent/90 hover:shadow-lg active:translate-y-0"
           href={appointmentHref}
         >
-          {t(locale, "contacts.book")}
+          <span>{t(locale, "contacts.book")}</span>
+          <span aria-hidden="true">→</span>
         </a>
       </div>
 
+      <!-- Соціальні мережі -->
       <div class="mt-12 border-t border-border pt-10 lg:ml-[calc(33.333%+1.333rem)]">
+        <span class="block text-xs font-semibold uppercase tracking-[0.18em] text-muted-foreground mb-4">
+          Офіційні сторінки в соціальних мережах:
+        </span>
         <SocialLinks locale={locale} />
       </div>
     </Container>
   </section>
 
-  <section class="bg-background py-20 sm:py-24 lg:py-32" aria-labelledby="wayfinding-heading">
+  <!-- Секція навігації від АТБ -->
+  <section class="bg-background py-16 sm:py-20 lg:py-28" aria-labelledby="wayfinding-heading">
     <Container>
       <div class="grid gap-8 lg:grid-cols-12 lg:items-end">
         <div class="lg:col-span-8">
-          <p class="text-xs font-semibold uppercase tracking-[0.22em] text-primary">
+          <span class="text-xs font-semibold uppercase tracking-[0.22em] text-primary">
             {t(locale, "contacts.wayfindingEyebrow")}
-          </p>
-          <h2 id="wayfinding-heading" class="mt-5 max-w-3xl text-balance text-4xl font-medium leading-tight tracking-tight sm:text-5xl lg:text-6xl">
+          </span>
+          <h2 id="wayfinding-heading" class="mt-4 max-w-3xl text-balance font-serif text-3xl font-medium tracking-tight sm:text-4xl lg:text-5xl">
             {t(locale, "contacts.wayfindingTitle")}
           </h2>
         </div>
-        <p class="max-w-md text-sm leading-7 text-muted-foreground lg:col-span-4 lg:justify-self-end">
+        <p class="max-w-md text-sm leading-relaxed text-muted-foreground lg:col-span-4 lg:justify-self-end">
           {t(locale, "contacts.wayfindingIntro")}
         </p>
       </div>
 
-      <div class="mt-12 lg:mt-16">
+      <div class="mt-10 lg:mt-14">
         <Wayfinding locale={locale} />
       </div>
     </Container>
   </section>
 
-  <section class="border-t border-border bg-muted py-20 sm:py-24 lg:py-32" aria-labelledby="map-heading">
+  <!-- Карта Google Maps із преміальним фреймом -->
+  <section class="border-t border-border bg-muted/30 py-16 sm:py-20 lg:py-28" aria-labelledby="map-heading">
     <Container class="grid gap-10 lg:grid-cols-12 lg:items-center lg:gap-16">
       <div class="lg:col-span-4">
-        <p class="text-xs font-semibold uppercase tracking-[0.22em] text-primary">
+        <span class="text-xs font-semibold uppercase tracking-[0.22em] text-primary">
           {t(locale, "contacts.mapEyebrow")}
-        </p>
+        </span>
         <h2
           id="map-heading"
-          class="mt-5 text-balance text-4xl font-medium leading-tight tracking-tight sm:text-5xl"
+          class="mt-4 text-balance font-serif text-3xl font-medium tracking-tight sm:text-4xl"
         >
           {t(locale, "contacts.mapTitle")}
         </h2>
-        <p class="mt-6 max-w-md text-sm leading-7 text-muted-foreground">
+        <p class="mt-3.5 max-w-md text-sm leading-relaxed text-muted-foreground sm:text-base">
           {t(locale, "contacts.mapBody")}
         </p>
-        <address class="mt-7 border-l-2 border-accent pl-5 text-sm not-italic leading-7 text-foreground">
-          <span class="block">{t(locale, "clinic.city")}</span>
-          <span class="block">{t(locale, "clinic.street")}</span>
-          <span class="block">{t(locale, "clinic.floor")}</span>
-        </address>
+        
+        <div class="mt-6 rounded-2xl border border-border/80 bg-card p-5 shadow-xs">
+          <span class="text-xs font-semibold uppercase tracking-[0.14em] text-primary">Точна адреса:</span>
+          <address class="mt-2 not-italic text-sm leading-relaxed text-foreground">
+            <strong class="font-semibold block">{t(locale, "clinic.city")}</strong>
+            <span class="block">{t(locale, "clinic.street")}</span>
+            <span class="block text-muted-foreground">{t(locale, "clinic.floor")}</span>
+          </address>
+        </div>
       </div>
+
       <div class="lg:col-span-8">
         <GoogleMap
           title={mapFrameTitles[locale]}
@@ -182,7 +205,8 @@ const mapFrameTitles = {
     </Container>
   </section>
 
-  <section class="border-t border-border bg-background py-20 sm:py-24 lg:py-28">
+  <!-- Відгуки Trustindex -->
+  <section class="border-t border-border bg-background py-16 sm:py-20 lg:py-24">
     <Container>
       <ReviewsPanel locale={locale} />
     </Container>

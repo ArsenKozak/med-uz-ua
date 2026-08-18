@@ -10,68 +10,70 @@ const rawContainerId = import.meta.env.PUBLIC_GTM_CONTAINER_ID;
 const containerId = /^GTM-[A-Z0-9]+$/.test(rawContainerId ?? "")
   ? rawContainerId
   : "";
+
 const copy = {
   uk: {
-    title: "Налаштування приватності",
-    body: "Google Tag Manager завантажується лише після вашого дозволу. Ми не передаємо ім’я, телефон, адресу, вільний текст форми або медичні відомості в аналітику.",
-    choices: "Оберіть необов’язкові категорії",
-    analytics: "Аналітика",
+    title: "Конфіденційність та файли cookie",
+    body: "Ми використовуємо файли cookie та аналітичні сервіси для покращення роботи сайту. Ми суворо поважаємо вашу приватність і ніколи не передаємо медичні відомості або персональні дані в аналітику.",
+    choices: "Оберіть категорії збору даних:",
+    analytics: "Аналітика та якість сервісу",
     analyticsDescription:
-      "Допомагає зрозуміти неперсональні взаємодії із сайтом.",
-    advertising: "Реклама",
+      "Допомагає нам анонімно оцінювати взаємодію з сайтом для покращення його зручності.",
+    advertising: "Маркетинг та реклама",
     advertisingDescription:
-      "Дозволяє вимірювання реклами та персоналізацію за налаштуваннями Google.",
-    acceptAll: "Дозволити все",
+      "Дозволяє вимірювати ефективність інформаційних повідомлень за стандартами Google.",
+    acceptAll: "Прийняти всі",
     save: "Зберегти вибір",
-    reject: "Лише необхідне",
-    saved: "Налаштування приватності збережено.",
+    reject: "Тільки обов’язкові",
+    saved: "Налаштування збережено.",
   },
   en: {
-    title: "Privacy settings",
-    body: "Google Tag Manager loads only after your permission. We do not send names, phone numbers, addresses, free-text form content or medical information to analytics.",
-    choices: "Choose optional categories",
-    analytics: "Analytics",
+    title: "Privacy & Cookie Preferences",
+    body: "We use cookies and analytics tools to enhance your browsing experience. We strictly respect your privacy and never transmit medical details or personal identifiers to analytics services.",
+    choices: "Select your data preferences:",
+    analytics: "Analytics & Performance",
     analyticsDescription:
-      "Helps us understand non-personal interactions with the website.",
-    advertising: "Advertising",
+      "Helps us anonymously understand site usage to continually improve our digital services.",
+    advertising: "Marketing & Measurement",
     advertisingDescription:
-      "Allows advertising measurement and personalisation according to Google settings.",
-    acceptAll: "Allow all",
+      "Enables measured insights and relevant information delivery via Google services.",
+    acceptAll: "Accept all",
     save: "Save selection",
     reject: "Necessary only",
     saved: "Privacy settings saved.",
   },
   sk: {
-    title: "Nastavenia súkromia",
-    body: "Google Tag Manager sa načíta až po vašom súhlase. Do analytiky neposielame meno, telefón, adresu, voľný text formulára ani zdravotné údaje.",
-    choices: "Vyberte voliteľné kategórie",
-    analytics: "Analytika",
+    title: "Ochrana súkromia a cookies",
+    body: "Používame cookies a analytické nástroje pre lepšie fungovanie webu. Rešpektujeme vaše súkromie a do analytiky nikdy neposielame žiadne zdravotné ani osobné údaje.",
+    choices: "Vyberte voliteľné kategórie:",
+    analytics: "Analytika a výkon",
     analyticsDescription:
-      "Pomáha nám porozumieť neosobným interakciám s webom.",
-    advertising: "Reklama",
+      "Pomáha nám anonymne porozumieť interakciám na webe a zlepšovať naše služby.",
+    advertising: "Marketing a reklama",
     advertisingDescription:
-      "Umožňuje meranie reklamy a personalizáciu podľa nastavení Google.",
+      "Umožňuje meranie efektivity oznámení podľa nastavení Google.",
     acceptAll: "Povoliť všetko",
     save: "Uložiť výber",
     reject: "Len nevyhnutné",
-    saved: "Nastavenia súkromia boli uložené.",
+    saved: "Nastavenia boli uložené.",
   },
   hu: {
-    title: "Adatvédelmi beállítások",
-    body: "A Google Tag Manager csak az engedélye után töltődik be. Nevet, telefonszámot, címet, szabad szöveges űrlaptartalmat vagy egészségügyi adatot nem küldünk az analitikának.",
-    choices: "Válassza ki az opcionális kategóriákat",
-    analytics: "Analitika",
+    title: "Adatvédelem és sütik",
+    body: "Sütiket és analitikai eszközöket használunk a webhely működésének fejlesztésére. Szigorúan tiszteletben tartjuk az Ön magánéletét, és nem továbbítunk egészségügyi adatokat az analitikának.",
+    choices: "Válassza ki az opcionális kategóriákat:",
+    analytics: "Analitika és teljesítmény",
     analyticsDescription:
-      "Segít megérteni a webhely nem személyes interakcióit.",
-    advertising: "Hirdetés",
+      "Segít megérteni a webhely név nélküli használatát a felhasználói élmény javítása érdekében.",
+    advertising: "Marketing és hirdetés",
     advertisingDescription:
-      "Lehetővé teszi a hirdetési mérést és a személyre szabást a Google beállításai szerint.",
+      "Lehetővé teszi a mérést és a releváns tájékoztatást a Google beállításai szerint.",
     acceptAll: "Összes engedélyezése",
     save: "Kiválasztás mentése",
     reject: "Csak szükséges",
-    saved: "Az adatvédelmi beállításokat mentettük.",
+    saved: "A beállítások mentve.",
   },
 } as const;
+
 const localized = copy[locale];
 ---
 
@@ -80,83 +82,94 @@ const localized = copy[locale];
   data-loader-enabled={containerId.length > 0 ? "true" : "false"}
 >
   <aside
-    class="fixed inset-x-3 bottom-[calc(5.5rem+env(safe-area-inset-bottom))] z-40 mx-auto max-w-2xl border border-border bg-card p-5 text-card-foreground shadow-concierge md:bottom-5 md:p-6"
+    class="fixed inset-x-3 bottom-[calc(5.5rem+env(safe-area-inset-bottom))] z-40 mx-auto max-w-2xl rounded-2xl md:rounded-3xl border border-border/80 bg-card/95 p-6 text-card-foreground shadow-2xl shadow-black/15 backdrop-blur-md md:bottom-6 md:p-8 transition-all duration-300"
     aria-labelledby="analytics-consent-title"
     aria-describedby="analytics-consent-description"
     data-consent-dialog
     data-consent-panel
     hidden
   >
-    <h2 id="analytics-consent-title" class="text-xl font-medium text-primary">
-      {localized.title}
-    </h2>
-    <p
-      id="analytics-consent-description"
-      class="mt-2 text-sm leading-6 text-muted-foreground"
-    >
-      {localized.body}
-    </p>
+    <div class="flex items-start gap-3.5">
+      <div class="flex size-10 shrink-0 items-center justify-center rounded-xl bg-primary/10 text-primary">
+        <svg class="size-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+        </svg>
+      </div>
+      <div>
+        <h2 id="analytics-consent-title" class="font-serif text-xl font-medium tracking-tight text-foreground sm:text-2xl">
+          {localized.title}
+        </h2>
+        <p
+          id="analytics-consent-description"
+          class="mt-2 text-sm leading-relaxed text-muted-foreground"
+        >
+          {localized.body}
+        </p>
+      </div>
+    </div>
 
-    <fieldset class="mt-5 space-y-3">
-      <legend class="text-sm font-semibold text-primary">
+    <fieldset class="mt-6 space-y-3">
+      <legend class="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
         {localized.choices}
       </legend>
 
       <label
-        class="focus-within:ring-primary/30 flex min-h-11 cursor-pointer gap-3 border border-border p-3 focus-within:ring-2"
+        class="group flex min-h-12 cursor-pointer items-start gap-3.5 rounded-xl border border-border/70 bg-background/50 p-4 transition-all duration-200 hover:border-primary/40 hover:bg-background"
       >
         <input
-          class="mt-1 size-4 shrink-0 accent-primary"
+          class="mt-0.5 size-4.5 shrink-0 rounded border-border text-primary accent-primary transition-all focus:ring-2 focus:ring-primary/20"
           type="checkbox"
           data-consent-analytics
         />
         <span class="min-w-0">
-          <span class="block text-sm font-semibold text-primary">
+          <span class="block text-sm font-semibold text-foreground group-hover:text-primary transition-colors">
             {localized.analytics}
           </span>
-          <span class="mt-1 block text-xs leading-5 text-muted-foreground">
+          <span class="mt-0.5 block text-xs leading-relaxed text-muted-foreground">
             {localized.analyticsDescription}
           </span>
         </span>
       </label>
 
       <label
-        class="focus-within:ring-primary/30 flex min-h-11 cursor-pointer gap-3 border border-border p-3 focus-within:ring-2"
+        class="group flex min-h-12 cursor-pointer items-start gap-3.5 rounded-xl border border-border/70 bg-background/50 p-4 transition-all duration-200 hover:border-primary/40 hover:bg-background"
       >
         <input
-          class="mt-1 size-4 shrink-0 accent-primary"
+          class="mt-0.5 size-4.5 shrink-0 rounded border-border text-primary accent-primary transition-all focus:ring-2 focus:ring-primary/20"
           type="checkbox"
           data-consent-advertising
         />
         <span class="min-w-0">
-          <span class="block text-sm font-semibold text-primary">
+          <span class="block text-sm font-semibold text-foreground group-hover:text-primary transition-colors">
             {localized.advertising}
           </span>
-          <span class="mt-1 block text-xs leading-5 text-muted-foreground">
+          <span class="mt-0.5 block text-xs leading-relaxed text-muted-foreground">
             {localized.advertisingDescription}
           </span>
         </span>
       </label>
     </fieldset>
 
-    <div class="mt-5 grid gap-2 sm:grid-cols-3">
+    <div class="mt-6 grid grid-cols-1 gap-2.5 sm:grid-cols-3">
       <button
-        class="focus-ring-primary inline-flex min-h-11 items-center justify-center border border-border px-4 text-sm font-semibold text-primary transition-colors hover:bg-muted"
+        class="inline-flex min-h-12 items-center justify-center rounded-xl border border-border bg-background/80 px-4 text-xs sm:text-sm font-semibold text-muted-foreground transition-all duration-200 hover:bg-muted hover:text-foreground active:scale-98"
         type="button"
         data-consent-decline
         data-consent-reject
       >
         {localized.reject}
       </button>
+
       <button
-        class="focus-ring-primary inline-flex min-h-11 items-center justify-center border border-primary px-4 text-sm font-semibold text-primary transition-colors hover:bg-muted"
+        class="inline-flex min-h-12 items-center justify-center rounded-xl border border-primary/30 bg-background px-4 text-xs sm:text-sm font-semibold text-primary transition-all duration-200 hover:bg-primary/5 hover:border-primary active:scale-98"
         type="button"
         data-consent-save
       >
         {localized.save}
       </button>
+
       <button
-        class="focus-ring-primary inline-flex min-h-11 items-center justify-center bg-primary px-4 text-sm font-semibold text-primary-foreground transition-colors hover:bg-primary/90"
+        class="inline-flex min-h-12 items-center justify-center rounded-xl bg-primary px-5 text-xs sm:text-sm font-semibold text-primary-foreground shadow-md shadow-primary/15 transition-all duration-200 hover:bg-primary/90 hover:shadow-lg hover:shadow-primary/25 active:scale-98"
         type="button"
         data-consent-accept
         data-consent-accept-all
@@ -331,7 +344,6 @@ const localized = copy[locale];
       const state = setConsentPreferences(preferences);
       this.#state = state;
 
-      // The consent update is queued before the first GTM bootstrap/event.
       updateGoogleConsent(state);
       this.#clearRevokedStorage(previous, state);
       this.#syncControls();
