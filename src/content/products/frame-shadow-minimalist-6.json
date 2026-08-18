@@ -5,8 +5,8 @@
   "brand": "Shadow",
   "priceMinor": 175000,
   "currency": "UAH",
-  "image": "/images/artificial/shop-editorial-eyewear.jpg",
-  "imageKind": "editorial",
+  "image": "/images/shop/frames/frame-shadow-minimalist-6.png",
+  "imageKind": "product",
   "inStock": true,
   "status": "active",
   "verificationStatus": "verified"

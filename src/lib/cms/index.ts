@@ -127,6 +127,7 @@ export async function getActiveCartCatalogProducts(): Promise<
       Object.freeze({
         id: product.id,
         title: product.title,
+        image: product.image,
         priceMinor: product.priceMinor,
         currency: product.currency,
         inStock: product.inStock,

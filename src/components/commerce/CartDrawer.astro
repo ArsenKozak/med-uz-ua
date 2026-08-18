@@ -1,10 +1,11 @@
 ---
 import {
   defaultLocale,
-  t,
+    t,
   type Locale,
 } from "../../lib/i18n";
 import { getActiveCartCatalogProducts } from "../../lib/cms";
+import { clinicContact } from "../../lib/clinic";
 
 interface Props {
   locale?: Locale;
@@ -17,25 +18,69 @@ const initialCountLabel = t(locale, "cart.countMany").replace(
   "{count}",
   "0",
 );
-const changeCopy = {
+
+const copy = {
   uk: {
+    eyebrow: "Оптична колекція",
+    title: "Ваш кошик",
+    emptyTitle: "Кошик поки порожній",
+    emptyDescription: "Перегляньте наш каталог контактних лінз, розчинів та оправ.",
+    continue: "Перейти до покупок",
+    subtotal: "Загальна сума",
+    clear: "Очистити",
+    checkoutBtn: "Оформити замовлення",
+    callOrder: "Замовити за телефоном",
+    guarantee: "100% оригінальна оптика",
+    delivery: "Самовивіз в Ужгороді / Доставка",
     removed: "{product} видалено з кошика.",
     quantity: "Кількість {product}: {count}.",
   },
   en: {
-    removed: "{product} removed from the cart.",
+    eyebrow: "Optical Collection",
+    title: "Shopping Cart",
+    emptyTitle: "Your cart is empty",
+    emptyDescription: "Explore our collection of lenses, care solutions, and eyewear.",
+    continue: "Start shopping",
+    subtotal: "Total amount",
+    clear: "Clear cart",
+    checkoutBtn: "Proceed to Checkout",
+    callOrder: "Order by Phone",
+    guarantee: "100% genuine products",
+    delivery: "Clinic pickup / Express shipping",
+    removed: "{product} removed from cart.",
     quantity: "Quantity for {product}: {count}.",
   },
   sk: {
-    removed: "Produkt {product} bol odstránený z košíka.",
+    eyebrow: "Optická kolekcia",
+    title: "Váš košík",
+    emptyTitle: "Košík je prázdny",
+    emptyDescription: "Pozrite si našu ponuku kontaktných šošoviek a okuliarov.",
+    continue: "Pokračovať v nákupe",
+    subtotal: "Celková suma",
+    clear: "Vyprázdniť",
+    checkoutBtn: "Dokončiť objednávku",
+    callOrder: "Objednať telefonicky",
+    guarantee: "100% originálna optika",
+    delivery: "Odber v Užhorode / Kuriér",
+    removed: "{product} bol odstránený z košíka.",
     quantity: "Množstvo pre {product}: {count}.",
   },
   hu: {
+    eyebrow: "Optikai kollekció",
+    title: "Bevásárlókosár",
+    emptyTitle: "A kosara üres",
+    emptyDescription: "Böngésszen kontaktlencséink és szemüvegkereteink között.",
+    continue: "Vásárlás folytatása",
+    subtotal: "Végösszeg",
+    clear: "Kosár ürítése",
+    checkoutBtn: "Megrendelés",
+    callOrder: "Rendelés telefonon",
+    guarantee: "100%-ban eredeti termékek",
+    delivery: "Ungvári átvétel / Kiszállítás",
     removed: "A(z) {product} eltávolítva a kosárból.",
     quantity: "A(z) {product} mennyisége: {count}.",
   },
-} as const;
-const localizedChangeCopy = changeCopy[locale];
+}[locale];
 ---
 
 <cart-drawer
@@ -53,95 +98,130 @@ const localizedChangeCopy = changeCopy[locale];
   data-decrease-product-message={t(locale, "a11y.decreaseProduct")}
   data-increase-product-message={t(locale, "a11y.increaseProduct")}
   data-quantity-product-message={t(locale, "a11y.quantityProduct")}
-  data-removed-confirmation-message={localizedChangeCopy.removed}
-  data-quantity-confirmation-message={localizedChangeCopy.quantity}
+  data-removed-confirmation-message={copy.removed}
+  data-quantity-confirmation-message={copy.quantity}
 >
   <dialog
     id="cart-dialog"
-    class="cart-dialog bg-card text-card-foreground"
+    class="cart-dialog bg-card text-card-foreground shadow-2xl"
     aria-labelledby="cart-dialog-title"
     aria-modal="true"
     data-cart-dialog
   >
-    <div class="flex min-h-full flex-col">
-      <header class="flex items-center justify-between gap-4 border-b border-border px-5 py-5 sm:px-7">
-        <div>
-          <p class="text-[0.65rem] font-semibold uppercase tracking-[0.2em] text-primary">
-            {t(locale, "cart.eyebrow")}
-          </p>
-          <h2 id="cart-dialog-title" class="mt-1 text-3xl font-medium tracking-tight">
-            {t(locale, "cart.title")}
-          </h2>
+    <div class="flex h-full min-h-full flex-col bg-background">
+      <!-- Шапка кошика -->
+      <header class="flex items-center justify-between gap-4 border-b border-border/80 bg-[#faf8f5] px-6 py-5">
+        <div class="flex items-center gap-3">
+          <div>
+            <p class="text-[0.65rem] font-semibold uppercase tracking-[0.24em] text-accent">
+              {copy.eyebrow}
+            </p>
+            <h2 id="cart-dialog-title" class="font-serif text-2xl font-medium tracking-tight text-foreground sm:text-3xl">
+              {copy.title}
+            </h2>
+          </div>
+          <span
+            id="cart-header-badge"
+            class="inline-flex size-7 items-center justify-center rounded-full bg-primary/10 text-xs font-bold text-primary"
+            data-cart-header-badge
+          >
+            0
+          </span>
         </div>
+
         <button
-          class="focus-ring-primary inline-flex size-11 items-center justify-center border border-border text-xl text-primary transition-colors hover:bg-muted"
+          class="focus-ring-primary inline-flex size-10 items-center justify-center rounded-full border border-border/80 text-lg text-foreground/70 transition-all hover:bg-muted hover:text-foreground hover:scale-105"
           type="button"
           aria-label={t(locale, "a11y.closeCart")}
           data-cart-close
         >
-          <span aria-hidden="true">×</span>
+          <span aria-hidden="true">✕</span>
         </button>
       </header>
 
-      <div class="flex-1 overflow-y-auto px-5 py-6 sm:px-7">
-        <div class="py-16 text-center" data-cart-empty>
-          <svg
-            class="mx-auto h-16 w-16 text-primary/45"
-            viewBox="0 0 64 64"
-            fill="none"
-            aria-hidden="true"
-            focusable="false"
-          >
-            <path d="M15 21h34l-3 29H18l-3-29Z" stroke="currentColor" stroke-width="1.5" />
-            <path d="M23 25v-5a9 9 0 0 1 18 0v5" stroke="currentColor" stroke-width="1.5" />
-          </svg>
-          <p class="mt-6 font-serif text-2xl">{t(locale, "cart.emptyTitle")}</p>
-          <p class="mt-2 text-sm text-muted-foreground">
-            {t(locale, "cart.emptyDescription")}
+      <!-- Тіло списку товарів -->
+      <div class="flex-1 overflow-y-auto px-6 py-6">
+        <!-- Порожній кошик -->
+        <div class="py-20 text-center" data-cart-empty>
+          <div class="mx-auto flex size-20 items-center justify-center rounded-full bg-primary/5 text-primary/60 border border-primary/10">
+            <svg class="size-10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 10.5V6a3.75 3.75 0 10-7.5 0v4.5m11.356-1.993l1.263 12c.07.665-.45 1.243-1.119 1.243H4.25a1.125 1.125 0 01-1.12-1.243l1.264-12A1.125 1.125 0 015.513 7.5h12.974c.576 0 1.059.435 1.119 1.007zM8.625 10.5a.375.375 0 11-.75 0 .375.375 0 01.75 0zm7.5 0a.375.375 0 11-.75 0 .375.375 0 01.75 0z" />
+            </svg>
+          </div>
+          <p class="mt-5 font-serif text-2xl font-medium text-foreground">{copy.emptyTitle}</p>
+          <p class="mt-2 text-sm text-muted-foreground max-w-xs mx-auto">
+            {copy.emptyDescription}
           </p>
           <button
-            class="focus-ring-primary mt-7 min-h-11 text-sm font-semibold text-primary underline underline-offset-4"
+            class="focus-ring-primary mt-6 inline-flex min-h-11 items-center justify-center rounded-sm bg-primary px-6 text-sm font-semibold text-primary-foreground transition-all hover:bg-primary/90"
             type="button"
             data-cart-close
           >
-            {t(locale, "cart.continueBrowsing")}
+            {copy.continue}
           </button>
         </div>
 
+        <!-- Список карток товарів -->
         <ul
-          class="divide-y divide-border"
+          class="space-y-4"
           data-cart-items
           aria-label={t(locale, "a11y.cartItems")}
         ></ul>
         <p class="sr-only" role="status" aria-live="polite" aria-atomic="true" data-cart-live></p>
       </div>
 
-      <footer class="cart-summary border-t border-border bg-background px-5 pt-5 sm:px-7" data-cart-summary hidden>
-        <div class="flex items-end justify-between gap-5">
+      <!-- Футер кошика із підсумками -->
+      <footer class="cart-summary border-t border-border/80 bg-[#faf8f5] p-6 shadow-lg" data-cart-summary hidden>
+        <div class="flex items-baseline justify-between gap-4">
           <div>
             <p class="text-xs uppercase tracking-[0.16em] text-muted-foreground">
-              {t(locale, "cart.subtotal")} · <span data-cart-summary-count>{initialCountLabel}</span>
+              {copy.subtotal} · <span data-cart-summary-count>{initialCountLabel}</span>
             </p>
-            <p class="mt-2 font-serif text-2xl font-medium" data-cart-subtotal></p>
+            <p class="mt-1 font-serif text-3xl font-semibold text-primary" data-cart-subtotal></p>
           </div>
           <button
-            class="focus-ring-primary min-h-11 text-xs font-semibold text-muted-foreground underline underline-offset-4 hover:text-primary"
+            class="focus-ring-primary text-xs font-semibold text-muted-foreground/80 underline underline-offset-4 hover:text-red-700 transition-colors"
             type="button"
             data-cart-clear
           >
-            {t(locale, "cart.clear")}
+            {copy.clear}
           </button>
         </div>
 
-        <p class="mt-3 text-xs leading-5 text-muted-foreground" data-cart-pricing-note hidden>
+        <p class="mt-2 text-xs text-muted-foreground" data-cart-pricing-note hidden>
           {t(locale, "cart.pendingPriceNote")}
         </p>
 
-        <div class="mt-5 border border-border bg-muted px-5 py-4" data-checkout-unavailable>
-          <p class="text-sm font-semibold text-primary">{t(locale, "cart.checkoutPending")}</p>
-          <p class="mt-2 text-xs leading-5 text-muted-foreground" data-checkout-status>
-            {t(locale, "cart.checkoutStatus")}
-          </p>
+        <!-- Кнопки дій оформлення -->
+        <div class="mt-5 space-y-2.5">
+          <a
+            href={clinicContact.phoneHref}
+            class="focus-ring-primary inline-flex min-h-12 w-full items-center justify-center gap-2 rounded-sm bg-primary px-6 text-sm font-semibold text-primary-foreground shadow-sm transition-all duration-200 hover:bg-primary/90 active:scale-[0.99]"
+            id="cart-checkout-action"
+          >
+            <span>{copy.checkoutBtn}</span>
+            <svg class="size-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
+            </svg>
+          </a>
+
+          <a
+            href={clinicContact.phoneHref}
+            class="inline-flex min-h-10 w-full items-center justify-center rounded-sm border border-border bg-card px-4 text-xs font-medium text-foreground hover:bg-muted transition-colors"
+          >
+            📞 {copy.callOrder}: {clinicContact.phoneDisplay}
+          </a>
+        </div>
+
+        <!-- Гарантії довіри внизу -->
+        <div class="mt-4 flex items-center justify-center gap-4 text-[0.68rem] font-medium text-muted-foreground border-t border-border/60 pt-3.5">
+          <span class="flex items-center gap-1">🛡️ {copy.guarantee}</span>
+          <span>•</span>
+          <span class="flex items-center gap-1">📍 {copy.delivery}</span>
+        </div>
+
+        <div class="hidden" data-checkout-unavailable>
+          <p class="text-xs text-muted-foreground" data-checkout-status>{t(locale, "cart.checkoutStatus")}</p>
         </div>
       </footer>
     </div>
@@ -152,32 +232,33 @@ const localizedChangeCopy = changeCopy[locale];
   .cart-dialog {
     position: fixed;
     inset: 0 0 0 auto;
-    width: min(100%, 32rem);
+    width: min(100%, 30rem);
     max-width: 100vw;
     height: 100dvh;
     max-height: 100dvh;
     margin: 0 0 0 auto;
     padding: 0;
     border: 0;
-    box-shadow: -20px 0 60px rgb(0 0 0 / 0.12);
+    border-left: 1px solid var(--color-border, #e5e5e5);
   }
 
   .cart-dialog[open] {
-    animation: cart-drawer-enter 220ms ease-out;
+    animation: cart-drawer-enter 240ms cubic-bezier(0.16, 1, 0.3, 1);
   }
 
   .cart-summary {
-    padding-bottom: calc(1.25rem + env(safe-area-inset-bottom));
+    padding-bottom: calc(1.5rem + env(safe-area-inset-bottom));
   }
 
   .cart-dialog::backdrop {
-    background: rgb(6 44 48 / 0.46);
+    background: rgb(15 23 42 / 0.5);
+    backdrop-filter: blur(4px);
   }
 
   @keyframes cart-drawer-enter {
     from {
       opacity: 0;
-      transform: translateX(2rem);
+      transform: translateX(100%);
     }
     to {
       opacity: 1;
@@ -210,9 +291,6 @@ const localizedChangeCopy = changeCopy[locale];
   import { trackViewCart } from "../../lib/analytics";
   import { formatMoneyMinor } from "../../lib/commerce/money";
   import { isLocale, type Locale } from "../../lib/i18n";
-
-  const ITEM_BUTTON_CLASS =
-    "focus-ring-primary inline-flex size-11 items-center justify-center border border-border text-sm font-semibold text-primary transition-colors hover:bg-muted";
 
   interface CartMessages {
     readonly locale: Locale;
@@ -293,36 +371,10 @@ const localizedChangeCopy = changeCopy[locale];
     values: Readonly<Record<string, string | number>>,
   ): string {
     let message = template;
-
     for (const [key, value] of Object.entries(values)) {
       message = message.replaceAll(`{${key}}`, String(value));
     }
-
     return message;
-  }
-
-  function createTextElement<K extends keyof HTMLElementTagNameMap>(
-    tagName: K,
-    text: string,
-    className: string,
-  ): HTMLElementTagNameMap[K] {
-    const element = document.createElement(tagName);
-    element.textContent = text;
-    element.className = className;
-    return element;
-  }
-
-  type CartLineAction = "decrement" | "increment" | "remove";
-
-  interface PendingCartLineFocus {
-    readonly productId: string;
-    readonly action: CartLineAction;
-  }
-
-  function isCartLineAction(
-    value: string | undefined,
-  ): value is CartLineAction {
-    return value === "decrement" || value === "increment" || value === "remove";
   }
 
   class CartDrawerElement extends HTMLElement {
@@ -333,22 +385,17 @@ const localizedChangeCopy = changeCopy[locale];
     #countElement: HTMLElement | null = null;
     #subtotalElement: HTMLElement | null = null;
     #pricingNoteElement: HTMLElement | null = null;
+    #badgeElement: HTMLElement | null = null;
     #liveElement: HTMLElement | null = null;
     #items: readonly CartItem[] = [];
     #catalog: ReadonlyMap<string, CartCatalogProduct> = new Map();
     #unsubscribers: Array<() => void> = [];
     #openingTrigger: HTMLButtonElement | null = null;
-    #previousBodyOverflow: string | null = null;
-    #previousBodyPaddingRight: string | null = null;
-    #pendingLineFocus: PendingCartLineFocus | null = null;
-    #lineFocusRestoreScheduled = false;
     #isConnected = false;
     #messages: CartMessages | null = null;
 
     connectedCallback(): void {
-      if (this.#isConnected) {
-        return;
-      }
+      if (this.#isConnected) return;
 
       const dialog = this.querySelector("[data-cart-dialog]");
       const itemsElement = this.querySelector("[data-cart-items]");
@@ -357,7 +404,7 @@ const localizedChangeCopy = changeCopy[locale];
       const countElement = this.querySelector("[data-cart-summary-count]");
       const subtotalElement = this.querySelector("[data-cart-subtotal]");
       const pricingNoteElement = this.querySelector("[data-cart-pricing-note]");
-      const checkoutStatusElement = this.querySelector("[data-checkout-status]");
+      const badgeElement = this.querySelector("[data-cart-header-badge]");
       const liveElement = this.querySelector("[data-cart-live]");
       const messages = readCartMessages(this);
 
@@ -369,7 +416,6 @@ const localizedChangeCopy = changeCopy[locale];
         !(countElement instanceof HTMLElement) ||
         !(subtotalElement instanceof HTMLElement) ||
         !(pricingNoteElement instanceof HTMLElement) ||
-        !(checkoutStatusElement instanceof HTMLElement) ||
         !(liveElement instanceof HTMLElement) ||
         messages === null
       ) {
@@ -383,6 +429,7 @@ const localizedChangeCopy = changeCopy[locale];
       this.#countElement = countElement;
       this.#subtotalElement = subtotalElement;
       this.#pricingNoteElement = pricingNoteElement;
+      this.#badgeElement = badgeElement instanceof HTMLElement ? badgeElement : null;
       this.#liveElement = liveElement;
       this.#messages = messages;
       this.#catalog = createCartCatalogIndex(
@@ -412,21 +459,14 @@ const localizedChangeCopy = changeCopy[locale];
       this.#dialog?.removeEventListener("close", this.#handleDialogClose);
       this.#unsubscribers.forEach((unsubscribe) => unsubscribe());
       this.#unsubscribers = [];
-      this.#unlockBodyScroll();
-      this.#pendingLineFocus = null;
       this.#messages = null;
       this.#isConnected = false;
     }
 
     #handleDocumentClick = (event: MouseEvent): void => {
       const target = event.target;
-
-      if (!(target instanceof Element)) {
-        return;
-      }
-
+      if (!(target instanceof Element)) return;
       const trigger = target.closest("[data-cart-trigger]");
-
       if (trigger instanceof HTMLButtonElement) {
         this.#open(trigger);
       }
@@ -434,10 +474,7 @@ const localizedChangeCopy = changeCopy[locale];
 
     #handleDialogClick = (event: MouseEvent): void => {
       const target = event.target;
-
-      if (!(target instanceof Element)) {
-        return;
-      }
+      if (!(target instanceof Element)) return;
 
       if (target === this.#dialog || target.closest("[data-cart-close]")) {
         this.#close();
@@ -446,19 +483,7 @@ const localizedChangeCopy = changeCopy[locale];
 
       if (target.closest("[data-cart-clear]")) {
         clearCart();
-        queueMicrotask(() => {
-          if (!this.#dialog?.open) {
-            return;
-          }
-
-          const closeButton = this.#dialog.querySelector("[data-cart-close]");
-          if (closeButton instanceof HTMLButtonElement) {
-            closeButton.focus();
-          }
-        });
-        return;
       }
-
     };
 
     #handleDocumentKeydown = (event: KeyboardEvent): void => {
@@ -474,23 +499,17 @@ const localizedChangeCopy = changeCopy[locale];
     };
 
     #handleDialogClose = (): void => {
-      this.#unlockBodyScroll();
-      this.#pendingLineFocus = null;
-
+      document.body.style.overflow = "";
       if (this.#openingTrigger?.isConnected) {
         this.#openingTrigger.focus();
       }
-
       this.#openingTrigger = null;
     };
 
     #open(trigger: HTMLButtonElement): void {
-      if (this.#dialog === null || this.#dialog.open) {
-        return;
-      }
-
+      if (this.#dialog === null || this.#dialog.open) return;
       this.#openingTrigger = trigger;
-      this.#lockBodyScroll();
+      document.body.style.overflow = "hidden";
       this.#dialog.showModal();
 
       const resolvedCart = resolveCart(this.#items, this.#catalog);
@@ -499,65 +518,13 @@ const localizedChangeCopy = changeCopy[locale];
         currency: resolvedCart.currency,
         itemCount: resolvedCart.count,
       });
-
-      const closeButton = this.#dialog.querySelector("[data-cart-close]");
-      if (closeButton instanceof HTMLButtonElement) {
-        queueMicrotask(() => closeButton.focus());
-      }
     }
 
     #close(): void {
       const dialog = this.#dialog;
       if (dialog?.open) {
-        if (
-          window.matchMedia("(prefers-reduced-motion: reduce)").matches ||
-          dialog.dataset.closing === "true"
-        ) {
-          if (dialog.dataset.closing !== "true") dialog.close();
-          return;
-        }
-
-        dialog.dataset.closing = "true";
-        const animation = dialog.animate(
-          [
-            { opacity: 1, transform: "translateX(0)" },
-            { opacity: 0, transform: "translateX(1.5rem)" },
-          ],
-          { duration: 160, easing: "ease-in" },
-        );
-        void animation.finished.finally(() => {
-          delete dialog.dataset.closing;
-          if (dialog.open) dialog.close();
-        });
+        dialog.close();
       }
-    }
-
-    #lockBodyScroll(): void {
-      if (this.#previousBodyOverflow !== null) {
-        return;
-      }
-
-      this.#previousBodyOverflow = document.body.style.overflow;
-      this.#previousBodyPaddingRight = document.body.style.paddingRight;
-      const scrollbarWidth = Math.max(
-        0,
-        window.innerWidth - document.documentElement.clientWidth,
-      );
-      if (scrollbarWidth > 0) {
-        document.body.style.paddingRight = `${scrollbarWidth}px`;
-      }
-      document.body.style.overflow = "hidden";
-    }
-
-    #unlockBodyScroll(): void {
-      if (this.#previousBodyOverflow === null) {
-        return;
-      }
-
-      document.body.style.overflow = this.#previousBodyOverflow;
-      document.body.style.paddingRight = this.#previousBodyPaddingRight ?? "";
-      this.#previousBodyOverflow = null;
-      this.#previousBodyPaddingRight = null;
     }
 
     #render(): void {
@@ -573,19 +540,6 @@ const localizedChangeCopy = changeCopy[locale];
         return;
       }
 
-      const activeElement = document.activeElement;
-      if (
-        activeElement instanceof HTMLButtonElement &&
-        this.#itemsElement.contains(activeElement)
-      ) {
-        const productId = activeElement.dataset.cartProductId;
-        const action = activeElement.dataset.cartLineAction;
-
-        if (productId !== undefined && isCartLineAction(action)) {
-          this.#pendingLineFocus = { productId, action };
-        }
-      }
-
       const messages = this.#messages;
       const resolvedCart = resolveCart(this.#items, this.#catalog);
       this.#itemsElement.replaceChildren(
@@ -599,10 +553,11 @@ const localizedChangeCopy = changeCopy[locale];
       this.#itemsElement.hidden = isEmpty;
       this.#summaryElement.hidden = isEmpty;
 
-      if (isEmpty) {
-        this.#scheduleLineFocusRestore();
-        return;
+      if (this.#badgeElement) {
+        this.#badgeElement.textContent = String(resolvedCart.count);
       }
+
+      if (isEmpty) return;
 
       this.#countElement.textContent = formatMessage(
         resolvedCart.count === 1 ? messages.countOne : messages.countMany,
@@ -624,227 +579,110 @@ const localizedChangeCopy = changeCopy[locale];
           resolvedCart.currency,
           messages.locale,
         );
-      } else {
-        this.#subtotalElement.textContent = messages.unavailable;
       }
-
-      this.#scheduleLineFocusRestore();
-    }
-
-    #scheduleLineFocusRestore(): void {
-      if (
-        this.#pendingLineFocus === null ||
-        this.#lineFocusRestoreScheduled
-      ) {
-        return;
-      }
-
-      this.#lineFocusRestoreScheduled = true;
-      queueMicrotask(() => {
-        this.#lineFocusRestoreScheduled = false;
-        const pendingFocus = this.#pendingLineFocus;
-        this.#pendingLineFocus = null;
-
-        if (
-          pendingFocus === null ||
-          !this.#dialog?.open ||
-          this.#itemsElement === null
-        ) {
-          return;
-        }
-
-        const actionButtons =
-          this.#itemsElement.querySelectorAll<HTMLButtonElement>(
-            "button[data-cart-line-action][data-cart-product-id]",
-          );
-        let fallbackButton: HTMLButtonElement | null = null;
-
-        for (const button of actionButtons) {
-          if (button.dataset.cartLineAction !== pendingFocus.action) {
-            continue;
-          }
-
-          fallbackButton ??= button;
-
-          if (button.dataset.cartProductId === pendingFocus.productId) {
-            button.focus();
-            return;
-          }
-        }
-
-        const closeButton = this.#dialog.querySelector("[data-cart-close]");
-        if (fallbackButton !== null) {
-          fallbackButton.focus();
-        } else if (closeButton instanceof HTMLButtonElement) {
-          closeButton.focus();
-        }
-      });
     }
 
     #createCartLine(
       item: ResolvedCartLine,
       messages: CartMessages,
     ): HTMLLIElement {
-      const listItem = document.createElement("li");
-      listItem.className = "py-6 first:pt-0 last:pb-0";
+      const li = document.createElement("li");
+      li.className =
+        "group relative flex gap-4 rounded-xl border border-border/70 bg-card p-4 shadow-xs transition-all hover:border-accent/40";
 
-      const headingRow = document.createElement("div");
-      headingRow.className = "flex min-w-0 items-start justify-between gap-4";
+      // 1. Мініатюра товару
+      const imgContainer = document.createElement("div");
+      imgContainer.className =
+        "relative size-16 shrink-0 overflow-hidden rounded-lg border border-border/60 bg-white p-1.5 flex items-center justify-center";
+      
+      const img = document.createElement("img");
+      img.src = item.image || "/images/artificial/macro-lens-hydration.jpg";
+      img.alt = item.title;
+      img.className = "max-h-full max-w-full object-contain";
+      imgContainer.append(img);
 
-      const headingGroup = document.createElement("div");
-      headingGroup.className = "min-w-0";
-      headingGroup.append(
-        createTextElement(
-          "h3",
-          item.title,
-          "break-words font-serif text-xl font-medium leading-snug",
-        ),
-      );
+      // 2. Деталі товару
+      const body = document.createElement("div");
+      body.className = "flex min-w-0 flex-1 flex-col justify-between";
 
-      const unitPrice =
-        item.availability === "unavailable"
-          ? messages.unavailable
-          : item.verificationStatus === "pending-clinic-confirmation"
-          ? messages.unitPricePending
-          : formatMoneyMinor(
-              item.unitPriceMinor,
-              item.currency,
-              messages.locale,
-            );
-      headingGroup.append(
-        createTextElement(
-          "p",
-          unitPrice,
-          "mt-2 text-xs leading-5 text-muted-foreground",
-        ),
-      );
+      // Верхній рядок (назва + кнопка видалення)
+      const topRow = document.createElement("div");
+      topRow.className = "flex items-start justify-between gap-2";
 
-      const removeButton = document.createElement("button");
-      removeButton.type = "button";
-      removeButton.className =
-        "focus-ring-primary min-h-11 shrink-0 text-xs font-semibold text-muted-foreground underline underline-offset-4 hover:text-primary";
-      removeButton.textContent = messages.remove;
-      removeButton.setAttribute(
+      const titleLink = document.createElement("a");
+      titleLink.href = `/shop/${item.productId}`;
+      titleLink.className =
+        "font-serif text-sm font-semibold leading-snug text-foreground hover:text-primary transition-colors line-clamp-2";
+      titleLink.textContent = item.title;
+
+      const removeBtn = document.createElement("button");
+      removeBtn.type = "button";
+      removeBtn.className =
+        "p-1 text-muted-foreground/70 hover:text-red-700 transition-colors";
+      removeBtn.innerHTML = `
+        <svg class="size-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+        </svg>
+      `;
+      removeBtn.setAttribute(
         "aria-label",
-        formatMessage(messages.removeProduct, {
-          product: item.title,
-        }),
+        formatMessage(messages.removeProduct, { product: item.title }),
       );
-      removeButton.dataset.cartProductId = item.productId;
-      removeButton.dataset.cartLineAction = "remove";
-      removeButton.addEventListener("click", () => {
-        if (removeFromCart(item.productId)) {
-          this.#announce(
-            formatMessage(messages.removedConfirmation, {
-              product: item.title,
-            }),
-          );
-        }
+      removeBtn.addEventListener("click", () => {
+        removeFromCart(item.productId);
       });
 
-      headingRow.append(headingGroup, removeButton);
+      topRow.append(titleLink, removeBtn);
 
-      if (item.availability === "unavailable") {
-        const unavailableQuantity = createTextElement(
-          "p",
-          `${messages.quantity}: ${item.quantity}`,
-          "mt-5 text-xs uppercase tracking-[0.14em] text-muted-foreground",
-        );
-        listItem.append(headingRow, unavailableQuantity);
-        return listItem;
-      }
+      // Нижній рядок (контролери кількості + сума рядка)
+      const bottomRow = document.createElement("div");
+      bottomRow.className = "mt-3 flex items-center justify-between gap-3";
 
-      const quantityRow = document.createElement("div");
-      quantityRow.className = "mt-5 flex items-center justify-between gap-4";
-      quantityRow.append(
-        createTextElement(
-          "span",
-          messages.quantity,
-          "text-xs uppercase tracking-[0.14em] text-muted-foreground",
-        ),
-      );
+      // Сегментований перемикач кількості
+      const qtyBox = document.createElement("div");
+      qtyBox.className =
+        "inline-flex items-center rounded-sm border border-border bg-background shadow-2xs";
 
-      const controls = document.createElement("div");
-      controls.className = "flex items-center";
-
-      const decrementButton = document.createElement("button");
-      decrementButton.type = "button";
-      decrementButton.className = ITEM_BUTTON_CLASS;
-      decrementButton.textContent = "−";
-      decrementButton.setAttribute(
-        "aria-label",
-        formatMessage(messages.decreaseProduct, {
-          product: item.title,
-        }),
-      );
-      decrementButton.dataset.cartProductId = item.productId;
-      decrementButton.dataset.cartLineAction = "decrement";
-      decrementButton.addEventListener("click", () => {
-        const nextQuantity = item.quantity - 1;
-        if (setCartItemQuantity(item.productId, nextQuantity)) {
-          this.#announce(
-            nextQuantity > 0
-              ? formatMessage(messages.quantityConfirmation, {
-                  product: item.title,
-                  count: nextQuantity,
-                })
-              : formatMessage(messages.removedConfirmation, {
-                  product: item.title,
-                }),
-          );
-        }
+      const decBtn = document.createElement("button");
+      decBtn.type = "button";
+      decBtn.className =
+        "size-7 flex items-center justify-center text-xs font-bold text-foreground/70 hover:bg-muted transition-colors";
+      decBtn.textContent = "−";
+      decBtn.addEventListener("click", () => {
+        setCartItemQuantity(item.productId, item.quantity - 1);
       });
 
-      const quantity = createTextElement(
-        "span",
-        String(item.quantity),
-        "inline-flex min-w-10 items-center justify-center px-2 text-sm font-semibold",
-      );
-      quantity.setAttribute(
-        "aria-label",
-        formatMessage(messages.quantityProduct, {
-          count: item.quantity,
-          product: item.title,
-        }),
-      );
+      const qtySpan = document.createElement("span");
+      qtySpan.className =
+        "min-w-7 text-center font-serif text-xs font-semibold tabular-nums text-foreground";
+      qtySpan.textContent = String(item.quantity);
 
-      const incrementButton = document.createElement("button");
-      incrementButton.type = "button";
-      incrementButton.className = ITEM_BUTTON_CLASS;
-      incrementButton.textContent = "+";
-      incrementButton.setAttribute(
-        "aria-label",
-        formatMessage(messages.increaseProduct, {
-          product: item.title,
-        }),
-      );
-      incrementButton.dataset.cartProductId = item.productId;
-      incrementButton.dataset.cartLineAction = "increment";
-      incrementButton.addEventListener("click", () => {
-        const nextQuantity = item.quantity + 1;
-        if (setCartItemQuantity(item.productId, nextQuantity)) {
-          this.#announce(
-            formatMessage(messages.quantityConfirmation, {
-              product: item.title,
-              count: nextQuantity,
-            }),
-          );
-        }
+      const incBtn = document.createElement("button");
+      incBtn.type = "button";
+      incBtn.className =
+        "size-7 flex items-center justify-center text-xs font-bold text-foreground/70 hover:bg-muted transition-colors";
+      incBtn.textContent = "+";
+      incBtn.addEventListener("click", () => {
+        setCartItemQuantity(item.productId, item.quantity + 1);
       });
 
-      controls.append(decrementButton, quantity, incrementButton);
-      quantityRow.append(controls);
-      listItem.append(headingRow, quantityRow);
+      qtyBox.append(decBtn, qtySpan, incBtn);
 
-      return listItem;
-    }
+      // Вартість рядка
+      const priceText = document.createElement("p");
+      priceText.className = "font-serif text-sm font-bold text-primary";
+      const unitPriceFormatted = formatMoneyMinor(
+        item.unitPriceMinor * item.quantity,
+        item.currency,
+        messages.locale,
+      );
+      priceText.textContent = unitPriceFormatted;
 
-    #announce(message: string): void {
-      if (this.#liveElement === null) return;
-      this.#liveElement.textContent = "";
-      queueMicrotask(() => {
-        if (this.#liveElement !== null) this.#liveElement.textContent = message;
-      });
+      bottomRow.append(qtyBox, priceText);
+      body.append(topRow, bottomRow);
+
+      li.append(imgContainer, body);
+      return li;
     }
   }
 

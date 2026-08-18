@@ -5,8 +5,8 @@
   "brand": "Pending clinic confirmation",
   "priceMinor": 0,
   "currency": "UAH",
-  "image": "/images/artificial/shop-editorial-eyewear.jpg",
-  "imageKind": "editorial",
+  "image": "/images/shop/frames/signature-optical-frame.jpg",
+  "imageKind": "product",
   "inStock": false,
   "status": "draft",
   "verificationStatus": "pending-clinic-confirmation"

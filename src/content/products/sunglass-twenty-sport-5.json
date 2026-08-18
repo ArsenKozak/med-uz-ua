@@ -5,8 +5,8 @@
   "brand": "Twenty",
   "priceMinor": 180000,
   "currency": "UAH",
-  "image": "/images/artificial/shop-editorial-eyewear.jpg",
-  "imageKind": "editorial",
+  "image": "/images/shop/sunglasses/sunglass-twenty-sport-5.jpg",
+  "imageKind": "product",
   "inStock": true,
   "status": "active",
   "verificationStatus": "verified"

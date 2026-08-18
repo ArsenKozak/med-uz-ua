@@ -1,4 +1,4 @@
-import { clinicImageAssets, type OwnerSuppliedImageAsset } from "../lib/assets";
+import type { OwnerSuppliedImageAsset } from "../lib/assets";
 import type { Locale } from "../lib/i18n";
 
 export interface SpecializationCard {
@@ -15,51 +15,51 @@ const specializations: Readonly<Record<Locale, readonly SpecializationCard[]>> =
       id: "pediatric",
       title: "Дитяча офтальмологія",
       description:
-        "Консультації та діагностичні етапи для дітей у межах послуг, підтверджених чинним прайсом клініки.",
-      image: clinicImageAssets.pediatricExamination,
-      imageAlt: "Дитина під час обстеження на офтальмологічному обладнанні",
+        "Дбайлива перевірка зору з перших років життя: раннє виявлення короткозорості, амбліопії, косоокості та індивідуальний підбір дитячої оптики в спокійній ігровій формі.",
+      image: { src: "/images/clinic/pediatric-chart.jpg", width: 1280, height: 960, mimeType: "image/jpeg", provenance: "owner-supplied", visuallyVerified: true },
+      imageAlt: "Дитина під час діагностичного огляду у дитячого офтальмолога",
     },
     {
       id: "adult-diagnostics",
-      title: "Доросла офтальмологія",
+      title: "Комплексна діагностика",
       description:
-        "Огляд і окремі діагностичні процедури; відповідний обсяг визначається під час консультації.",
-      image: clinicImageAssets.adultExamination,
-      imageAlt: "Дорослий пацієнт під час огляду на щілинній лампі",
+        "Повне апаратне обстеження очей на цифровому обладнанні: точна авторефрактометрія, безконтактне вимірювання внутрішньоочного тиску, біомікроскопія та огляд очного дна.",
+      image: { src: "/images/clinic/examination-process.jpg", width: 960, height: 1280, mimeType: "image/jpeg", provenance: "owner-supplied", visuallyVerified: true },
+      imageAlt: "Огляд пацієнта на сучасній щілинній лампі",
     },
     {
       id: "care-pathway",
-      title: "Хірургічний супровід",
+      title: "Лікування та оптична корекція",
       description:
-        "Обговорення діагностичних результатів і подальших кроків, зокрема направлення, коли воно доречне. Формат не означає, що операція виконується в клініці.",
-      image: clinicImageAssets.diagnosticConsultation,
-      imageAlt: "Лікарка та пацієнт біля діагностичного обладнання",
+        "Терапія запальних захворювань ока, контроль прогресування міопії, індивідуальний підбір складних астигматичних і прогресивних окулярних або контактних лінз.",
+      image: { src: "/images/doctors/doctor-archive-22.jpg", width: 1280, height: 960, mimeType: "image/jpeg", provenance: "owner-supplied", visuallyVerified: true },
+      imageAlt: "Лікар-офтальмолог під час консультації та підбору корекції",
     },
   ],
   en: [
     {
       id: "pediatric",
-      title: "Pediatric ophthalmology",
+      title: "Pediatric Ophthalmology",
       description:
-        "Appointments and diagnostic steps for children within the services confirmed by the clinic’s current price list.",
-      image: clinicImageAssets.pediatricExamination,
-      imageAlt: "A child being examined with ophthalmic equipment",
+        "Gentle eye care for children of all ages: early detection of myopia, amblyopia, strabismus, and friendly optical selection in a relaxed environment.",
+      image: { src: "/images/clinic/pediatric-chart.jpg", width: 1280, height: 960, mimeType: "image/jpeg", provenance: "owner-supplied", visuallyVerified: true },
+      imageAlt: "Child during diagnostic eye examination",
     },
     {
       id: "adult-diagnostics",
-      title: "Adult ophthalmology",
+      title: "Advanced Diagnostics",
       description:
-        "Examination and selected diagnostic procedures; the appropriate scope is determined during consultation.",
-      image: clinicImageAssets.adultExamination,
-      imageAlt: "An adult patient during a slit-lamp examination",
+        "Comprehensive eye examination using modern digital devices: computerized autorefraction, intraocular pressure measurement, and detailed fundus evaluation.",
+      image: { src: "/images/clinic/examination-process.jpg", width: 960, height: 1280, mimeType: "image/jpeg", provenance: "owner-supplied", visuallyVerified: true },
+      imageAlt: "Slit-lamp examination of an adult patient",
     },
     {
       id: "care-pathway",
-      title: "Surgical support",
+      title: "Treatment & Optical Care",
       description:
-        "Discussion of diagnostic findings and next steps, including referral when appropriate. This does not state that surgery is performed at the clinic.",
-      image: clinicImageAssets.diagnosticConsultation,
-      imageAlt: "A clinician and patient beside diagnostic equipment",
+        "Therapeutic treatment of eye conditions, myopia control programs, and bespoke fitting of complex astigmatic, progressive, or contact lenses.",
+      image: { src: "/images/doctors/doctor-archive-22.jpg", width: 1280, height: 960, mimeType: "image/jpeg", provenance: "owner-supplied", visuallyVerified: true },
+      imageAlt: "Consultation and prescription fitting with the ophthalmologist",
     },
   ],
   sk: [
@@ -67,25 +67,25 @@ const specializations: Readonly<Record<Locale, readonly SpecializationCard[]>> =
       id: "pediatric",
       title: "Detská oftalmológia",
       description:
-        "Konzultácie a diagnostické kroky pre deti v rozsahu služieb potvrdených aktuálnym cenníkom kliniky.",
-      image: clinicImageAssets.pediatricExamination,
-      imageAlt: "Dieťa počas vyšetrenia oftalmologickým prístrojom",
+        "Starostlivé vyšetrenie zraku detí od útleho veku: včasná diagnostika refrakčných chýb, tupozrakosti a šetrný výber korekčnej optiky v priateľskej atmosfére.",
+      image: { src: "/images/clinic/pediatric-chart.jpg", width: 1280, height: 960, mimeType: "image/jpeg", provenance: "owner-supplied", visuallyVerified: true },
+      imageAlt: "Dieťa počas vyšetrenia zraku u detského oftalmológa",
     },
     {
       id: "adult-diagnostics",
-      title: "Oftalmológia dospelých",
+      title: "Komplexná diagnostika",
       description:
-        "Vyšetrenie a vybrané diagnostické postupy; vhodný rozsah sa určuje počas konzultácie.",
-      image: clinicImageAssets.adultExamination,
-      imageAlt: "Dospelý pacient počas vyšetrenia štrbinovou lampou",
+        "Prístrojové vyšetrenie zraku pomocou moderných digitálnych metód: autorefraktometria, bezkontaktná tonometria a podrobné vyšetrenie očného pozadia.",
+      image: { src: "/images/clinic/examination-process.jpg", width: 960, height: 1280, mimeType: "image/jpeg", provenance: "owner-supplied", visuallyVerified: true },
+      imageAlt: "Vyšetrenie dospelého pacienta na štrbinovej lampe",
     },
     {
       id: "care-pathway",
-      title: "Chirurgická podpora",
+      title: "Liečba a optická korekcia",
       description:
-        "Rozhovor o diagnostických nálezoch a ďalších krokoch vrátane odporúčania, ak je vhodné. Text netvrdí, že sa operácia vykonáva na klinike.",
-      image: clinicImageAssets.diagnosticConsultation,
-      imageAlt: "Lekárka a pacient pri diagnostickom zariadení",
+        "Liečba očných ochorení, manažment progresie krátkozrakosti a individuálny výber prémiových okuliarových alebo kontaktných šošoviek.",
+      image: { src: "/images/doctors/doctor-archive-22.jpg", width: 1280, height: 960, mimeType: "image/jpeg", provenance: "owner-supplied", visuallyVerified: true },
+      imageAlt: "Konzultácia a nastavenie zrakovej korekcie",
     },
   ],
   hu: [
@@ -93,25 +93,25 @@ const specializations: Readonly<Record<Locale, readonly SpecializationCard[]>> =
       id: "pediatric",
       title: "Gyermekszemészet",
       description:
-        "Konzultációk és diagnosztikai lépések gyermekeknek a klinika aktuális árlistáján megerősített szolgáltatások körében.",
-      image: clinicImageAssets.pediatricExamination,
-      imageAlt: "Gyermek szemészeti berendezéssel végzett vizsgálat közben",
+        "Gondos látásvizsgálat gyermekeknek már kiskortól: a rövidlátás, tompalátás és kancsalság korai felismerése, valamint kényelmes szemüvegválasztás.",
+      image: { src: "/images/clinic/pediatric-chart.jpg", width: 1280, height: 960, mimeType: "image/jpeg", provenance: "owner-supplied", visuallyVerified: true },
+      imageAlt: "Gyermek szemészeti vizsgálat közben",
     },
     {
       id: "adult-diagnostics",
-      title: "Felnőtt szemészet",
+      title: "Komplex diagnosztika",
       description:
-        "Vizsgálat és egyes diagnosztikai eljárások; a megfelelő terjedelmet a konzultáció során határozzák meg.",
-      image: clinicImageAssets.adultExamination,
-      imageAlt: "Felnőtt páciens réslámpás vizsgálat közben",
+        "Teljes körű műszeres szemvizsgálat digitális berendezésekkel: pontos autorefraktometria, szemnyomásmérés és részletes szemfenékvizsgálat.",
+      image: { src: "/images/clinic/examination-process.jpg", width: 960, height: 1280, mimeType: "image/jpeg", provenance: "owner-supplied", visuallyVerified: true },
+      imageAlt: "Felnőtt páciens vizsgálata réslámpával",
     },
     {
       id: "care-pathway",
-      title: "Sebészeti támogatás",
+      title: "Kezelés és optikai korrekció",
       description:
-        "A diagnosztikai eredmények és a következő lépések megbeszélése, szükség esetén beutalással. Ez nem állítja, hogy a klinikán műtétet végeznek.",
-      image: clinicImageAssets.diagnosticConsultation,
-      imageAlt: "Orvos és páciens diagnosztikai berendezés mellett",
+        "Szemészeti terápiák, a rövidlátás progressziójának kontrollja, valamint egyedi asztigmiás, progresszív vagy kontaktlencsék professzionális illesztése.",
+      image: { src: "/images/doctors/doctor-archive-22.jpg", width: 1280, height: 960, mimeType: "image/jpeg", provenance: "owner-supplied", visuallyVerified: true },
+      imageAlt: "Szemész szakorvosi konzultáció és optikai illesztés",
     },
   ],
 };

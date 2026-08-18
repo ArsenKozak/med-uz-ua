@@ -5,8 +5,8 @@
   "brand": "Maxima & Co",
   "priceMinor": 240000,
   "currency": "UAH",
-  "image": "/images/artificial/shop-editorial-eyewear.jpg",
-  "imageKind": "editorial",
+  "image": "/images/shop/frames/frame-maxima-titanium-4.jpg",
+  "imageKind": "product",
   "inStock": true,
   "status": "active",
   "verificationStatus": "verified"

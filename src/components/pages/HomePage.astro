@@ -1,5 +1,6 @@
 ---
 import AppointmentForm from "../clinic/AppointmentForm.astro";
+import HeroSlider from "../clinic/HeroSlider.astro";
 import ServiceCard from "../clinic/ServiceCard.astro";
 import ReviewsPanel from "../clinic/ReviewsPanel.astro";
 import Wayfinding from "../clinic/Wayfinding.astro";
@@ -136,6 +137,8 @@ const worldLabel = worldLabels[locale];
        </dl>
      </Container>
    </section>
+
+  <HeroSlider locale={locale} />
 
   <section class="min-w-0 bg-background py-20 sm:py-24 lg:py-32" aria-labelledby="two-worlds-heading">
     <Container>

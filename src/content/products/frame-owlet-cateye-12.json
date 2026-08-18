@@ -5,8 +5,8 @@
   "brand": "Owlet",
   "priceMinor": 220000,
   "currency": "UAH",
-  "image": "/images/artificial/shop-editorial-eyewear.jpg",
-  "imageKind": "editorial",
+  "image": "/images/shop/frames/frame-owlet-cateye-12.jpg",
+  "imageKind": "product",
   "inStock": true,
   "status": "active",
   "verificationStatus": "verified"

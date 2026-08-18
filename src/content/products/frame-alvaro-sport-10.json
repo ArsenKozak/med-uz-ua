@@ -5,8 +5,8 @@
   "brand": "Alvaro",
   "priceMinor": 165000,
   "currency": "UAH",
-  "image": "/images/artificial/shop-editorial-eyewear.jpg",
-  "imageKind": "editorial",
+  "image": "/images/shop/frames/frame-alvaro-sport-10.jpg",
+  "imageKind": "product",
   "inStock": true,
   "status": "active",
   "verificationStatus": "verified"

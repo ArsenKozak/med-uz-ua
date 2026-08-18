@@ -1,0 +1,498 @@
+---
+import Container from "../ui/Container.astro";
+import type { Locale } from "../../lib/i18n";
+
+interface Props {
+  readonly locale: Locale;
+}
+
+interface SlideItem {
+  readonly image: string;
+  readonly badge: string;
+  readonly title: string;
+  readonly subtitle: string;
+}
+
+const { locale } = Astro.props;
+
+const sliderTranslations: Record<
+  Locale,
+  {
+    readonly sectionLabel: string;
+    readonly prevAria: string;
+    readonly nextAria: string;
+    readonly slideAria: string;
+    readonly slides: readonly SlideItem[];
+  }
+> = {
+  uk: {
+    sectionLabel: "Галерея клініки та простору",
+    prevAria: "Попередній слайд",
+    nextAria: "Наступний слайд",
+    slideAria: "Слайд",
+    slides: [
+      {
+        image: "/images/artificial/heroslider/new_logo.jpg",
+        badge: "Med.uz.ua",
+        title: "Офтальмологічний центр в Ужгороді",
+        subtitle: "Професійна діагностика зору, консультації та індивідуальний підхід",
+      },
+      {
+        image: "/images/artificial/heroslider/logo_oft1.png",
+        badge: "Офтальмологія",
+        title: "Турбота про ваш зір",
+        subtitle: "Сучасний підхід до діагностики, профілактики та корекції зору",
+      },
+      {
+        image: "/images/artificial/heroslider/logo+eye good header.JPG",
+        badge: "Здоровий зір",
+        title: "Увага до кожної деталі",
+        subtitle: "Комплексне обстеження та професійна допомога для здоров'я ваших очей",
+      },
+      {
+        image: "/images/artificial/heroslider/good eye phoro face.jpg",
+        badge: "Точна діагностика",
+        title: "Зір, якому можна довіряти",
+        subtitle: "Персональний підхід та сучасна офтальмологічна практика",
+      },
+      {
+        image: "/images/artificial/heroslider/clinic-view3.jpg",
+        badge: "Клінічний досвід",
+        title: "Персональна увага до кожного пацієнта",
+        subtitle: "Понад 20 років досвіду щоденної лікарської практики та турботи про зір",
+      },
+      {
+        image: "/images/artificial/heroslider/clinic-view2.jpg",
+        badge: "Точна діагностика",
+        title: "Високоточне діагностичне обладнання",
+        subtitle: "Комплексна оцінка гостроти зору, сітківки та оптичних середовищ",
+      },
+      {
+        image: "/images/artificial/heroslider/clinic-view1.jpg",
+        badge: "Простір клініки",
+        title: "Сучасна офтальмологія в Ужгороді",
+        subtitle: "Європейські протоколи обстеження та комфортна атмосфера для пацієнтів",
+      },
+    ],
+  },
+
+  en: {
+    sectionLabel: "Clinic Space Gallery",
+    prevAria: "Previous slide",
+    nextAria: "Next slide",
+    slideAria: "Slide",
+    slides: [
+      {
+        image: "/images/artificial/heroslider/new_logo.jpg",
+        badge: "Med.uz.ua",
+        title: "Ophthalmology Center in Uzhhorod",
+        subtitle: "Professional eye diagnostics, consultations and personalized care",
+      },
+      {
+        image: "/images/artificial/heroslider/logo_oft1.png",
+        badge: "Ophthalmology",
+        title: "Care for Your Vision",
+        subtitle: "A modern approach to eye diagnostics, prevention and vision correction",
+      },
+      {
+        image: "/images/artificial/heroslider/logo+eye good header.JPG",
+        badge: "Healthy Vision",
+        title: "Attention to Every Detail",
+        subtitle: "Comprehensive examinations and professional care for your eye health",
+      },
+      {
+        image: "/images/artificial/heroslider/good eye phoro face.jpg",
+        badge: "Precision Care",
+        title: "Vision You Can Rely On",
+        subtitle: "Personalized attention and modern ophthalmic practice",
+      },
+      {
+        image: "/images/artificial/heroslider/clinic-view3.jpg",
+        badge: "Clinical Heritage",
+        title: "Dedicated Personal Attention",
+        subtitle: "Over 20 years of medical practice and committed patient care",
+      },
+      {
+        image: "/images/artificial/heroslider/clinic-view2.jpg",
+        badge: "Precision Care",
+        title: "High-Precision Examination Tools",
+        subtitle: "Comprehensive digital evaluation of visual acuity and retinal health",
+      },
+      {
+        image: "/images/artificial/heroslider/clinic-view1.jpg",
+        badge: "Clinic Space",
+        title: "Modern Ophthalmology in Uzhhorod",
+        subtitle: "European diagnostic standards and a welcoming clinical environment",
+      },
+    ],
+  },
+
+  sk: {
+    sectionLabel: "Galéria priestorov kliniky",
+    prevAria: "Predchádzajúci snímok",
+    nextAria: "Nasledujúci snímok",
+    slideAria: "Snímok",
+    slides: [
+      {
+        image: "/images/artificial/heroslider/new_logo.jpg",
+        badge: "Med.uz.ua",
+        title: "Oftalmologické centrum v Užhorode",
+        subtitle: "Profesionálna diagnostika zraku, konzultácie a individuálny prístup",
+      },
+      {
+        image: "/images/artificial/heroslider/logo_oft1.png",
+        badge: "Oftalmológia",
+        title: "Starostlivosť o váš zrak",
+        subtitle: "Moderný prístup k diagnostike, prevencii a korekcii zraku",
+      },
+      {
+        image: "/images/artificial/heroslider/logo+eye good header.JPG",
+        badge: "Zdravý zrak",
+        title: "Pozornosť ku každému detailu",
+        subtitle: "Komplexné vyšetrenie a profesionálna starostlivosť o zdravie očí",
+      },
+      {
+        image: "/images/artificial/heroslider/good eye phoro face.jpg",
+        badge: "Presná diagnostika",
+        title: "Zrak, na ktorý sa môžete spoľahnúť",
+        subtitle: "Individuálny prístup a moderná oftalmologická prax",
+      },
+      {
+        image: "/images/artificial/heroslider/clinic-view3.jpg",
+        badge: "Klinická prax",
+        title: "Osobná starostlivosť o každého pacienta",
+        subtitle: "Viac ako 20 rokov skúseností a lekárskej praxe",
+      },
+      {
+        image: "/images/artificial/heroslider/clinic-view2.jpg",
+        badge: "Presná diagnostika",
+        title: "Špičkové prístrojové vybavenie",
+        subtitle: "Komplexné hodnotenie zrakových funkcií a očného pozadia",
+      },
+      {
+        image: "/images/artificial/heroslider/clinic-view1.jpg",
+        badge: "Priestor kliniky",
+        title: "Moderná oftalmológia v Užhorode",
+        subtitle: "Európske vyšetrovacie štandardy a komfortné prostredie pre pacientov",
+      },
+    ],
+  },
+
+  hu: {
+    sectionLabel: "Klinika galéria",
+    prevAria: "Előző dia",
+    nextAria: "Következő dia",
+    slideAria: "Dia",
+    slides: [
+      {
+        image: "/images/artificial/heroslider/new_logo.jpg",
+        badge: "Med.uz.ua",
+        title: "Szemészeti központ Ungváron",
+        subtitle: "Professzionális látásvizsgálat, konzultáció és személyre szabott ellátás",
+      },
+      {
+        image: "/images/artificial/heroslider/logo_oft1.png",
+        badge: "Szemészet",
+        title: "Gondoskodás a látásáról",
+        subtitle: "Korszerű szemészeti diagnosztika, megelőzés és látáskorrekció",
+      },
+      {
+        image: "/images/artificial/heroslider/logo+eye good header.JPG",
+        badge: "Egészséges látás",
+        title: "Figyelem minden részletre",
+        subtitle: "Átfogó szemvizsgálat és professzionális gondoskodás",
+      },
+      {
+        image: "/images/artificial/heroslider/good eye phoro face.jpg",
+        badge: "Precíziós vizsgálat",
+        title: "Látás, amelyben megbízhat",
+        subtitle: "Személyre szabott figyelem és korszerű szemészeti gyakorlat",
+      },
+      {
+        image: "/images/artificial/heroslider/clinic-view3.jpg",
+        badge: "Klinikai tapasztalat",
+        title: "Személyre szabott figyelem és gondoskodás",
+        subtitle: "Több mint 20 év szakorvosi gyakorlat és elhivatottság",
+      },
+      {
+        image: "/images/artificial/heroslider/clinic-view2.jpg",
+        badge: "Precíziós vizsgálat",
+        title: "Nagy pontosságú orvosi berendezések",
+        subtitle: "A látásélesség és a szemfenék átfogó digitális értékelése",
+      },
+      {
+        image: "/images/artificial/heroslider/clinic-view1.jpg",
+        badge: "Klinikai környezet",
+        title: "Korszerű szemészet Ungváron",
+        subtitle: "Európai szintű vizsgálati protokollok és kényelmes környezet",
+      },
+    ],
+  },
+};
+
+const localized = sliderTranslations[locale] ?? sliderTranslations.uk;
+---
+
+<section
+  class="relative min-w-0 overflow-hidden border-b border-border bg-primary text-primary-foreground"
+  aria-roledescription="carousel"
+  aria-label={localized.sectionLabel}
+  data-hero-slider
+>
+  <div class="relative h-[380px] w-full sm:h-[460px] lg:h-[540px] xl:h-[600px]">
+    {
+      localized.slides.map((slide, index) => (
+        <article
+          class={`absolute inset-0 transition-opacity duration-1000 ease-in-out ${
+            index === 0
+              ? "z-10 opacity-100"
+              : "pointer-events-none z-0 opacity-0"
+          }`}
+          data-slider-slide={index}
+          aria-hidden={index === 0 ? "false" : "true"}
+        >
+          <img
+            class="size-full scale-100 object-cover object-center transition-transform duration-[6000ms] ease-out"
+            src={slide.image}
+            alt={`${slide.badge} — ${slide.title}`}
+            loading={index === 0 ? "eager" : "lazy"}
+            fetchpriority={index === 0 ? "high" : "auto"}
+            decoding="async"
+            data-slide-image
+          />
+
+          <div
+            class="absolute inset-0 bg-gradient-to-t from-primary/95 via-primary/50 to-primary/20"
+            aria-hidden="true"
+          />
+
+          <div
+            class="absolute inset-0 bg-gradient-to-r from-primary/90 via-primary/40 to-transparent"
+            aria-hidden="true"
+          />
+
+          <Container class="relative z-10 flex h-full flex-col justify-end pb-12 pt-16 sm:pb-16 lg:pb-20">
+            <div class="max-w-3xl">
+              <span class="inline-flex items-center gap-2.5 text-xs font-semibold uppercase tracking-[0.24em] text-accent">
+                <span
+                  class="size-1.5 animate-pulse rounded-full bg-accent"
+                  aria-hidden="true"
+                />
+                {slide.badge}
+              </span>
+
+              <h3 class="mt-3 text-balance font-serif text-2xl font-medium leading-[1.08] tracking-[-0.02em] text-primary-foreground sm:text-4xl lg:text-5xl">
+                {slide.title}
+              </h3>
+
+              <p class="mt-3 max-w-xl text-sm leading-6 text-primary-foreground/80 sm:text-base sm:leading-7">
+                {slide.subtitle}
+              </p>
+            </div>
+          </Container>
+        </article>
+      ))
+    }
+
+    <Container class="pointer-events-none absolute inset-x-0 bottom-6 z-20 flex items-center justify-between sm:bottom-8 lg:bottom-10">
+      <div
+        class="pointer-events-auto flex items-center gap-2"
+        data-slider-dots
+      >
+        {
+          localized.slides.map((_, index) => (
+            <button
+              type="button"
+              class={`h-1.5 rounded-full transition-all duration-500 focus:outline-none focus-visible:ring-2 focus-visible:ring-accent ${
+                index === 0
+                  ? "w-8 bg-accent"
+                  : "w-2 bg-primary-foreground/40 hover:bg-primary-foreground/75"
+              }`}
+              data-slider-dot={index}
+              aria-label={`${localized.slideAria} ${index + 1}`}
+            />
+          ))
+        }
+      </div>
+
+      <div class="pointer-events-auto flex items-center gap-3">
+        <button
+          type="button"
+          class="flex size-11 items-center justify-center rounded-full border border-primary-foreground/25 bg-primary/60 text-primary-foreground backdrop-blur-md transition-all duration-300 hover:border-accent hover:bg-accent hover:text-foreground focus:outline-none focus-visible:ring-2 focus-visible:ring-accent"
+          data-slider-prev
+          aria-label={localized.prevAria}
+        >
+          <svg
+            class="size-4.5"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+            stroke-width="2"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              d="M15.75 19.5L8.25 12l7.5-7.5"
+            />
+          </svg>
+        </button>
+
+        <button
+          type="button"
+          class="flex size-11 items-center justify-center rounded-full border border-primary-foreground/25 bg-primary/60 text-primary-foreground backdrop-blur-md transition-all duration-300 hover:border-accent hover:bg-accent hover:text-foreground focus:outline-none focus-visible:ring-2 focus-visible:ring-accent"
+          data-slider-next
+          aria-label={localized.nextAria}
+        >
+          <svg
+            class="size-4.5"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+            stroke-width="2"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              d="M8.25 4.5l7.5 7.5-7.5 7.5"
+            />
+          </svg>
+        </button>
+      </div>
+    </Container>
+  </div>
+</section>
+
+<script>
+  function initializeHeroSliders(): void {
+    const sliders =
+      document.querySelectorAll<HTMLElement>("[data-hero-slider]");
+
+    sliders.forEach((slider) => {
+      if (slider.dataset.bound === "true") return;
+      slider.dataset.bound = "true";
+
+      const slides =
+        slider.querySelectorAll<HTMLElement>("[data-slider-slide]");
+
+      const dots =
+        slider.querySelectorAll<HTMLButtonElement>("[data-slider-dot]");
+
+      const prevBtn =
+        slider.querySelector<HTMLButtonElement>("[data-slider-prev]");
+
+      const nextBtn =
+        slider.querySelector<HTMLButtonElement>("[data-slider-next]");
+
+      if (slides.length <= 1) return;
+
+      const prefersReducedMotion = window.matchMedia(
+        "(prefers-reduced-motion: reduce)",
+      ).matches;
+
+      let activeIndex = 0;
+      let autoplayTimer: number | null = null;
+
+      function render(nextIndex: number): void {
+        slides.forEach((slide, idx) => {
+          const img =
+            slide.querySelector<HTMLImageElement>("[data-slide-image]");
+
+          if (idx === nextIndex) {
+            slide.classList.remove(
+              "opacity-0",
+              "pointer-events-none",
+              "z-0",
+            );
+
+            slide.classList.add("opacity-100", "z-10");
+            slide.setAttribute("aria-hidden", "false");
+
+            if (img && !prefersReducedMotion) {
+              img.classList.add("scale-105");
+            }
+          } else {
+            slide.classList.remove("opacity-100", "z-10");
+
+            slide.classList.add(
+              "opacity-0",
+              "pointer-events-none",
+              "z-0",
+            );
+
+            slide.setAttribute("aria-hidden", "true");
+
+            if (img) {
+              img.classList.remove("scale-105");
+            }
+          }
+        });
+
+        dots.forEach((dot, idx) => {
+          if (idx === nextIndex) {
+            dot.className =
+              "h-1.5 w-8 rounded-full bg-accent transition-all duration-500 focus:outline-none focus-visible:ring-2 focus-visible:ring-accent";
+          } else {
+            dot.className =
+              "h-1.5 w-2 rounded-full bg-primary-foreground/40 hover:bg-primary-foreground/75 transition-all duration-500 focus:outline-none focus-visible:ring-2 focus-visible:ring-accent";
+          }
+        });
+
+        activeIndex = nextIndex;
+      }
+
+      function goNext(): void {
+        render((activeIndex + 1) % slides.length);
+      }
+
+      function goPrev(): void {
+        render((activeIndex - 1 + slides.length) % slides.length);
+      }
+
+      function stopAutoplay(): void {
+        if (autoplayTimer !== null) {
+          window.clearInterval(autoplayTimer);
+          autoplayTimer = null;
+        }
+      }
+
+      function startAutoplay(): void {
+        if (prefersReducedMotion) return;
+
+        stopAutoplay();
+        autoplayTimer = window.setInterval(goNext, 5500);
+      }
+
+      nextBtn?.addEventListener("click", () => {
+        goNext();
+        startAutoplay();
+      });
+
+      prevBtn?.addEventListener("click", () => {
+        goPrev();
+        startAutoplay();
+      });
+
+      dots.forEach((dot, idx) => {
+        dot.addEventListener("click", () => {
+          render(idx);
+          startAutoplay();
+        });
+      });
+
+      slider.addEventListener("mouseenter", stopAutoplay);
+      slider.addEventListener("mouseleave", startAutoplay);
+      slider.addEventListener("focusin", stopAutoplay);
+      slider.addEventListener("focusout", startAutoplay);
+
+      render(0);
+      startAutoplay();
+    });
+  }
+
+  initializeHeroSliders();
+
+  document.addEventListener(
+    "astro:page-load",
+    initializeHeroSliders,
+  );
+</script>

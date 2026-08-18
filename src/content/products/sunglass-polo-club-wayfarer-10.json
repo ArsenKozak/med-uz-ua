@@ -5,8 +5,8 @@
   "brand": "Polo Club",
   "priceMinor": 270000,
   "currency": "UAH",
-  "image": "/images/artificial/shop-editorial-eyewear.jpg",
-  "imageKind": "editorial",
+  "image": "/images/shop/sunglasses/sunglass-polo-club-wayfarer-10.jpg",
+  "imageKind": "product",
   "inStock": true,
   "status": "active",
   "verificationStatus": "verified"

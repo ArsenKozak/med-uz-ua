@@ -24,6 +24,8 @@ interface Props {
 }
 
 const { locale } = Astro.props;
+const SHOW_SPECIAL_PROGRAMS = false;
+
 const callAriaLabel = t(locale, "services.callAria").replace(
   "{phone}",
   clinicContact.phoneDisplay,
@@ -36,59 +38,80 @@ const specializations = getSpecializations(locale);
 
 const specializationCopy = {
   uk: {
-    eyebrow: "Три напрямки",
-    title: "Клінічна увага на кожному етапі.",
+    eyebrow: "Напрямки допомоги",
+    title: "Клінічна увага та турбота про зір",
     intro:
-      "Це навігаційний огляд підтверджених напрямків, а не обіцянка результату чи заміна індивідуальної консультації.",
+      "Від первинного огляду немовлят і школярів до високої апаратної діагностики та підбору медичної оптики для всієї родини.",
   },
   en: {
-    eyebrow: "Three areas",
-    title: "Clinical attention at every stage.",
+    eyebrow: "Clinical Care",
+    title: "Dedicated Attention at Every Stage",
     intro:
-      "This is a navigational overview of confirmed areas, not an outcome promise or a substitute for individual consultation.",
+      "From pediatric vision screening to advanced hardware diagnostics and customized medical optical correction.",
   },
   sk: {
-    eyebrow: "Tri oblasti",
-    title: "Klinická pozornosť v každej fáze.",
+    eyebrow: "Oblasti starostlivosti",
+    title: "Klinická pozornosť v každej fáze",
     intro:
-      "Ide o navigačný prehľad potvrdených oblastí, nie o sľub výsledku ani náhradu individuálnej konzultácie.",
+      "Od preventívnych vyšetrení detí po pokročilú prístrojovú diagnostiku a výber zdravotníckej optiky.",
   },
   hu: {
-    eyebrow: "Három terület",
-    title: "Klinikai figyelem minden szakaszban.",
+    eyebrow: "Szakterületek",
+    title: "Szakértő gondoskodás minden szakaszban",
     intro:
-      "Ez a megerősített területek navigációs áttekintése, nem eredményígéret és nem helyettesíti az egyéni konzultációt.",
+      "A gyermekek látásvizsgálatától a korszerű műszeres szemészeti diagnosztikáig és optikai korrekcióig.",
   },
 } as const;
 const specializationHeading = specializationCopy[locale];
+
 const physicianCollageCopy = {
   uk: {
-    eyebrow: "Клінічна присутність",
+    eyebrow: "Головний лікар",
     title: chiefPhysician.name,
-    body: "Засновниця та головна лікарка. Публікуємо лише підтверджену роль і фотографії, надані власником клініки.",
-    portraitAlt: `${chiefPhysician.name}, портрет`,
-    contextAlt: "Офтальмологічне обстеження в клінічному кабінеті",
+    badge: "Понад 20 років досвіду",
+    role: "Засновниця та провідний лікар-офтальмолог",
+    body: "Понад 20 років щоденної лікарської практики в офтальмології (з 2004 року). Поєднання академічного клінічного досвіду, сучасних європейських протоколів діагностики та щирої персональної турботи про зір кожного пацієнта.",
+    feature1: "Експертна дитяча та доросла діагностика",
+    feature2: "Складна оптична корекція та контроль міопії",
+    feature3: "Індивідуальний супровід та консультації",
+    portraitAlt: `${chiefPhysician.name}, головний лікар клініки`,
+    contextAlt: "Мирослава Леньо під час консультативного прийому в кабінеті",
   },
   en: {
-    eyebrow: "Clinical presence",
+    eyebrow: "Chief Physician",
     title: chiefPhysician.name,
-    body: "Founder and Chief Physician. Only the confirmed role and photographs supplied by the clinic owner are presented here.",
-    portraitAlt: `${chiefPhysician.name}, portrait`,
-    contextAlt: "An ophthalmic examination in a clinical office",
+    badge: "Over 20 years of practice",
+    role: "Founder & Lead Ophthalmologist",
+    body: "More than 20 years of continuous clinical ophthalmology practice since 2004. Combining deep medical expertise, advanced European diagnostic standards, and attentive patient care.",
+    feature1: "Expert pediatric and adult eye diagnostics",
+    feature2: "Precision optical correction & myopia management",
+    feature3: "Tailored treatment plan for every patient",
+    portraitAlt: `${chiefPhysician.name}, Chief Physician`,
+    contextAlt: "Dr. Miroslava Leno in the clinical office",
   },
   sk: {
-    eyebrow: "Klinická prítomnosť",
+    eyebrow: "Hlavná lekárka",
     title: chiefPhysician.name,
-    body: "Zakladateľka a hlavná lekárka. Uvádzame iba potvrdenú úlohu a fotografie poskytnuté majiteľom kliniky.",
-    portraitAlt: `${chiefPhysician.name}, portrét`,
-    contextAlt: "Oftalmologické vyšetrenie v klinickej ambulancii",
+    badge: "Viac ako 20 rokov praxe",
+    role: "Zakladateľka a vedúca oftalmologička",
+    body: "Viac ako 20 rokov lekárskej praxe v oftalmológii (od roku 2004). Spojenie odbornej expertízy, moderných európskych diagnostických štandardov a osobného prístupu.",
+    feature1: "Odborná detská a dospelá diagnostika",
+    feature2: "Zložitá optická korekcia a kontrola krátkozrakosti",
+    feature3: "Individuálny prístup ku každému pacientovi",
+    portraitAlt: `${chiefPhysician.name}, hlavná lekárka`,
+    contextAlt: "Dr. Miroslava Leno v ambulancii",
   },
   hu: {
-    eyebrow: "Klinikai jelenlét",
+    eyebrow: "Főorvos",
     title: chiefPhysician.name,
-    body: "Alapító és főorvos. Itt kizárólag a megerősített szerepkör és a klinika tulajdonosa által biztosított fényképek láthatók.",
-    portraitAlt: `${chiefPhysician.name}, portré`,
-    contextAlt: "Szemészeti vizsgálat egy klinikai rendelőben",
+    badge: "Több mint 20 év tapasztalat",
+    role: "Alapító és vezető szemészorvos",
+    body: "Több mint 20 év folyamatos szemészeti gyakorlat (2004 óta). A szakmai tapasztalat, a modern európai diagnosztika és a páciensközpontú gondoskodás ötvözete.",
+    feature1: "Szakértő gyermek- és felnőtt szemészeti vizsgálat",
+    feature2: "Precíziós optikai korrekció és kezelés",
+    feature3: "Személyre szabott terápiás terv",
+    portraitAlt: `${chiefPhysician.name}, főorvos`,
+    contextAlt: "Dr. Miroszlava Lényó a rendelőben",
   },
 } as const;
 const physicianCopy = physicianCollageCopy[locale];
@@ -99,88 +122,99 @@ const physicianCopy = physicianCollageCopy[locale];
   description={t(locale, "seo.services.description")}
   locale={locale}
 >
-  <header class="border-b border-border bg-background py-16 sm:py-20 lg:py-28">
+  <!-- Hero Section -->
+  <header class="border-b border-primary-foreground/15 bg-primary py-16 text-primary-foreground sm:py-20 lg:py-28">
     <Container
       class="grid gap-10 lg:grid-cols-12 lg:items-end lg:gap-16"
       data-reveal
     >
       <div class="min-w-0 lg:col-span-8">
-        <p class="text-xs font-semibold uppercase tracking-[0.24em] text-primary">
+        <p class="text-xs font-semibold uppercase tracking-[0.24em] text-accent">
           {t(locale, "services.heroEyebrow")}
         </p>
-        <h1 class="mt-6 max-w-[14ch] min-w-0 break-words text-balance text-[clamp(2.5rem,12vw,4.5rem)] font-medium leading-[0.98] tracking-[-0.035em] text-foreground">
+        <h1 class="mt-6 max-w-[14ch] min-w-0 break-words text-balance text-[clamp(2.5rem,12vw,4.5rem)] font-medium leading-[0.98] tracking-[-0.035em] text-primary-foreground">
           {t(locale, "services.heroTitle")}
         </h1>
       </div>
 
       <div class="lg:col-span-4">
-        <p class="max-w-xl text-base leading-7 text-muted-foreground">
+        <p class="max-w-xl text-base leading-7 text-primary-foreground/80">
           {t(locale, "services.heroIntro")}
         </p>
-        <a
-          class="focus-ring-primary mt-6 inline-flex min-h-11 items-center border-b border-primary text-sm font-semibold text-primary transition-colors hover:border-accent hover:text-primary/80"
-          href={localizePath("/services/programs", locale)}
-        >
-          {t(locale, "services.programsLink")}
-        </a>
+        {SHOW_SPECIAL_PROGRAMS && (
+          <a
+            class="focus-ring-primary mt-6 inline-flex min-h-11 items-center border-b border-primary-foreground/40 text-sm font-semibold text-primary-foreground transition-colors hover:border-accent hover:text-accent"
+            href={localizePath("/services/programs", locale)}
+          >
+            {t(locale, "services.programsLink")}
+          </a>
+        )}
       </div>
     </Container>
   </header>
 
+  <!-- Три напрямки допомоги -->
   <section
     class="border-b border-border bg-background py-16 sm:py-20 lg:py-28"
     aria-labelledby="specializations-heading"
   >
     <Container>
-      <div class="grid min-w-0 gap-8 lg:grid-cols-12 lg:items-end lg:gap-14">
+      <div class="grid min-w-0 gap-8 lg:grid-cols-12 lg:items-end lg:gap-14" data-reveal>
         <div class="min-w-0 lg:col-span-8">
-          <p class="text-xs font-semibold uppercase tracking-[0.22em] text-primary">
+          <p class="text-xs font-semibold uppercase tracking-[0.22em] text-primary/80">
             {specializationHeading.eyebrow}
           </p>
           <h2
             id="specializations-heading"
-            class="mt-5 max-w-3xl break-words text-balance text-4xl font-medium leading-tight tracking-[-0.025em] sm:text-5xl"
+            class="mt-4 max-w-3xl font-serif text-3xl font-medium leading-tight tracking-[-0.025em] text-foreground sm:text-4xl lg:text-5xl"
           >
             {specializationHeading.title}
           </h2>
         </div>
-        <p class="min-w-0 max-w-xl text-sm leading-7 text-muted-foreground sm:text-base lg:col-span-4">
+        <p class="min-w-0 max-w-xl text-sm leading-7 text-foreground/70 sm:text-base lg:col-span-4">
           {specializationHeading.intro}
         </p>
       </div>
 
-      <div class="mt-10 grid min-w-0 gap-px bg-border lg:mt-14 lg:grid-cols-3">
+      <div class="mt-12 grid min-w-0 gap-6 sm:grid-cols-2 lg:mt-16 lg:grid-cols-3">
         {
           specializations.map((specialization, index) => (
-            <article class="group min-w-0 bg-card">
-              <figure class="overflow-hidden bg-muted">
+            <article class="group flex flex-col justify-between overflow-hidden rounded-lg border border-border bg-card shadow-sm transition-all duration-300 hover:-translate-y-1 hover:border-accent/50 hover:shadow-md">
+              <figure class="relative aspect-[16/11] overflow-hidden bg-muted">
                 <img
-                  class="aspect-[4/3] h-auto w-full object-cover transition-transform duration-500 motion-safe:group-hover:scale-[1.015]"
-                  src={specialization.image.src}
+                  class="size-full object-cover transition-transform duration-700 ease-out group-hover:scale-105"
+                  src={typeof specialization.image === "string" ? specialization.image : specialization.image.src}
                   width={specialization.image.width}
                   height={specialization.image.height}
                   alt={specialization.imageAlt}
                   loading="lazy"
                   decoding="async"
-                  sizes="(min-width: 1024px) 31vw, 100vw"
                 />
+                <div class="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
+                <span class="absolute left-4 top-4 inline-flex items-center rounded bg-primary/90 px-2.5 py-1 text-xs font-semibold tabular-nums tracking-wider text-accent backdrop-blur-sm">
+                  0{index + 1}
+                </span>
               </figure>
-              <div class="min-w-0 p-6 sm:p-8">
-                <div class="flex items-center gap-3 text-primary" aria-hidden="true">
-                  <span class="text-xs font-semibold tabular-nums tracking-[0.18em] text-primary/70">
-                    {String(index + 1).padStart(2, "0")}
-                  </span>
-                  <svg class="size-7" viewBox="0 0 32 32" fill="none">
-                    <circle cx="16" cy="16" r="10.5" stroke="currentColor" stroke-width="1.25" />
-                    <path d="M6 16h20M16 6c3.2 3.2 4.8 6.5 4.8 10S19.2 22.8 16 26c-3.2-3.2-4.8-6.5-4.8-10S12.8 9.2 16 6Z" stroke="currentColor" stroke-width="1.25" />
-                  </svg>
-                </div>
-                <h3 class="mt-4 min-w-0 break-words text-2xl font-medium leading-tight text-card-foreground">
+
+              <div class="flex flex-1 flex-col p-6 sm:p-7">
+                <h3 class="font-serif text-xl font-medium leading-snug text-foreground sm:text-2xl">
                   {specialization.title}
                 </h3>
-                <p class="mt-4 text-sm leading-7 text-muted-foreground">
+                <p class="mt-3 flex-1 text-sm leading-relaxed text-foreground/70">
                   {specialization.description}
                 </p>
+
+                <div class="mt-6 border-t border-[#e8e2d5] pt-4">
+                  <a
+                    href={appointmentHref}
+                    class="inline-flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wider text-primary transition-colors hover:text-accent"
+                  >
+                    <span>{t(locale, "actions.bookShort")}</span>
+                    <svg class="size-3.5 transition-transform duration-200 group-hover:translate-x-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                    </svg>
+                  </a>
+                </div>
               </div>
             </article>
           ))
@@ -189,90 +223,119 @@ const physicianCopy = physicianCollageCopy[locale];
     </Container>
   </section>
 
-  <section class="border-b border-border bg-muted py-16 sm:py-20 lg:py-28" aria-labelledby="services-physician-heading">
-    <Container class="grid min-w-0 gap-10 lg:grid-cols-12 lg:items-center lg:gap-14">
-      <div class="grid min-w-0 grid-cols-12 items-end gap-3 sm:gap-5 lg:col-span-7">
-        <figure class="col-span-7 min-w-0 overflow-hidden bg-card">
+  <!-- Секція головного лікаря -->
+  <section class="border-b border-border bg-card py-16 sm:py-20 lg:py-28" aria-labelledby="services-physician-heading">
+    <Container class="grid min-w-0 gap-12 lg:grid-cols-12 lg:items-center lg:gap-16">
+      <!-- Фотокомпозиція з бейджем -->
+      <div class="relative min-w-0 max-w-md mx-auto lg:max-w-none lg:col-span-5" data-reveal>
+        <figure class="overflow-hidden rounded-xl border border-border/80 bg-white shadow-lg">
           <img
-            class="aspect-[4/5] h-auto w-full object-cover object-center"
+            class="aspect-[4/5] size-full object-cover object-top"
             src={clinicImageAssets.doctorPortrait.src}
             width={clinicImageAssets.doctorPortrait.width}
             height={clinicImageAssets.doctorPortrait.height}
             alt={physicianCopy.portraitAlt}
             loading="lazy"
             decoding="async"
-            sizes="(min-width: 1024px) 35vw, 58vw"
           />
         </figure>
-        <figure class="col-span-5 min-w-0 overflow-hidden bg-card pb-5 sm:pb-10">
-          <img
-            class="aspect-square h-auto w-full object-cover object-center"
-            src={clinicImageAssets.doctorInCabinet.src}
-            width={clinicImageAssets.doctorInCabinet.width}
-            height={clinicImageAssets.doctorInCabinet.height}
-            alt={physicianCopy.contextAlt}
-            loading="lazy"
-            decoding="async"
-            sizes="(min-width: 1024px) 24vw, 38vw"
-          />
-        </figure>
+
+        <div class="absolute -bottom-4 left-6 inline-flex items-center gap-2.5 rounded-full border border-primary/20 bg-primary px-5 py-2 text-xs font-semibold text-primary-foreground shadow-xl">
+          <span class="size-2 rounded-full bg-accent animate-pulse" />
+          <span>{physicianCopy.badge}</span>
+        </div>
       </div>
 
-      <div class="min-w-0 lg:col-span-5">
-        <p class="text-xs font-semibold uppercase tracking-[0.22em] text-primary">
+      <!-- Інформаційний блок -->
+      <div class="min-w-0 lg:col-span-7 lg:pl-6" data-reveal>
+        <p class="text-xs font-semibold uppercase tracking-[0.24em] text-accent">
           {physicianCopy.eyebrow}
         </p>
-        <h2 id="services-physician-heading" class="mt-5 min-w-0 break-words text-balance text-4xl font-medium leading-tight tracking-[-0.025em] sm:text-5xl">
+        <h2 id="services-physician-heading" class="mt-3 font-serif text-3xl font-medium tracking-tight text-primary sm:text-4xl lg:text-5xl">
           {physicianCopy.title}
         </h2>
-        <p class="mt-6 max-w-lg text-sm leading-7 text-muted-foreground sm:text-base">
+        <p class="mt-1 text-sm font-semibold text-foreground/70">
+          {physicianCopy.role}
+        </p>
+
+        <p class="mt-6 text-sm leading-7 text-foreground/80 sm:text-base sm:leading-8">
           {physicianCopy.body}
         </p>
+
+        <!-- Переваги / Напрямки лікаря -->
+        <ul class="mt-6 space-y-2.5 border-t border-[#e8e2d5] pt-6">
+          <li class="flex items-center gap-3 text-sm text-foreground/85">
+            <svg class="size-4.5 shrink-0 text-accent" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5" />
+            </svg>
+            <span>{physicianCopy.feature1}</span>
+          </li>
+          <li class="flex items-center gap-3 text-sm text-foreground/85">
+            <svg class="size-4.5 shrink-0 text-accent" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5" />
+            </svg>
+            <span>{physicianCopy.feature2}</span>
+          </li>
+          <li class="flex items-center gap-3 text-sm text-foreground/85">
+            <svg class="size-4.5 shrink-0 text-accent" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5" />
+            </svg>
+            <span>{physicianCopy.feature3}</span>
+          </li>
+        </ul>
+
+        <div class="mt-8 flex flex-wrap gap-4">
+          <a
+            class="focus-ring-primary inline-flex min-h-12 items-center justify-center rounded-sm bg-primary px-6 text-sm font-semibold text-primary-foreground transition-colors hover:bg-primary/90"
+            href={appointmentHref}
+          >
+            {t(locale, "actions.bookConsultation")}
+          </a>
+          <a
+            class="focus-ring-primary inline-flex min-h-12 items-center justify-center rounded-sm border border-border px-6 text-sm font-semibold text-primary transition-colors hover:border-primary hover:bg-muted"
+            href={clinicContact.phoneHref}
+            aria-label={callAriaLabel}
+          >
+            {clinicContact.phoneDisplay}
+          </a>
+        </div>
       </div>
     </Container>
   </section>
 
-  <section
-    class="bg-background py-16 sm:py-20 lg:py-28"
-    aria-labelledby="price-list-heading"
-  >
-    <Container>
-      <div
-        class="grid gap-6 border-b border-border pb-8 lg:grid-cols-12 lg:items-end"
-        data-reveal
+  <!-- Прайс-лист: Повнорозмірний смарагдовий банер -->
+  <section class="border-y border-primary-foreground/15 bg-primary py-12 sm:py-16 text-primary-foreground" aria-labelledby="price-list-heading">
+    <Container data-reveal>
+      <p class="text-xs font-semibold uppercase tracking-[0.24em] text-accent">
+        {t(locale, "services.listEyebrow")}
+      </p>
+      <h2
+        id="price-list-heading"
+        class="mt-2 font-serif text-3xl font-medium tracking-tight text-primary-foreground sm:text-4xl lg:text-5xl"
       >
-        <div class="lg:col-span-7">
-          <p class="text-xs font-semibold uppercase tracking-[0.22em] text-primary">
-            {t(locale, "services.listEyebrow")}
-          </p>
-          <h2
-            id="price-list-heading"
-            class="mt-4 text-balance text-3xl font-medium tracking-tight text-foreground sm:text-4xl"
-          >
-            {t(locale, "services.listTitle")}
-          </h2>
-        </div>
-        <p class="max-w-lg text-sm leading-6 text-muted-foreground lg:col-span-5 lg:justify-self-end">
-          {t(locale, "services.listIntro")}
-        </p>
-      </div>
+        {t(locale, "services.listTitle")}
+      </h2>
+    </Container>
+  </section>
 
+  <!-- Прайс-лист: Каталог послуг на теплому фоні Ivory -->
+  <section class="border-b border-[#e8e2d5] bg-[#faf8f5] py-16 sm:py-20 lg:py-28" aria-label={t(locale, "services.listTitle")}>
+    <Container>
       {
         showTranslationFallback && (
-          <p class="mt-6 max-w-3xl border-l-2 border-accent pl-4 text-sm leading-6 text-muted-foreground">
+          <p class="mb-10 max-w-3xl border-l-2 border-accent pl-4 text-sm leading-6 text-foreground/70">
             {t(locale, "services.translationFallbackNote")}
           </p>
         )
       }
 
-      <div class="min-w-0 divide-y divide-border">
+      <div class="min-w-0 divide-y divide-[#e8e2d5]">
         {
           medicalPriceGroups.map((group, groupIndex) => (
             <section
               class="grid gap-7 py-10 sm:py-12 lg:grid-cols-12 lg:gap-12"
               aria-labelledby={`service-group-${groupIndex}`}
               data-reveal
-              data-optical-scan={group.category === "diagnostics" ? "" : undefined}
             >
               <div class="lg:col-span-4">
                 <p class="text-xs font-semibold tabular-nums tracking-[0.18em] text-primary/70">
@@ -280,39 +343,39 @@ const physicianCopy = physicianCollageCopy[locale];
                 </p>
                 <h3
                   id={`service-group-${groupIndex}`}
-                  class="mt-3 max-w-sm text-2xl font-medium leading-tight text-foreground sm:text-3xl"
+                  class="mt-3 max-w-sm font-serif text-2xl font-medium leading-tight text-primary sm:text-3xl"
                 >
                   {t(locale, group.titleKey)}
                 </h3>
               </div>
 
-              <dl class="divide-y divide-border border-t border-border lg:col-span-8">
+              <dl class="divide-y divide-[#e8e2d5] border-t border-[#e8e2d5] lg:col-span-8">
                 {group.items.map((item) => (
                   <div
                     data-medical-price-id={item.id}
-                    class="grid min-w-0 gap-2 py-5 sm:grid-cols-[minmax(0,1fr)_auto] sm:items-baseline sm:gap-8"
+                    class="group grid min-w-0 gap-2 py-4.5 transition-colors hover:bg-muted/40 px-3 -mx-3 rounded sm:grid-cols-[minmax(0,1fr)_auto] sm:items-baseline sm:gap-8"
                   >
                     <dt class="min-w-0 text-sm font-medium leading-6 text-foreground sm:text-base">
                       <span class="flex min-w-0 items-baseline gap-3">
                         <span
-                          class="shrink-0 text-[0.6875rem] font-semibold tabular-nums tracking-[0.12em] text-primary/70"
+                          class="shrink-0 text-[0.6875rem] font-semibold tabular-nums tracking-[0.12em] text-primary/60"
                           aria-hidden="true"
                         >
                           #{String(item.id).padStart(2, "0")}
                         </span>
-                        <span class="min-w-0 break-words">
+                        <span class="min-w-0 break-words group-hover:text-primary transition-colors">
                           {getMedicalServiceDisplayName(item, locale)}
                         </span>
                       </span>
                       {
                         getMedicalServiceDisplayNote(item, locale) && (
-                          <span class="mt-1 block break-words pl-10 text-xs font-normal leading-5 text-muted-foreground">
+                          <span class="mt-1 block break-words pl-8 text-xs font-normal leading-5 text-foreground/70">
                             {getMedicalServiceDisplayNote(item, locale)}
                           </span>
                         )
                       }
                     </dt>
-                    <dd class="whitespace-nowrap pl-10 text-sm font-semibold leading-6 tabular-nums text-foreground sm:pl-0 sm:text-right sm:text-base">
+                    <dd class="whitespace-nowrap pl-8 text-sm font-bold leading-6 tabular-nums text-primary sm:pl-0 sm:text-right sm:text-base">
                       <span class="sr-only">{t(locale, "services.priceLabel")}: </span>
                       {formatMedicalPrice(item.priceUah, locale)}
                     </dd>
@@ -325,16 +388,16 @@ const physicianCopy = physicianCollageCopy[locale];
       </div>
 
       <aside
-        class="grid gap-8 border-y border-border py-8 sm:py-10 lg:grid-cols-12 lg:gap-12"
+        class="mt-8 grid gap-8 border-y border-[#e8e2d5] py-8 sm:py-10 lg:grid-cols-12 lg:gap-12"
         aria-labelledby="price-list-source-heading"
       >
         <div class="lg:col-span-4">
-          <p class="text-xs font-semibold uppercase tracking-[0.22em] text-primary">
+          <p class="text-xs font-semibold uppercase tracking-[0.22em] text-primary/80">
             {t(locale, "services.sourceEyebrow")}
           </p>
           <h3
             id="price-list-source-heading"
-            class="mt-3 max-w-sm text-xl font-medium leading-tight text-foreground sm:text-2xl"
+            class="mt-3 max-w-sm font-serif text-xl font-medium leading-tight text-foreground sm:text-2xl"
           >
             {t(locale, "services.sourceTitle")}
           </h3>
@@ -343,7 +406,7 @@ const physicianCopy = physicianCollageCopy[locale];
         <div class="min-w-0 lg:col-span-8">
           <dl class="grid min-w-0 gap-x-8 gap-y-6 sm:grid-cols-2">
             <div class="min-w-0">
-              <dt class="text-xs font-semibold uppercase tracking-[0.14em] text-muted-foreground">
+              <dt class="text-xs font-semibold uppercase tracking-[0.14em] text-foreground/70">
                 {t(locale, "services.approvedOnLabel")}
               </dt>
               <dd class="mt-2 text-sm leading-6 text-foreground">
@@ -353,7 +416,7 @@ const physicianCopy = physicianCollageCopy[locale];
               </dd>
             </div>
             <div class="min-w-0">
-              <dt class="text-xs font-semibold uppercase tracking-[0.14em] text-muted-foreground">
+              <dt class="text-xs font-semibold uppercase tracking-[0.14em] text-foreground/70">
                 {t(locale, "services.currencyLabel")}
               </dt>
               <dd class="mt-2 text-sm leading-6 text-foreground">
@@ -361,7 +424,7 @@ const physicianCopy = physicianCollageCopy[locale];
               </dd>
             </div>
             <div class="min-w-0">
-              <dt class="text-xs font-semibold uppercase tracking-[0.14em] text-muted-foreground">
+              <dt class="text-xs font-semibold uppercase tracking-[0.14em] text-foreground/70">
                 {t(locale, "services.legalEntityLabel")}
               </dt>
               <dd class="mt-2 break-words text-sm leading-6 text-foreground">
@@ -369,7 +432,7 @@ const physicianCopy = physicianCollageCopy[locale];
               </dd>
             </div>
             <div class="min-w-0">
-              <dt class="text-xs font-semibold uppercase tracking-[0.14em] text-muted-foreground">
+              <dt class="text-xs font-semibold uppercase tracking-[0.14em] text-foreground/70">
                 {t(locale, "services.officialAddressLabel")}
               </dt>
               <dd class="mt-2 break-words text-sm leading-6 text-foreground">
@@ -377,39 +440,12 @@ const physicianCopy = physicianCollageCopy[locale];
               </dd>
             </div>
           </dl>
-
-          <p class="mt-7 max-w-3xl text-xs leading-5 text-muted-foreground">
-            {t(locale, "services.officialWordingNote")}
-          </p>
         </div>
       </aside>
     </Container>
   </section>
 
-  <section class="border-y border-border bg-muted py-16 sm:py-20" aria-labelledby="programs-heading">
-    <Container class="grid gap-8 lg:grid-cols-12 lg:items-center lg:gap-16">
-      <div class="lg:col-span-8">
-        <p class="text-xs font-semibold uppercase tracking-[0.22em] text-primary">
-          {t(locale, "services.programsEyebrow")}
-        </p>
-        <h2
-          id="programs-heading"
-          class="mt-4 max-w-3xl text-balance text-3xl font-medium tracking-tight sm:text-4xl"
-        >
-          {t(locale, "services.programsTitle")}
-        </h2>
-      </div>
-      <div class="lg:col-span-4 lg:justify-self-end">
-        <a
-          class="focus-ring-primary inline-flex min-h-12 items-center border border-primary px-5 text-sm font-semibold text-primary transition-colors hover:bg-primary hover:text-primary-foreground"
-          href={localizePath("/services/programs", locale)}
-        >
-          {t(locale, "services.programsAction")}
-        </a>
-      </div>
-    </Container>
-  </section>
-
+  <!-- Заклик до дії -->
   <section class="bg-primary py-16 text-primary-foreground sm:py-20" aria-labelledby="services-action-heading">
     <Container class="grid gap-10 lg:grid-cols-12 lg:items-end lg:gap-16">
       <div class="lg:col-span-7">
@@ -418,12 +454,12 @@ const physicianCopy = physicianCollageCopy[locale];
         </p>
         <h2
           id="services-action-heading"
-          class="mt-4 max-w-2xl text-balance text-3xl font-medium tracking-tight sm:text-4xl"
+          class="mt-4 max-w-2xl font-serif text-balance text-3xl font-medium tracking-tight sm:text-4xl"
         >
           {t(locale, "services.nextTitle")}
         </h2>
-        <p class="mt-5 max-w-xl text-sm leading-6 text-primary-foreground/65">
-          {t(locale, "services.shopPrompt")} {" "}
+        <p class="mt-5 max-w-xl text-sm leading-6 text-primary-foreground/75">
+          {t(locale, "services.shopPrompt")}{" "}
           <a
             class="border-b border-primary-foreground/35 font-semibold text-primary-foreground transition-colors hover:border-accent hover:text-accent"
             href={localizePath("/shop", locale)}

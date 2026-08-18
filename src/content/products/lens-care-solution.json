@@ -5,8 +5,8 @@
   "brand": "Pending clinic confirmation",
   "priceMinor": 0,
   "currency": "UAH",
-  "image": "/images/artificial/macro-lens-hydration.jpg",
-  "imageKind": "editorial",
+  "image": "/images/shop/care/lens-care-solution.jpg",
+  "imageKind": "product",
   "inStock": false,
   "status": "draft",
   "verificationStatus": "pending-clinic-confirmation"

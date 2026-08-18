@@ -5,8 +5,8 @@
   "brand": "Maxima",
   "priceMinor": 220000,
   "currency": "UAH",
-  "image": "/images/artificial/shop-editorial-eyewear.jpg",
-  "imageKind": "editorial",
+  "image": "/images/shop/sunglasses/sunglass-maxima-polarized-12.webp",
+  "imageKind": "product",
   "inStock": true,
   "status": "active",
   "verificationStatus": "verified"

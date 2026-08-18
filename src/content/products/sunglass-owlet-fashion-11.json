@@ -5,8 +5,8 @@
   "brand": "Owlet",
   "priceMinor": 230000,
   "currency": "UAH",
-  "image": "/images/artificial/shop-editorial-eyewear.jpg",
-  "imageKind": "editorial",
+  "image": "/images/shop/sunglasses/sunglass-owlet-fashion-11.jpg",
+  "imageKind": "product",
   "inStock": true,
   "status": "active",
   "verificationStatus": "verified"

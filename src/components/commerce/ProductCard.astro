@@ -1,14 +1,7 @@
 ---
-import type {
-  ProductCategory,
-  ProductSummary,
-} from "../../lib/cms";
+import type { ProductCategory, ProductSummary } from "../../lib/cms";
 import { formatMoneyMinor } from "../../lib/commerce/money";
-import {
-  defaultLocale,
-  t,
-  type Locale,
-} from "../../lib/i18n";
+import { defaultLocale, localizePath, t, type Locale } from "../../lib/i18n";
 
 interface Props {
   product: ProductSummary;
@@ -24,107 +17,71 @@ const categoryLabels: Record<ProductCategory, string> = {
   care: t(locale, "product.categories.care"),
 };
 
-const isPending =
-  product.verificationStatus === "pending-clinic-confirmation";
-const formattedPrice = formatMoneyMinor(
-  product.priceMinor,
-  product.currency,
-  locale,
-);
-const addToCartLabel = t(locale, "a11y.addProduct").replace(
-  "{product}",
-  product.title,
-);
+const isPending = product.verificationStatus === "pending-clinic-confirmation";
+const formattedPrice = formatMoneyMinor(product.priceMinor, product.currency, locale);
+const addToCartLabel = t(locale, "a11y.addProduct").replace("{product}", product.title);
 const imageKindLabel = t(
   locale,
-  product.imageKind === "product"
-    ? "product.imageProduct"
-    : "product.imageEditorial",
+  product.imageKind === "product" ? "product.imageProduct" : "product.imageEditorial"
 );
-const imageAlt =
-  product.imageKind === "product"
-    ? product.title
-    : `${imageKindLabel} — ${categoryLabels[product.category]}`;
-const productActionLabel = product.inStock
-  ? t(locale, "actions.addToCart")
-  : t(locale, "product.unavailable");
-const productActionAriaLabel = product.inStock
-  ? addToCartLabel
-  : `${product.title} — ${productActionLabel}`;
-const unavailableImageCopy = {
-  uk: "Зображення недоступне. Показано нейтральний заповнювач, а не фото товару.",
-  en: "Image unavailable. A neutral placeholder is shown, not a product photo.",
-  sk: "Obrázok nie je dostupný. Zobrazuje sa neutrálny zástupný prvok, nie fotografia produktu.",
-  hu: "A kép nem érhető el. Semleges helyőrző látható, nem termékfotó.",
-} as const;
+const imageAlt = product.imageKind === "product" ? product.title : `${imageKindLabel} — ${categoryLabels[product.category]}`;
+const productActionLabel = product.inStock ? t(locale, "actions.addToCart") : t(locale, "product.unavailable");
+const productActionAriaLabel = product.inStock ? addToCartLabel : `${product.title} — ${productActionLabel}`;
+const productDetailUrl = localizePath(`/shop/${product.id}`, locale);
 ---
 
-<article
-  class="group flex h-full min-w-0 flex-col border border-border bg-card"
-  data-pointer-depth={product.imageKind === "product" ? "" : undefined}
->
-  <div
-    class="relative aspect-[4/3] overflow-hidden border-b border-border bg-muted/60"
-    data-soft-sharp={product.imageKind === "product" ? "" : undefined}
+<article class="group flex h-full min-w-0 flex-col rounded-lg border border-border bg-card shadow-sm transition-all duration-300 hover:-translate-y-1 hover:border-accent/40 hover:shadow-md">
+  <!-- Клікабельне зображення -->
+  <a
+    href={productDetailUrl}
+    class="relative aspect-[4/3] block overflow-hidden border-b border-border bg-white"
+    aria-label={product.title}
   >
     <img
-      class:list={[
-        "h-full w-full transition-transform duration-500 motion-safe:group-hover:scale-[1.025]",
-        product.imageKind === "product"
-          ? "object-contain p-5 sm:p-7"
-          : "object-cover",
-      ]}
+      class="size-full object-contain p-5 transition-transform duration-500 ease-out group-hover:scale-105"
       src={product.image}
       alt={imageAlt}
       width="800"
       height="600"
       loading="lazy"
       decoding="async"
-      fetchpriority="low"
       data-product-image
     />
-    <div
-      class="absolute inset-0 hidden place-items-center bg-muted p-6 text-center text-primary"
-      data-product-image-fallback
-      role="img"
-      aria-label={unavailableImageCopy[locale]}
-    >
-      <div>
-        <svg class="mx-auto size-12" viewBox="0 0 48 48" fill="none" aria-hidden="true">
-          <circle cx="24" cy="24" r="18" stroke="currentColor" stroke-width="1.5"></circle>
-          <path d="M11 24h26M24 11c5 5.4 7.5 9.7 7.5 13S29 31.6 24 37c-5-5.4-7.5-9.7-7.5-13S19 16.4 24 11Z" stroke="currentColor" stroke-width="1.5"></path>
-        </svg>
-        <p class="mt-4 text-xs leading-5 text-muted-foreground">{unavailableImageCopy[locale]}</p>
-      </div>
-    </div>
-    <span
-      class="absolute bottom-3 left-3 max-w-[calc(100%_-_1.5rem)] bg-background/95 px-2.5 py-1.5 text-[0.625rem] font-semibold uppercase tracking-[0.12em] text-muted-foreground"
-    >
-      {imageKindLabel}
-    </span>
-  </div>
+    {product.imageKind !== "product" && (
+      <span class="absolute bottom-3 left-3 rounded bg-background/90 px-2.5 py-1 text-[0.625rem] font-semibold uppercase tracking-[0.12em] text-muted-foreground backdrop-blur-sm">
+        {imageKindLabel}
+      </span>
+    )}
+  </a>
 
+  <!-- Текстовий блок -->
   <div class="flex flex-1 flex-col p-6 sm:p-7">
-    <p class="text-[0.68rem] font-semibold uppercase tracking-[0.2em] text-primary">
-      {categoryLabels[product.category]}
-    </p>
-    <h2 class="mt-4 break-words text-2xl font-medium leading-tight tracking-tight text-card-foreground">
-      {product.title}
+    <div class="flex items-center justify-between gap-2">
+      <span class="text-[0.68rem] font-semibold uppercase tracking-[0.2em] text-primary">
+        {categoryLabels[product.category]}
+      </span>
+      <span class="text-[0.65rem] font-medium tracking-wider text-muted-foreground uppercase">
+        {product.brand}
+      </span>
+    </div>
+
+    <h2 class="mt-3 break-words font-serif text-xl font-medium leading-snug tracking-tight text-card-foreground sm:text-2xl">
+      <a href={productDetailUrl} class="transition-colors hover:text-primary">
+        {product.title}
+      </a>
     </h2>
-    <p class="mt-4 text-sm leading-6 text-muted-foreground">
+
+    <p class="mt-3 line-clamp-2 text-sm leading-6 text-muted-foreground">
       {product.description}
     </p>
 
-    <div class="mt-auto pt-8">
+    <!-- Ціна та кнопка швидкого додавання -->
+    <div class="mt-auto pt-6">
       {
         isPending ? (
           <div class="border-l-2 border-accent pl-3">
-            <p class="text-sm font-semibold text-foreground">
-              {t(locale, "product.pricePending")}
-            </p>
-            <p class="mt-1 text-xs leading-5 text-muted-foreground">
-              {t(locale, "product.pendingDescription")}
-            </p>
+            <p class="text-sm font-semibold text-foreground">{t(locale, "product.pricePending")}</p>
+            <p class="mt-0.5 text-xs text-muted-foreground">{t(locale, "product.pendingDescription")}</p>
           </div>
         ) : (
           <p class="font-serif text-2xl font-medium text-foreground">
@@ -134,7 +91,7 @@ const unavailableImageCopy = {
       }
 
       <button
-        class="focus-ring-primary mt-6 inline-flex min-h-12 w-full items-center justify-between border border-primary bg-primary px-5 text-sm font-semibold text-primary-foreground transition-colors hover:bg-primary/90 disabled:cursor-not-allowed disabled:border-border disabled:bg-muted disabled:text-muted-foreground"
+        class="focus-ring-primary mt-5 inline-flex min-h-11 w-full items-center justify-between rounded-sm border border-primary bg-primary px-5 text-sm font-semibold text-primary-foreground transition-all hover:bg-primary/90 active:scale-[0.99] disabled:cursor-not-allowed disabled:border-border disabled:bg-muted disabled:text-muted-foreground"
         type="button"
         aria-label={productActionAriaLabel}
         data-add-to-cart={product.inStock ? "" : undefined}
@@ -150,136 +107,8 @@ const unavailableImageCopy = {
         <span>{productActionLabel}</span>
         {product.inStock && <span aria-hidden="true">＋</span>}
       </button>
-      <p
-        class="mt-3 min-h-5 text-xs font-medium text-success"
-        data-add-status
-        role="status"
-        aria-live="polite"
-      ></p>
+
+      <p class="mt-2 min-h-4 text-xs font-medium text-success" data-add-status role="status" aria-live="polite"></p>
     </div>
   </div>
 </article>
-
-<script>
-  import {
-    addToCart,
-    type AddToCartInput,
-    type CartVerificationStatus,
-  } from "../../store/cart";
-  import { trackAddToCart } from "../../lib/analytics";
-
-  function showImageFallback(image: HTMLImageElement): void {
-    const wrapper = image.parentElement;
-    const fallback = wrapper?.querySelector("[data-product-image-fallback]");
-
-    if (!(fallback instanceof HTMLElement)) return;
-    image.hidden = true;
-    fallback.classList.remove("hidden");
-    fallback.classList.add("grid");
-  }
-
-  for (const image of document.querySelectorAll<HTMLImageElement>(
-    "img[data-product-image]",
-  )) {
-    if (image.dataset.fallbackBound === "true") continue;
-    image.dataset.fallbackBound = "true";
-    image.addEventListener("error", () => showImageFallback(image), {
-      once: true,
-    });
-    if (image.complete && image.naturalWidth === 0) showImageFallback(image);
-  }
-
-  function isVerificationStatus(
-    value: string | undefined,
-  ): value is CartVerificationStatus {
-    return value === "verified" || value === "pending-clinic-confirmation";
-  }
-
-  function readProduct(button: HTMLButtonElement): AddToCartInput | null {
-    const id = button.dataset.productId;
-    const title = button.dataset.productTitle;
-    const priceMinorValue = button.dataset.productPriceMinor;
-    const currency = button.dataset.productCurrency;
-    const verificationStatus = button.dataset.productVerificationStatus;
-
-    if (
-      id === undefined ||
-      title === undefined ||
-      priceMinorValue === undefined ||
-      currency === undefined ||
-      !isVerificationStatus(verificationStatus)
-    ) {
-      return null;
-    }
-
-    const priceMinor = Number(priceMinorValue);
-
-    if (
-      !Number.isSafeInteger(priceMinor) ||
-      priceMinor < 0 ||
-      !/^[A-Z]{3}$/.test(currency)
-    ) {
-      return null;
-    }
-
-    return { id, title, priceMinor, currency, verificationStatus };
-  }
-
-  document.querySelectorAll("[data-add-to-cart]").forEach((element) => {
-    if (
-      !(element instanceof HTMLButtonElement) ||
-      element.dataset.cartBound === "true"
-    ) {
-      return;
-    }
-
-    element.dataset.cartBound = "true";
-    element.addEventListener("click", () => {
-      const product = readProduct(element);
-      const addedMessage = element.dataset.addedMessage;
-
-      if (product === null || addedMessage === undefined) {
-        return;
-      }
-
-      const didAdd = addToCart(product);
-
-      if (!didAdd) {
-        return;
-      }
-
-      const category = element.dataset.productCategory;
-      if (category !== undefined) {
-        trackAddToCart({
-          id: product.id,
-          category,
-          priceMinor: product.priceMinor,
-        });
-      }
-
-      if (!window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
-        element.animate(
-          [
-            { transform: "scale(1)" },
-            { transform: "scale(0.985)" },
-            { transform: "scale(1)" },
-          ],
-          { duration: 220, easing: "ease-out" },
-        );
-      }
-
-      const card = element.closest("article");
-      const status = card?.querySelector("[data-add-status]");
-
-      if (status instanceof HTMLElement) {
-        status.textContent = "";
-        queueMicrotask(() => {
-          status.textContent = addedMessage.replace(
-            "{product}",
-            product.title,
-          );
-        });
-      }
-    });
-  });
-</script>

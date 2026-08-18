@@ -1,114 +1,104 @@
 import type { APIRoute } from "astro";
-
 import { getAllActiveProducts } from "../../lib/cms";
-import { buildCanonicalCheckoutCart } from "../../lib/commerce/server-cart";
 import { checkoutRequestSchema } from "../../schemas/checkout";
+import { createOrder, generateOrderNumber } from "../../lib/commerce/orders";
+import { createLiqPaySignature, encodeBase64Utf8, type LiqPayPayload } from "../../lib/commerce/liqpay";
+import { getCommerceConfig } from "../../lib/commerce/config";
+import type { OrderItemRecord, OrderRecord } from "../../types/order";
 
 export const prerender = false;
 
-const MAX_BODY_BYTES = 12_288;
-
-type CheckoutApiResponse =
-  | {
-      readonly ok: false;
-      readonly error:
-        | "INVALID_INPUT"
-        | "INVALID_ORIGIN"
-        | "PAYLOAD_TOO_LARGE"
-        | "CART_REJECTED"
-        | "CHECKOUT_UNAVAILABLE";
-    };
-
-function jsonResponse(
-  body: CheckoutApiResponse,
-  status: 400 | 403 | 413 | 422 | 503,
-): Response {
-  return Response.json(body, {
-    status,
-    headers: {
-      "cache-control": "no-store",
-      "content-type": "application/json; charset=utf-8",
-    },
-  });
-}
-
-function hasValidOrigin(request: Request): boolean {
-  const origin = request.headers.get("origin");
-  return origin === null || origin === new URL(request.url).origin;
-}
-
-async function readBoundedBody(request: Request): Promise<string | null> {
-  if (request.body === null) return "";
-
-  const reader = request.body.getReader();
-  const decoder = new TextDecoder();
-  let body = "";
-  let byteCount = 0;
-
-  try {
-    while (true) {
-      const { done, value } = await reader.read();
-
-      if (done) return body + decoder.decode();
-
-      byteCount += value.byteLength;
-      if (byteCount > MAX_BODY_BYTES) {
-        await reader.cancel("Request body exceeds the configured limit");
-        return null;
-      }
-
-      body += decoder.decode(value, { stream: true });
-    }
-  } finally {
-    reader.releaseLock();
-  }
-}
-
-export const POST: APIRoute = async ({ request }) => {
-  if (!hasValidOrigin(request)) {
-    return jsonResponse({ ok: false, error: "INVALID_ORIGIN" }, 403);
-  }
-
-  const contentType = request.headers.get("content-type") ?? "";
-  if (!contentType.toLowerCase().includes("application/json")) {
-    return jsonResponse({ ok: false, error: "INVALID_INPUT" }, 400);
-  }
-
-  const declaredLength = Number(request.headers.get("content-length") ?? 0);
-  if (Number.isFinite(declaredLength) && declaredLength > MAX_BODY_BYTES) {
-    return jsonResponse({ ok: false, error: "PAYLOAD_TOO_LARGE" }, 413);
-  }
-
+export const POST: APIRoute = async ({ request, locals }) => {
   let rawInput: unknown;
+  try {
+    rawInput = await request.json();
+  } catch {
+    return Response.json({ ok: false, error: "Некоректний JSON" }, { status: 400 });
+  }
+
+  const parsed = checkoutRequestSchema.safeParse(rawInput);
+  if (!parsed.success) {
+    return Response.json({ ok: false, error: "Помилка валідації даних", issues: parsed.error.issues }, { status: 400 });
+  }
+
+  const { customer, items, delivery } = parsed.data;
+  const allProducts = await getAllActiveProducts();
+  const productMap = new Map(allProducts.map((p) => [p.id, p]));
+
+  let totalMinor = 0;
+  const orderItems: OrderItemRecord[] = [];
+
+  for (const item of items) {
+    const canonical = productMap.get(item.productId);
+    if (!canonical || !canonical.inStock) {
+      return Response.json({ ok: false, error: `Товар ${item.productId} недоступний` }, { status: 422 });
+    }
+
+    const lineTotalMinor = canonical.priceMinor * item.quantity;
+    totalMinor += lineTotalMinor;
+
+    orderItems.push({
+      productId: canonical.id,
+      title: canonical.title,
+      unitPriceMinor: canonical.priceMinor,
+      quantity: item.quantity,
+      lineTotalMinor,
+      currency: canonical.currency,
+    });
+  }
+
+  const { id, orderNumber } = generateOrderNumber();
+  const now = new Date().toISOString();
+
+  const orderRecord: OrderRecord = {
+    id,
+    orderNumber,
+    createdAt: now,
+    updatedAt: now,
+    status: "AWAITING_PAYMENT",
+    totalMinor,
+    currency: "UAH",
+    customer,
+    delivery,
+    items: orderItems,
+  };
+
+  const runtimeEnv = (locals as { runtime?: { env?: Record<string, unknown> } })?.runtime?.env;
+  const storeContext = { env: runtimeEnv as { DB?: D1Database; med_uz_ua_db?: D1Database } };
 
   try {
-    const rawBody = await readBoundedBody(request);
-    if (rawBody === null) {
-      return jsonResponse({ ok: false, error: "PAYLOAD_TOO_LARGE" }, 413);
-    }
-    rawInput = JSON.parse(rawBody) as unknown;
-  } catch {
-    return jsonResponse({ ok: false, error: "INVALID_INPUT" }, 400);
+    await createOrder(orderRecord, storeContext);
+  } catch (err) {
+    console.error("[Checkout D1 Error]:", err);
+    return Response.json({ ok: false, error: "Помилка збереження замовлення" }, { status: 500 });
   }
 
-  const parsedRequest = checkoutRequestSchema.safeParse(rawInput);
-  if (!parsedRequest.success) {
-    return jsonResponse({ ok: false, error: "INVALID_INPUT" }, 400);
-  }
+  const config = getCommerceConfig(locals);
+  const totalUah = totalMinor / 100;
 
-  const products = await getAllActiveProducts();
-  const canonicalCart = buildCanonicalCheckoutCart(
-    parsedRequest.data,
-    products,
-  );
+  const liqpayPayload: LiqPayPayload = {
+    public_key: config.publicKey,
+    version: "3",
+    action: "pay",
+    amount: totalUah,
+    currency: "UAH",
+    description: `Оплата замовлення ${orderNumber} — European Clinic`,
+    order_id: id,
+    result_url: `${config.siteUrl}/checkout?order=${id}&payment=return`,
+    server_url: `${config.siteUrl}/api/liqpay-callback`,
+    sandbox: config.isSandbox ? 1 : 0,
+  };
 
-  if (!canonicalCart.ok) {
-    return jsonResponse({ ok: false, error: "CART_REJECTED" }, 422);
-  }
+  const dataBase64 = encodeBase64Utf8(JSON.stringify(liqpayPayload));
+  const signature = await createLiqPaySignature(dataBase64, config.privateKey);
 
-  // A canonical cart is deliberately not enough to create a payment. Until a
-  // dedicated durable order store, deployed secrets, Nova Poshta revalidation,
-  // and version-specific LiqPay callback verification are proven, no order ID,
-  // signature, payment URL, or success state is produced.
-  return jsonResponse({ ok: false, error: "CHECKOUT_UNAVAILABLE" }, 503);
+  return Response.json({
+    ok: true,
+    orderId: id,
+    orderNumber,
+    mode: "liqpay",
+    data: dataBase64,
+    signature,
+    checkoutUrl: "https://www.liqpay.ua/api/3/checkout",
+  });
 };

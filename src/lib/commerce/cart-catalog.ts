@@ -18,7 +18,9 @@ const CATALOG_PRODUCT_KEYS = Object.freeze([
 export interface CartCatalogProduct {
   readonly id: string;
   readonly title: string;
-  readonly priceMinor: number;
+  
+  readonly image: string;
+readonly priceMinor: number;
   readonly currency: string;
   readonly inStock: boolean;
   readonly verificationStatus: ProductVerificationStatus;
@@ -28,7 +30,9 @@ export interface ResolvedCartLine {
   readonly productId: string;
   readonly quantity: number;
   readonly title: string;
-  readonly unitPriceMinor: number;
+  
+  readonly image: string;
+readonly unitPriceMinor: number;
   readonly currency: string;
   readonly verificationStatus: ProductVerificationStatus;
   readonly availability: "available" | "unavailable";
@@ -87,6 +91,7 @@ function decodeCatalogProduct(value: unknown): CartCatalogProduct | null {
   const {
     id,
     title,
+    image,
     priceMinor,
     currency,
     inStock,
@@ -96,6 +101,9 @@ function decodeCatalogProduct(value: unknown): CartCatalogProduct | null {
   if (
     !isSafeText(id, MAX_PRODUCT_ID_LENGTH) ||
     !isSafeText(title, MAX_TITLE_LENGTH) ||
+      typeof image !== "string" ||
+      image.length === 0 ||
+      image.length > 500 ||
     typeof priceMinor !== "number" ||
     !Number.isSafeInteger(priceMinor) ||
     priceMinor < 0 ||
@@ -110,6 +118,7 @@ function decodeCatalogProduct(value: unknown): CartCatalogProduct | null {
   return Object.freeze({
     id,
     title,
+    image,
     priceMinor,
     currency,
     inStock,
@@ -171,6 +180,7 @@ function resolveCartLine(
       productId: item.productId,
       quantity: item.quantity,
       title: item.titleSnapshot,
+      image: "/images/artificial/macro-lens-hydration.jpg",
       unitPriceMinor: item.unitPriceMinorSnapshot,
       currency: item.currency,
       verificationStatus: item.verificationStatusSnapshot,
@@ -182,6 +192,7 @@ function resolveCartLine(
     productId: item.productId,
     quantity: item.quantity,
     title: currentProduct.title,
+      image: currentProduct.image,
     unitPriceMinor: currentProduct.priceMinor,
     currency: currentProduct.currency,
     verificationStatus: currentProduct.verificationStatus,

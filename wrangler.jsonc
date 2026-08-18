@@ -1,9 +1,31 @@
 {
-  "$schema": "./node_modules/wrangler/config-schema.json",
-  "name": "med-uz-ua",
-  "main": "./dist/_worker.js/index.js",
-  "compatibility_date": "2026-08-08",
-  "assets": {
-    "directory": "./dist"
-  }
+	"$schema": "./node_modules/wrangler/config-schema.json",
+	"name": "med-uz-ua",
+	"main": "./dist/_worker.js/index.js",
+	"compatibility_date": "2026-08-08",
+	"compatibility_flags": [
+		"nodejs_compat"
+	],
+	"assets": {
+		"directory": "./dist"
+	},
+	"d1_databases": [
+		{
+			"binding": "med_uz_ua_db",
+			"database_name": "med-uz-ua-db",
+			"database_id": "28f0b543-276e-4d4d-b832-135deab13610",
+		}
+	],
+	"kv_namespaces": [
+		{
+			"binding": "SESSION",
+			"id": "session_kv_placeholder"
+		}
+	],
+	"observability": {
+		"logs": {
+			"enabled": true,
+			"invocation_logs": true
+		}
+	}
 }

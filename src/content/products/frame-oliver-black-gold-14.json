@@ -5,8 +5,8 @@
   "brand": "Oliver Black",
   "priceMinor": 340000,
   "currency": "UAH",
-  "image": "/images/artificial/shop-editorial-eyewear.jpg",
-  "imageKind": "editorial",
+  "image": "/images/shop/frames/frame-oliver-black-gold-14.png",
+  "imageKind": "product",
   "inStock": true,
   "status": "active",
   "verificationStatus": "verified"

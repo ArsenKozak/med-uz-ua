@@ -5,8 +5,8 @@
   "brand": "Johnson & Johnson",
   "priceMinor": 29000,
   "currency": "UAH",
-  "image": "/images/artificial/macro-lens-hydration.jpg",
-  "imageKind": "editorial",
+  "image": "/images/shop/care/care-blink-contacts-7.png",
+  "imageKind": "product",
   "inStock": true,
   "status": "active",
   "verificationStatus": "verified"

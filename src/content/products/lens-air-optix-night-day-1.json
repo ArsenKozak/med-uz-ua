@@ -5,8 +5,8 @@
   "brand": "Alcon",
   "priceMinor": 85000,
   "currency": "UAH",
-  "image": "/images/artificial/macro-lens-hydration.jpg",
-  "imageKind": "editorial",
+  "image": "/images/shop/lenses/lens-air-optix-night-day-1.webp",
+  "imageKind": "product",
   "inStock": true,
   "status": "active",
   "verificationStatus": "verified"

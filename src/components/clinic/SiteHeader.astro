@@ -32,17 +32,24 @@ const brandHomeLabel = {
   hu: "European Ophthalmological Clinic — kezdőlap",
 } as const;
 
+// Флаг для вмикання спеціальних програм за потреби
+const SHOW_SPECIAL_PROGRAMS = false;
+
 const headerNavigation: readonly NavigationItem[] = [
   {
     label: t(locale, "nav.services"),
     href: localizePath("/services", locale),
     match: "prefix",
   },
-  {
-    label: t(locale, "nav.programs"),
-    href: localizePath("/services/programs", locale),
-    match: "exact",
-  },
+  ...(SHOW_SPECIAL_PROGRAMS
+    ? [
+        {
+          label: t(locale, "nav.programs"),
+          href: localizePath("/services/programs", locale),
+          match: "exact" as const,
+        },
+      ]
+    : []),
   {
     label: t(locale, "nav.shop"),
     href: localizePath("/shop", locale),
@@ -59,6 +66,7 @@ const headerNavigation: readonly NavigationItem[] = [
     match: "exact",
   },
 ];
+
 function isHeaderItemActive(item: NavigationItem): boolean {
   return isNavigationItemActive(pathname, item);
 }
@@ -66,6 +74,7 @@ function isHeaderItemActive(item: NavigationItem): boolean {
 function isHeaderItemCurrent(item: NavigationItem): boolean {
   return normalizePathname(pathname) === normalizePathname(item.href);
 }
+
 const initialCartLabel = t(locale, "a11y.openCartMany").replace(
   "{count}",
   "0",
@@ -98,6 +107,7 @@ const initialCartLabel = t(locale, "a11y.openCartMany").replace(
     </a>
 
     <div class="flex min-w-0 shrink-0 items-center gap-1.5 sm:gap-2 xl:gap-3">
+      <!-- Десктопна навігація -->
       <nav class="hidden xl:block" aria-label={t(locale, "a11y.primaryNavigation")}>
         <ul class="flex items-center gap-0.5">
           {
@@ -148,6 +158,7 @@ const initialCartLabel = t(locale, "a11y.openCartMany").replace(
         </svg>
       </a>
 
+      <!-- Кнопка кошика -->
       <button
         class="focus-ring-primary relative inline-flex size-11 shrink-0 items-center justify-center border border-border bg-card text-primary transition-colors duration-200 hover:bg-muted"
         type="button"
@@ -187,210 +198,249 @@ const initialCartLabel = t(locale, "a11y.openCartMany").replace(
         <span class="hidden 2xl:inline">{t(locale, "actions.bookConsultation")}</span>
       </a>
 
-      <details class="group relative xl:hidden" data-mobile-navigation>
-        <summary
-          class="focus-ring-primary inline-flex size-11 cursor-pointer list-none items-center justify-center border border-border bg-card text-primary transition-colors duration-200 hover:bg-muted [&::-webkit-details-marker]:hidden"
+      <!-- Кнопка відкриття мобільного меню (Burger) -->
+      <button
+        type="button"
+        class="focus-ring-primary inline-flex size-11 items-center justify-center border border-border bg-card text-primary transition-colors duration-200 hover:bg-muted xl:hidden"
+        aria-label={t(locale, "a11y.toggleNavigation")}
+        aria-expanded="false"
+        aria-controls="mobile-navigation-drawer"
+        aria-haspopup="dialog"
+        data-mobile-menu-trigger
+      >
+        <svg
+          class="size-5"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="1.75"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          aria-hidden="true"
         >
-          <span class="sr-only">{t(locale, "a11y.toggleNavigation")}</span>
-          <svg
-            class="size-5 group-open:hidden"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            stroke-width="1.5"
-            stroke-linecap="round"
-            aria-hidden="true"
-            focusable="false"
-          >
-            <path d="M4 7.5h16M4 12h16M4 16.5h16"></path>
-          </svg>
-          <svg
-            class="hidden size-5 group-open:block"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            stroke-width="1.5"
-            stroke-linecap="round"
-            aria-hidden="true"
-            focusable="false"
-          >
-            <path d="m6 6 12 12M18 6 6 18"></path>
-          </svg>
-        </summary>
-
-        <div
-          class="absolute right-0 top-[calc(100%+0.75rem)] w-[min(20rem,calc(100vw-2.5rem))] border border-border bg-card p-3 shadow-concierge"
-        >
-          <nav aria-label={t(locale, "a11y.mobileNavigation")}>
-            <ul class="space-y-1">
-              {
-                headerNavigation.map((item) => {
-                  const isActive = isHeaderItemActive(item);
-                  const isCurrent = isHeaderItemCurrent(item);
-
-                  return (
-                    <li>
-                      <a
-                        class:list={[
-                          "focus-ring-primary flex min-h-12 items-center border-l-2 px-4 text-sm font-medium transition-colors duration-200",
-                          isActive
-                            ? "border-accent bg-muted text-primary"
-                            : "border-transparent text-foreground/75 hover:bg-muted hover:text-primary",
-                        ]}
-                        href={item.href}
-                        aria-current={isCurrent ? "page" : undefined}
-                      >
-                        {item.label}
-                      </a>
-                    </li>
-                  );
-                })
-              }
-            </ul>
-          </nav>
-
-          <a
-            class="focus-ring-primary mt-3 flex min-h-12 items-center justify-center border border-primary px-5 text-center text-sm font-semibold text-primary transition-colors hover:bg-primary hover:text-primary-foreground"
-            href={clinicContact.phoneHref}
-          >
-            {clinicContact.phoneDisplay}
-          </a>
-          <a
-            class="focus-ring-primary mt-2 inline-flex min-h-12 w-full items-center justify-center bg-primary px-5 text-center text-sm font-semibold text-primary-foreground transition-colors duration-200 hover:bg-primary/90"
-            href={bookingHref}
-          >
-            {t(locale, "actions.bookConsultation")}
-          </a>
-        </div>
-      </details>
+          <path d="M4 7.5h16M4 12h16M4 16.5h16"></path>
+        </svg>
+      </button>
     </div>
   </Container>
+
+  <!-- Преміальний Concierge Slide-over Drawer для мобільних -->
+  <div
+    id="mobile-navigation-drawer"
+    class="fixed inset-0 z-50 hidden transition-opacity duration-300"
+    role="dialog"
+    aria-modal="true"
+    aria-label={t(locale, "a11y.mobileNavigation")}
+    data-mobile-drawer
+  >
+    <!-- Затемнення фону -->
+    <div
+      class="fixed inset-0 bg-primary/70 backdrop-blur-sm transition-opacity duration-300 opacity-0"
+      data-drawer-backdrop
+    ></div>
+
+    <!-- Виїзна панель меню -->
+    <aside
+      class="fixed inset-y-0 right-0 flex w-full max-w-sm flex-col justify-between border-l border-primary-foreground/15 bg-primary p-6 text-primary-foreground shadow-2xl transition-transform duration-300 ease-out translate-x-full sm:max-w-md sm:p-8"
+      data-drawer-panel
+    >
+      <!-- Верхній рядок: бренд + кнопка закриття -->
+      <div class="flex items-center justify-between border-b border-primary-foreground/15 pb-5">
+        <div class="flex items-center gap-3 min-w-0 pr-2">
+          <img
+            src="/favicon.svg"
+            alt=""
+            aria-hidden="true"
+            class="size-7 shrink-0 object-contain"
+          />
+          <span class="font-serif text-xs sm:text-sm font-medium tracking-wide text-primary-foreground line-clamp-2">
+            Європейська офтальмологічна клініка
+          </span>
+        </div>
+
+        <button
+          type="button"
+          class="flex size-10 items-center justify-center rounded-full border border-primary-foreground/20 text-primary-foreground/80 transition-colors hover:border-accent hover:bg-accent hover:text-foreground focus:outline-none focus-visible:ring-2 focus-visible:ring-accent"
+          data-drawer-close
+          aria-label="Закрити меню"
+        >
+          <svg class="size-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.75">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+          </svg>
+        </button>
+      </div>
+
+      <!-- Список пунктів меню -->
+      <nav class="my-auto py-6" aria-label={t(locale, "a11y.mobileNavigation")}>
+        <ul class="space-y-3">
+          {
+            headerNavigation.map((item, index) => {
+              const isActive = isHeaderItemActive(item);
+              const isCurrent = isHeaderItemCurrent(item);
+
+              return (
+                <li>
+                  <a
+                    class:list={[
+                      "group flex min-h-14 items-center justify-between border-b border-primary-foreground/10 px-2 py-3 transition-colors duration-200",
+                      isActive
+                        ? "text-accent"
+                        : "text-primary-foreground/85 hover:text-accent",
+                    ]}
+                    href={item.href}
+                    aria-current={isCurrent ? "page" : undefined}
+                    data-drawer-link
+                  >
+                    <div class="flex items-baseline gap-3">
+                      <span class="text-[0.7rem] font-semibold tabular-nums tracking-widest text-primary-foreground/40 group-hover:text-accent">
+                        {String(index + 1).padStart(2, "0")}
+                      </span>
+                      <span class="font-serif text-xl sm:text-2xl font-medium tracking-tight">
+                        {item.label}
+                      </span>
+                    </div>
+
+                    <svg
+                      class="size-4 opacity-40 transition-transform duration-200 group-hover:translate-x-1 group-hover:opacity-100"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                      stroke-width="2"
+                    >
+                      <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" />
+                    </svg>
+                  </a>
+                </li>
+              );
+            })
+          }
+        </ul>
+      </nav>
+
+      <!-- Нижня частина: швидкі дії та контакти клініки -->
+      <div class="space-y-3 border-t border-primary-foreground/15 pt-5">
+        <a
+          class="flex min-h-12 items-center justify-center gap-2.5 rounded-sm border border-primary-foreground/30 px-4 text-center text-sm font-semibold text-primary-foreground transition-colors hover:border-accent hover:text-accent"
+          href={clinicContact.phoneHref}
+          data-drawer-link
+        >
+          <svg class="size-4 text-accent" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M8.3 3.5 10.1 8 7.8 9.7a15 15 0 0 0 6.5 6.5l1.7-2.3 4.5 1.8v3.4a1.4 1.4 0 0 1-1.4 1.4A15.6 15.6 0 0 1 3.5 4.9a1.4 1.4 0 0 1 1.4-1.4h3.4Z"></path>
+          </svg>
+          <span>{clinicContact.phoneDisplay}</span>
+        </a>
+
+        <a
+          class="flex min-h-13 w-full items-center justify-center rounded-sm bg-primary-foreground px-5 text-center text-sm font-semibold text-primary transition-colors hover:bg-accent hover:text-foreground"
+          href={bookingHref}
+          data-drawer-link
+        >
+          {t(locale, "actions.bookConsultation")}
+        </a>
+      </div>
+    </aside>
+  </div>
 </header>
 
 <script>
   import { $cartCount } from "../../store/cart";
 
-  for (const header of document.querySelectorAll<HTMLElement>(
-    "[data-site-header]",
-  )) {
-    if (header.dataset.scrollBound === "true") {
-      continue;
+  function initHeaderAndDrawer() {
+    // 1. Scroll State
+    const header = document.querySelector<HTMLElement>("[data-site-header]");
+    if (header && header.dataset.scrollBound !== "true") {
+      header.dataset.scrollBound = "true";
+      let animationFrame = 0;
+
+      const updateScrollState = (): void => {
+        animationFrame = 0;
+        header.dataset.scrolled = String(window.scrollY > 24);
+      };
+
+      const scheduleScrollState = (): void => {
+        if (animationFrame === 0) {
+          animationFrame = window.requestAnimationFrame(updateScrollState);
+        }
+      };
+
+      updateScrollState();
+      window.addEventListener("scroll", scheduleScrollState, { passive: true });
     }
 
-    header.dataset.scrollBound = "true";
-    let animationFrame = 0;
+    // 2. Concierge Mobile Drawer
+    const trigger = document.querySelector<HTMLButtonElement>("[data-mobile-menu-trigger]");
+    const drawer = document.querySelector<HTMLElement>("[data-mobile-drawer]");
+    const backdrop = document.querySelector<HTMLElement>("[data-drawer-backdrop]");
+    const panel = document.querySelector<HTMLElement>("[data-drawer-panel]");
+    const closeBtn = document.querySelector<HTMLButtonElement>("[data-drawer-close]");
+    const drawerLinks = document.querySelectorAll<HTMLElement>("[data-drawer-link]");
 
-    const updateScrollState = (): void => {
-      animationFrame = 0;
-      header.dataset.scrolled = String(window.scrollY > 24);
-    };
+    if (!trigger || !drawer || !backdrop || !panel) return;
 
-    const scheduleScrollState = (): void => {
-      if (animationFrame === 0) {
-        animationFrame = window.requestAnimationFrame(updateScrollState);
+    const menuTrigger = trigger;
+    const menuDrawer = drawer;
+    const menuBackdrop = backdrop;
+    const menuPanel = panel;
+
+    function openMenu() {
+      if (drawer && backdrop && panel && trigger) {
+        menuDrawer.classList.remove("hidden");
+        menuBackdrop.classList.remove("opacity-0");
+        menuBackdrop.classList.add("opacity-100");
+        menuPanel.classList.remove("translate-x-full");
+        menuPanel.classList.add("translate-x-0");
+        menuTrigger.setAttribute("aria-expanded", "true");
       }
-    };
+      document.documentElement.style.overflow = "hidden";
+      closeBtn?.focus();
+    }
 
-    updateScrollState();
-    window.addEventListener("scroll", scheduleScrollState, { passive: true });
+    function closeMenu() {
+      menuBackdrop.classList.remove("opacity-100");
+      menuBackdrop.classList.add("opacity-0");
+      menuPanel.classList.remove("translate-x-0");
+      menuPanel.classList.add("translate-x-full");
+
+      setTimeout(() => {
+        menuDrawer.classList.add("hidden");
+        document.documentElement.style.overflow = "";
+      }, 300);
+
+      menuTrigger.setAttribute("aria-expanded", "false");
+      menuTrigger.focus();
+    }
+
+    trigger.addEventListener("click", openMenu);
+    closeBtn?.addEventListener("click", closeMenu);
+    backdrop.addEventListener("click", closeMenu);
+
+    drawerLinks.forEach((link) => {
+      link.addEventListener("click", closeMenu);
+    });
+
+    window.addEventListener("keydown", (event) => {
+      if (event.key === "Escape" && !menuDrawer.classList.contains("hidden")) {
+        closeMenu();
+      }
+    });
   }
 
-  const countElements = document.querySelectorAll<HTMLElement>(
-    "[data-cart-count]",
-  );
-  const cartTriggers = document.querySelectorAll<HTMLButtonElement>(
-    "button[data-cart-trigger]",
-  );
+  // Cart Count Subscriber
+  const countElements = document.querySelectorAll<HTMLElement>("[data-cart-count]");
+  const cartTriggers = document.querySelectorAll<HTMLButtonElement>("button[data-cart-trigger]");
 
   $cartCount.subscribe((count) => {
     for (const element of countElements) {
-      const previousCount = element.dataset.cartCountValue;
       element.textContent = String(count);
-      element.dataset.cartCountValue = String(count);
-
-      if (
-        previousCount !== undefined &&
-        previousCount !== String(count) &&
-        !window.matchMedia("(prefers-reduced-motion: reduce)").matches
-      ) {
-        element.animate(
-          [
-            { transform: "scale(1)" },
-            { transform: "scale(1.18)" },
-            { transform: "scale(1)" },
-          ],
-          { duration: 220, easing: "ease-out" },
-        );
-      }
     }
-
     for (const trigger of cartTriggers) {
-      const labelTemplate =
-        count === 1
-          ? trigger.dataset.cartLabelOne
-          : trigger.dataset.cartLabelMany;
-
-      if (labelTemplate === undefined) {
-        continue;
+      const labelTemplate = count === 1 ? trigger.dataset.cartLabelOne : trigger.dataset.cartLabelMany;
+      if (labelTemplate) {
+        trigger.setAttribute("aria-label", labelTemplate.replace("{count}", String(count)));
       }
-
-      trigger.setAttribute(
-        "aria-label",
-        labelTemplate.replace("{count}", String(count)),
-      );
     }
   });
 
-  const mobileMenus = document.querySelectorAll<HTMLDetailsElement>(
-    "details[data-mobile-navigation]",
-  );
-
-  for (const menu of mobileMenus) {
-    const summary = menu.querySelector<HTMLElement>("summary");
-
-    menu.addEventListener("keydown", (event) => {
-      if (event.key !== "Escape" || !menu.open) return;
-
-      event.preventDefault();
-      menu.open = false;
-      summary?.focus();
-    });
-
-    menu.addEventListener("click", (event) => {
-      const target = event.target;
-
-      if (target instanceof Element && target.closest("a")) {
-        menu.open = false;
-      }
-    });
-
-    document.addEventListener("pointerdown", (event) => {
-      const target = event.target;
-
-      if (menu.open && target instanceof Node && !menu.contains(target)) {
-        menu.open = false;
-      }
-    });
-  }
-
-  const appointmentFormHash = "#appointment-form";
-
-  const focusAppointmentTarget = (): void => {
-    if (window.location.hash !== appointmentFormHash) {
-      return;
-    }
-
-    window.requestAnimationFrame(() => {
-      const target = document.getElementById(appointmentFormHash.slice(1));
-
-      target?.scrollIntoView({ block: "start" });
-      target?.focus({ preventScroll: true });
-    });
-  };
-
-  if (document.documentElement.dataset.appointmentFocusBound !== "true") {
-    document.documentElement.dataset.appointmentFocusBound = "true";
-    window.addEventListener("hashchange", focusAppointmentTarget);
-    focusAppointmentTarget();
-  }
+  initHeaderAndDrawer();
+  document.addEventListener("astro:page-load", initHeaderAndDrawer);
 </script>

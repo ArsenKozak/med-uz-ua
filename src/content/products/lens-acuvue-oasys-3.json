@@ -5,8 +5,8 @@
   "brand": "Johnson & Johnson",
   "priceMinor": 128000,
   "currency": "UAH",
-  "image": "/images/artificial/macro-lens-hydration.jpg",
-  "imageKind": "editorial",
+  "image": "/images/shop/lenses/lens-acuvue-oasys-3.webp",
+  "imageKind": "product",
   "inStock": true,
   "status": "active",
   "verificationStatus": "verified"

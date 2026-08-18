@@ -5,8 +5,8 @@
   "brand": "Vido",
   "priceMinor": 160000,
   "currency": "UAH",
-  "image": "/images/artificial/shop-editorial-eyewear.jpg",
-  "imageKind": "editorial",
+  "image": "/images/shop/frames/frame-vido-round-8.jpg",
+  "imageKind": "product",
   "inStock": false,
   "status": "active",
   "verificationStatus": "verified"

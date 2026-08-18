@@ -208,7 +208,7 @@ export const appointmentSchema = z
       });
     }
   })
-  .transform(({ name, phone }) => ({ name, phone }));
+  .transform(({ name, phone, elapsedMs }) => ({ name, phone, elapsedMs }));
 
 export function getAppointmentFieldErrors(
   error: ZodError,

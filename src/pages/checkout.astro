@@ -1,0 +1,396 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import Container from "../components/ui/Container.astro";
+import { defaultLocale, localizePath } from "../lib/i18n";
+import { getActiveCartCatalogProducts } from "../lib/cms";
+
+export const prerender = false;
+
+const activeCatalog = await getActiveCartCatalogProducts();
+const serializedCatalog = JSON.stringify(activeCatalog);
+---
+
+<BaseLayout title="Оформлення замовлення | Med.uz.ua" description="Оформлення замовлення оптики з доставкою Новою Поштою або самовивозом." locale={defaultLocale}>
+  <header class="border-b border-border/80 bg-[#faf8f5] py-4">
+    <Container>
+      <nav class="flex items-center gap-2 text-xs font-medium text-muted-foreground">
+        <a href={localizePath("/shop", defaultLocale)} class="hover:text-primary transition-colors">
+          Каталог оптики
+        </a>
+        <span aria-hidden="true">/</span>
+        <span class="text-primary font-semibold">Оформлення замовлення</span>
+      </nav>
+    </Container>
+  </header>
+
+  <main class="py-10 sm:py-14" data-checkout-page data-catalog={serializedCatalog}>
+    <Container>
+      <h1 class="font-serif text-3xl font-medium tracking-tight text-foreground sm:text-4xl">
+        Оформлення замовлення
+      </h1>
+
+      <div class="mt-8 grid gap-10 lg:grid-cols-12 lg:gap-14 items-start">
+        <!-- Форма замовлення -->
+        <div class="lg:col-span-7">
+          <form id="checkout-page-form" class="space-y-8 rounded-xl border border-border/80 bg-card p-6 sm:p-8 shadow-xs">
+            <!-- 1. Контактні дані -->
+            <div>
+              <h2 class="font-serif text-xl font-medium text-foreground mb-4">1. Контактні дані</h2>
+              <div class="grid gap-4 sm:grid-cols-2">
+                <div class="sm:col-span-2">
+                  <label class="block text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+                    Прізвище та ім'я *
+                  </label>
+                  <input
+                    type="text"
+                    name="fullName"
+                    required
+                    placeholder="Олена Коваль"
+                    class="mt-1 w-full rounded-sm border border-border bg-background px-3.5 py-2.5 text-sm focus:border-primary focus:outline-none"
+                  />
+                </div>
+
+                <div class="sm:col-span-2">
+                  <label class="block text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+                    Номер телефону *
+                  </label>
+                  <input
+                    type="tel"
+                    name="phone"
+                    required
+                    placeholder="+380 99 123 45 67"
+                    class="mt-1 w-full rounded-sm border border-border bg-background px-3.5 py-2.5 text-sm focus:border-primary focus:outline-none"
+                  />
+                </div>
+              </div>
+            </div>
+
+            <!-- 2. Доставка Новою Поштою -->
+            <div class="border-t border-border pt-6">
+              <h2 class="font-serif text-xl font-medium text-foreground mb-4">2. Доставка (Нова Пошта)</h2>
+              <div class="space-y-4">
+                <div class="relative">
+                  <label class="block text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+                    Місто одержувача *
+                  </label>
+                  <input
+                    type="text"
+                    id="page-np-city"
+                    required
+                    placeholder="Введіть назву міста (наприклад, Ужгород)"
+                    class="mt-1 w-full rounded-sm border border-border bg-background px-3.5 py-2.5 text-sm focus:border-primary focus:outline-none"
+                    autocomplete="off"
+                  />
+                  <input type="hidden" name="cityRef" id="page-city-ref" />
+                  <input type="hidden" name="cityName" id="page-city-name" />
+                  <div id="page-city-results" class="hidden absolute left-0 right-0 top-full z-20 mt-1 max-h-48 overflow-y-auto rounded-md border border-border bg-card shadow-xl text-xs"></div>
+                </div>
+
+                <div>
+                  <label class="block text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+                    Відділення або поштомат *
+                  </label>
+                  <select
+                    name="warehouseRef"
+                    id="page-np-wh"
+                    required
+                    disabled
+                    class="mt-1 w-full rounded-sm border border-border bg-background px-3.5 py-2.5 text-sm focus:border-primary focus:outline-none disabled:opacity-50"
+                  >
+                    <option value="">Спочатку оберіть місто</option>
+                  </select>
+                  <input type="hidden" name="warehouseName" id="page-wh-name" />
+                </div>
+
+                <div>
+                  <label class="block text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+                    Коментар до замовлення (необов'язково)
+                  </label>
+                  <input
+                    type="text"
+                    name="comment"
+                    placeholder="Побажання щодо рецепта або часу доставки"
+                    class="mt-1 w-full rounded-sm border border-border bg-background px-3.5 py-2.5 text-sm focus:border-primary focus:outline-none"
+                  />
+                </div>
+              </div>
+            </div>
+
+            <!-- Повідомлення про статус / помилку -->
+            <p id="page-form-error" class="hidden rounded bg-red-50 p-3 text-xs font-medium text-red-700 border border-red-200"></p>
+
+            <button
+              type="submit"
+              id="page-submit-btn"
+              class="focus-ring-primary flex min-h-12 w-full items-center justify-center gap-2 rounded-sm bg-primary px-8 text-base font-semibold text-primary-foreground shadow-sm transition-all hover:bg-primary/90 active:scale-[0.99]"
+            >
+              Підтвердити замовлення
+            </button>
+          </form>
+        </div>
+
+        <!-- Підсумок замовлення -->
+        <div class="lg:col-span-5 space-y-6">
+          <div class="rounded-xl border border-border/80 bg-[#faf8f5] p-6 shadow-xs">
+            <h2 class="font-serif text-xl font-medium text-foreground pb-4 border-b border-[#e8e2d5]">
+              Ваше замовлення
+            </h2>
+
+            <div id="checkout-items-list" class="divide-y divide-[#e8e2d5] py-4"></div>
+
+            <div class="border-t border-[#e8e2d5] pt-4 flex items-baseline justify-between">
+              <span class="text-sm font-semibold uppercase tracking-wider text-muted-foreground">Разом до сплати:</span>
+              <span id="checkout-total-price" class="font-serif text-2xl font-bold text-primary">0,00 ₴</span>
+            </div>
+          </div>
+
+          <div class="rounded-xl border border-border/80 bg-card p-5 text-xs text-muted-foreground space-y-2">
+            <p class="font-semibold text-foreground">🛡️ Гарантія та сервіс клініки:</p>
+            <p>• Вся продукція сертифікована та зберігається згідно з медичними нормами.</p>
+            <p>• Менеджер клініки перевірить коректність замовлення перед відправкою.</p>
+          </div>
+        </div>
+      </div>
+    </Container>
+  </main>
+</BaseLayout>
+
+<script>
+  import { $cart, clearCart } from "../store/cart";
+  import { createCartCatalogIndex, decodeCartCatalog, resolveCart } from "../lib/commerce/cart-catalog";
+  import { formatMoneyMinor } from "../lib/commerce/money";
+
+  const root = document.querySelector("[data-checkout-page]") as HTMLElement | null;
+  const catalogRaw = root?.dataset.catalog || "[]";
+  const catalogIndex = createCartCatalogIndex(decodeCartCatalog(catalogRaw));
+
+  const itemsList = document.getElementById("checkout-items-list");
+  const totalPriceEl = document.getElementById("checkout-total-price");
+  const form = document.getElementById("checkout-page-form") as HTMLFormElement | null;
+  const cityInput = document.getElementById("page-np-city") as HTMLInputElement | null;
+  const cityResults = document.getElementById("page-city-results");
+  const cityRefInput = document.getElementById("page-city-ref") as HTMLInputElement | null;
+  const cityNameInput = document.getElementById("page-city-name") as HTMLInputElement | null;
+  const whSelect = document.getElementById("page-np-wh") as HTMLSelectElement | null;
+  const whNameInput = document.getElementById("page-wh-name") as HTMLInputElement | null;
+  const submitBtn = document.getElementById("page-submit-btn") as HTMLButtonElement | null;
+  const errorEl = document.getElementById("page-form-error");
+
+  // Перевірка повернення після оплати з polling статусу в D1
+  const urlParams = new URLSearchParams(window.location.search);
+  if (urlParams.get("payment") === "return" && urlParams.get("order")) {
+    const returnedOrderId = urlParams.get("order");
+
+    if (errorEl) {
+      errorEl.className = "rounded-lg bg-amber-50 p-5 text-sm font-medium text-amber-900 border border-amber-200";
+      errorEl.innerHTML = `
+        <div class="flex items-center gap-2">
+          <svg class="size-5 animate-spin text-amber-700" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+          </svg>
+          <span class="font-semibold">Очікуємо підтвердження платежу від банку...</span>
+        </div>
+      `;
+      errorEl.classList.remove("hidden");
+
+      let attempts = 0;
+      const pollTimer = setInterval(async () => {
+        attempts++;
+        try {
+          const res = await fetch(`/api/orders/${returnedOrderId}/status`);
+          const data = (await res.json()) as { ok: boolean; status: string; orderNumber: string };
+
+          if (data.ok && data.status === "PAID") {
+            clearInterval(pollTimer);
+            clearCart();
+            errorEl.className = "rounded-lg bg-emerald-50 p-5 text-sm font-medium text-emerald-900 border border-emerald-200";
+            errorEl.innerHTML = `
+              <p class="font-bold text-base">✓ Оплату підтверджено! (Замовлення ${data.orderNumber})</p>
+              <p class="mt-1 text-xs text-emerald-800">Дякуємо за покупку. Замовлення передано в обробку для відправки Новою Поштою.</p>
+            `;
+          } else if (attempts >= 10) {
+            clearInterval(pollTimer);
+            errorEl.className = "rounded-lg bg-blue-50 p-5 text-sm font-medium text-blue-900 border border-blue-200";
+            errorEl.innerHTML = `
+              <p class="font-bold text-base">Замовлення в процесі підтвердження</p>
+              <p class="mt-1 text-xs text-blue-800">Банк ще обробляє транзакцію. Якщо кошти списано — замовлення буде автоматично відправлено.</p>
+            `;
+          }
+        } catch {
+          if (attempts >= 10) clearInterval(pollTimer);
+        }
+      }, 2500);
+    }
+  }
+
+  function renderOrderSummary() {
+    const rawItems = $cart.get();
+    if (!itemsList || !totalPriceEl) return;
+
+    const resolved = resolveCart(rawItems, catalogIndex);
+
+    if (resolved.lines.length === 0) {
+      itemsList.innerHTML = '<p class="text-sm text-muted-foreground py-4 text-center">Кошик порожній. <a href="/shop" class="text-primary underline">Перейти в магазин</a></p>';
+      totalPriceEl.textContent = "0,00 ₴";
+      if (submitBtn) submitBtn.disabled = true;
+      return;
+    }
+
+    if (submitBtn) submitBtn.disabled = false;
+
+    itemsList.innerHTML = resolved.lines
+      .map((line) => {
+        const totalFormatted = formatMoneyMinor(line.unitPriceMinor * line.quantity, line.currency, "uk");
+        const unitFormatted = formatMoneyMinor(line.unitPriceMinor, line.currency, "uk");
+        return `
+          <div class="py-3 flex items-start justify-between gap-3 text-sm">
+            <div>
+              <p class="font-medium text-foreground">${line.title}</p>
+              <p class="text-xs text-muted-foreground">${line.quantity} шт. × ${unitFormatted}</p>
+            </div>
+            <span class="font-serif font-semibold text-primary">${totalFormatted}</span>
+          </div>
+        `;
+      })
+      .join("");
+
+    if (resolved.subtotalMinor !== null && resolved.currency) {
+      totalPriceEl.textContent = formatMoneyMinor(resolved.subtotalMinor, resolved.currency, "uk");
+    }
+  }
+
+  $cart.subscribe(() => renderOrderSummary());
+
+  let timer: ReturnType<typeof setTimeout>;
+  cityInput?.addEventListener("input", () => {
+    clearTimeout(timer);
+    const q = cityInput.value.trim();
+    if (q.length < 2) {
+      if (cityResults) cityResults.classList.add("hidden");
+      return;
+    }
+
+    timer = setTimeout(async () => {
+      try {
+        const res = await fetch("/api/novaposhta", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ action: "searchSettlements", query: q }),
+        });
+        const data = (await res.json()) as { ok: boolean; items: Array<{ label: string; ref: string }> };
+        if (data.ok && data.items.length > 0 && cityResults) {
+          cityResults.innerHTML = data.items
+            .map((i) => `<div class="p-2.5 hover:bg-muted cursor-pointer border-b border-border/40" data-ref="${i.ref}" data-name="${i.label}">${i.label}</div>`)
+            .join("");
+          cityResults.classList.remove("hidden");
+        }
+      } catch {}
+    }, 300);
+  });
+
+  cityResults?.addEventListener("click", async (e) => {
+    const target = (e.target as HTMLElement).closest("[data-ref]") as HTMLElement | null;
+    if (!target || !cityInput || !cityRefInput || !cityNameInput || !whSelect || !whNameInput) return;
+
+    const ref = target.dataset.ref || "";
+    const name = target.dataset.name || "";
+
+    cityInput.value = name;
+    cityRefInput.value = ref;
+    cityNameInput.value = name;
+    cityResults.classList.add("hidden");
+
+    whSelect.disabled = true;
+    whSelect.innerHTML = "<option>Завантаження відділень...</option>";
+
+    try {
+      const res = await fetch("/api/novaposhta", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ action: "getWarehouses", cityRef: ref }),
+      });
+      const data = (await res.json()) as { ok: boolean; items: Array<{ label: string; ref: string }> };
+      if (data.ok && data.items.length > 0) {
+        whSelect.innerHTML = data.items
+          .map((w) => `<option value="${w.ref}">${w.label}</option>`)
+          .join("");
+        whSelect.disabled = false;
+        whNameInput.value = data.items[0].label;
+      }
+    } catch {
+      whSelect.innerHTML = "<option>Не вдалося отримати відділення</option>";
+    }
+  });
+
+  whSelect?.addEventListener("change", () => {
+    if (whSelect && whNameInput) {
+      whNameInput.value = whSelect.options[whSelect.selectedIndex].text;
+    }
+  });
+
+  form?.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    if (!errorEl || !submitBtn) return;
+    errorEl.classList.add("hidden");
+
+    const rawItems = $cart.get();
+    if (rawItems.length === 0) {
+      errorEl.textContent = "Ваш кошик порожній.";
+      errorEl.classList.remove("hidden");
+      return;
+    }
+
+    const formData = new FormData(form);
+    const payload = {
+      customer: {
+        fullName: String(formData.get("fullName")),
+        phone: String(formData.get("phone")),
+        comment: formData.get("comment") ? String(formData.get("comment")) : undefined,
+      },
+      items: rawItems.map((i) => ({ productId: i.productId, quantity: i.quantity })),
+      delivery: {
+        provider: "nova-poshta" as const,
+        cityName: String(formData.get("cityName")),
+        cityRef: String(formData.get("cityRef")),
+        warehouseName: String(formData.get("warehouseName") || whNameInput?.value || "Відділення"),
+        warehouseRef: String(formData.get("warehouseRef")),
+      },
+    };
+
+    submitBtn.disabled = true;
+    submitBtn.textContent = "Створення замовлення...";
+
+    try {
+      const res = await fetch("/api/checkout", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      });
+      const data = (await res.json()) as { ok: boolean; mode?: string; checkoutUrl?: string; data?: string; signature?: string; message?: string; orderNumber?: string; error?: string };
+
+      if (!res.ok || !data.ok) {
+        throw new Error(data.error || "Не вдалося створити замовлення");
+      }
+
+      if (data.mode === "liqpay" && data.checkoutUrl) {
+        const redirectForm = document.createElement("form");
+        redirectForm.method = "POST";
+        redirectForm.action = data.checkoutUrl;
+        redirectForm.innerHTML = `<input type="hidden" name="data" value="${data.data}" /><input type="hidden" name="signature" value="${data.signature}" />`;
+        document.body.appendChild(redirectForm);
+        redirectForm.submit();
+      } else {
+        clearCart();
+        alert(data.message || `Замовлення ${data.orderNumber} успішно зафіксовано!`);
+        window.location.href = "/shop";
+      }
+    } catch (err) {
+      errorEl.textContent = err instanceof Error ? err.message : "Помилка при створенні замовлення";
+      errorEl.classList.remove("hidden");
+    } finally {
+      submitBtn.disabled = false;
+      submitBtn.textContent = "Підтвердити замовлення";
+    }
+  });
+</script>
