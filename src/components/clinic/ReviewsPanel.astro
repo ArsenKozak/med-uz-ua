@@ -45,7 +45,6 @@ const localized = copy[locale];
   data-google-reviews-panel
 >
   <Container>
-    <!-- Заголовок секції відгуків -->
     <div class="mb-10 flex flex-col items-center text-center sm:mb-12">
       <p class="text-xs font-semibold uppercase tracking-[0.22em] text-primary">
         {localized.eyebrow}
@@ -61,17 +60,11 @@ const localized = copy[locale];
       </p>
     </div>
 
-    <!-- Контейнер офіційного віджета Trustindex -->
-    <div class="min-h-[160px] w-full overflow-hidden">
-      <script
-        is:inline
-        defer
-        async
-        src="https://cdn.trustindex.io/loader.js?2a8e43b79dad1161e706a179cb0"
-      ></script>
+    <!-- Контейнер для лінивого завантаження Trustindex -->
+    <div class="min-h-[160px] w-full overflow-hidden" data-trustindex-slot>
+      <!-- Скрипт завантажується динамічно при наближенні до viewport -->
     </div>
 
-    <!-- Додаткова кнопка-посилання на випадок блокувальників скриптів -->
     <div class="mt-8 flex justify-center sm:mt-10">
       <a
         class="focus-ring-primary inline-flex min-h-11 items-center gap-2 border-b border-primary text-sm font-semibold text-primary underline-offset-4 hover:underline"
@@ -85,3 +78,47 @@ const localized = copy[locale];
     </div>
   </Container>
 </section>
+
+<script>
+  function setupLazyTrustindex(): void {
+    const panels = document.querySelectorAll<HTMLElement>("[data-google-reviews-panel]");
+
+    panels.forEach((panel) => {
+      if (panel.dataset.loaded === "true") return;
+
+      const slot = panel.querySelector<HTMLElement>("[data-trustindex-slot]");
+      if (!slot) return;
+
+      const loadWidget = (): void => {
+        if (panel.dataset.loaded === "true") return;
+        panel.dataset.loaded = "true";
+
+        const script = document.createElement("script");
+        script.src = "https://cdn.trustindex.io/loader.js?2a8e43b79dad1161e706a179cb0";
+        script.async = true;
+        script.defer = true;
+        slot.appendChild(script);
+      };
+
+      if (typeof IntersectionObserver !== "undefined") {
+        const observer = new IntersectionObserver(
+          (entries, obs) => {
+            entries.forEach((entry) => {
+              if (entry.isIntersecting) {
+                obs.disconnect();
+                loadWidget();
+              }
+            });
+          },
+          { rootMargin: "300px" }
+        );
+        observer.observe(panel);
+      } else {
+        loadWidget();
+      }
+    });
+  }
+
+  setupLazyTrustindex();
+  document.addEventListener("astro:page-load", setupLazyTrustindex);
+</script>

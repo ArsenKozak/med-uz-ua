@@ -5,8 +5,10 @@ export const prerender = false;
 
 const NP_API_URL = "https://api.novaposhta.ua/v2.0/json/";
 
-export const POST: APIRoute = async ({ request }) => {
-  const apiKey = import.meta.env.NOVA_POSHTA_API_KEY;
+export const POST: APIRoute = async ({ request, locals }) => {
+  const runtimeEnv = (locals as { runtime?: { env?: Record<string, unknown> } })?.runtime?.env;
+  const apiKey = (runtimeEnv?.NOVA_POSHTA_API_KEY as string | undefined) ?? import.meta.env.NOVA_POSHTA_API_KEY;
+
   if (!apiKey) {
     return Response.json(
       { ok: false, error: "Сервіс доставки тимчасово недоступний (відсутній ключ API)" },
@@ -30,6 +32,11 @@ export const POST: APIRoute = async ({ request }) => {
 
   try {
     if (action === "searchSettlements") {
+      const sanitizedQuery = (query || "").trim().slice(0, 100);
+      if (sanitizedQuery.length < 2) {
+        return Response.json({ ok: true, items: [] });
+      }
+
       const response = await fetch(NP_API_URL, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -38,7 +45,7 @@ export const POST: APIRoute = async ({ request }) => {
           modelName: "Address",
           calledMethod: "searchSettlements",
           methodProperties: {
-            CityName: query || "",
+            CityName: sanitizedQuery,
             Limit: "10",
             Page: "1",
           },
@@ -68,8 +75,9 @@ export const POST: APIRoute = async ({ request }) => {
     }
 
     if (action === "getWarehouses") {
-      if (!cityRef) {
-        return Response.json({ ok: false, error: "cityRef обовʼязковий" }, { status: 400 });
+      const sanitizedCityRef = (cityRef || "").trim();
+      if (!sanitizedCityRef || sanitizedCityRef.length > 64) {
+        return Response.json({ ok: false, error: "Некоректний ідентифікатор міста" }, { status: 400 });
       }
 
       const response = await fetch(NP_API_URL, {
@@ -80,7 +88,7 @@ export const POST: APIRoute = async ({ request }) => {
           modelName: "Address",
           calledMethod: "getWarehouses",
           methodProperties: {
-            CityRef: cityRef,
+            CityRef: sanitizedCityRef,
             Limit: "100",
             Page: "1",
           },
@@ -107,7 +115,14 @@ export const POST: APIRoute = async ({ request }) => {
         number: wh.Number,
       }));
 
-      return Response.json({ ok: true, items });
+      return Response.json(
+        { ok: true, items },
+        {
+          headers: {
+            "Cache-Control": "private, max-age=300",
+          },
+        }
+      );
     }
 
     return Response.json({ ok: false, error: "Невідома дія" }, { status: 400 });
