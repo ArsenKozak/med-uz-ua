@@ -20,7 +20,7 @@ Production web platform built for a specialized ophthalmology medical practice. 
 
 - **Zero-JS by Default:** Ships pre-rendered static HTML, hydrating interactive components only when necessary.
 - **Global Edge Delivery:** Hosted via Cloudflare Pages with automatic HTTPS and asset caching.
-- **SEO & Discoverability:** Structured JSON-LD metadata, semantic HTML5, semantic `robots.txt`, and optimized sitemap.
+- **SEO & Discoverability:** Structured JSON-LD metadata, semantic HTML5, clean `robots.txt`, and optimized sitemap.
 
 ---
 
