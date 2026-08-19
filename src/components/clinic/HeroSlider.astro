@@ -1,14 +1,22 @@
 ---
+import { getImage } from "astro:assets";
 import Container from "../ui/Container.astro";
 import type { Locale } from "../../lib/i18n";
-import { clinicImageAssets, siteImageAssets } from "../../lib/assets";
+
+import imgNewLogo from "../../assets/heroslider/new_logo.jpg";
+import imgLogoOft1 from "../../assets/heroslider/logo_oft1.png";
+import imgLogoEyeGood from "../../assets/heroslider/logo-eye-good-header.jpg";
+import imgGoodEyeFace from "../../assets/heroslider/good-eye-photo-face.jpg";
+import imgClinicView3 from "../../assets/heroslider/clinic-view3.jpg";
+import imgClinicView2 from "../../assets/heroslider/clinic-view2.jpg";
+import imgClinicView1 from "../../assets/heroslider/clinic-view1.jpg";
 
 interface Props {
   readonly locale: Locale;
 }
 
 interface SlideItem {
-  readonly image: string;
+  readonly imageMetadata: ImageMetadata;
   readonly badge: string;
   readonly title: string;
   readonly subtitle: string;
@@ -16,7 +24,7 @@ interface SlideItem {
 
 const { locale } = Astro.props;
 
-const sliderTranslations: Record<
+const rawSliderData: Record<
   Locale,
   {
     readonly sectionLabel: string;
@@ -33,38 +41,49 @@ const sliderTranslations: Record<
     slideAria: "Слайд",
     slides: [
       {
-        image: clinicImageAssets.doctorInCabinet.src,
+        imageMetadata: imgNewLogo,
         badge: "Med.uz.ua",
         title: "Офтальмологічний центр в Ужгороді",
         subtitle: "Професійна діагностика зору, консультації та індивідуальний підхід",
       },
       {
-        image: clinicImageAssets.diagnosticConsultation.src,
-        badge: "Точна діагностика",
-        title: "Високоточне діагностичне обладнання",
-        subtitle: "Комплексна оцінка гостроти зору, сітківки та оптичних середовищ",
-      },
-      {
-        image: clinicImageAssets.adultExamination.src,
+        imageMetadata: imgLogoOft1,
         badge: "Офтальмологія",
         title: "Турбота про ваш зір",
         subtitle: "Сучасний підхід до діагностики, профілактики та корекції зору",
       },
       {
-        image: clinicImageAssets.pediatricExamination.src,
+        imageMetadata: imgLogoEyeGood,
         badge: "Здоровий зір",
         title: "Увага до кожної деталі",
         subtitle: "Комплексне обстеження та професійна допомога для здоров'я ваших очей",
       },
       {
-        image: siteImageAssets.clinicEditorial.src,
+        imageMetadata: imgGoodEyeFace,
+        badge: "Точна діагностика",
+        title: "Зір, якому можна довіряти",
+        subtitle: "Персональний підхід та сучасна офтальмологічна практика",
+      },
+      {
+        imageMetadata: imgClinicView3,
+        badge: "Клінічний досвід",
+        title: "Персональна увага до кожного пацієнта",
+        subtitle: "Понад 20 років досвіду щоденної лікарської практики та турботи про зір",
+      },
+      {
+        imageMetadata: imgClinicView2,
+        badge: "Точна діагностика",
+        title: "Високоточне діагностичне обладнання",
+        subtitle: "Комплексна оцінка гостроти зору, сітківки та оптичних середовищ",
+      },
+      {
+        imageMetadata: imgClinicView1,
         badge: "Простір клініки",
         title: "Сучасна офтальмологія в Ужгороді",
         subtitle: "Європейські протоколи обстеження та комфортна атмосфера для пацієнтів",
       },
     ],
   },
-
   en: {
     sectionLabel: "Clinic Space Gallery",
     prevAria: "Previous slide",
@@ -72,38 +91,49 @@ const sliderTranslations: Record<
     slideAria: "Slide",
     slides: [
       {
-        image: clinicImageAssets.doctorInCabinet.src,
+        imageMetadata: imgNewLogo,
         badge: "Med.uz.ua",
         title: "Ophthalmology Center in Uzhhorod",
         subtitle: "Professional eye diagnostics, consultations and personalized care",
       },
       {
-        image: clinicImageAssets.diagnosticConsultation.src,
-        badge: "Precision Care",
-        title: "High-Precision Examination Tools",
-        subtitle: "Comprehensive digital evaluation of visual acuity and retinal health",
-      },
-      {
-        image: clinicImageAssets.adultExamination.src,
+        imageMetadata: imgLogoOft1,
         badge: "Ophthalmology",
         title: "Care for Your Vision",
         subtitle: "A modern approach to eye diagnostics, prevention and vision correction",
       },
       {
-        image: clinicImageAssets.pediatricExamination.src,
+        imageMetadata: imgLogoEyeGood,
         badge: "Healthy Vision",
         title: "Attention to Every Detail",
         subtitle: "Comprehensive examinations and professional care for your eye health",
       },
       {
-        image: siteImageAssets.clinicEditorial.src,
+        imageMetadata: imgGoodEyeFace,
+        badge: "Precision Care",
+        title: "Vision You Can Rely On",
+        subtitle: "Personalized attention and modern ophthalmic practice",
+      },
+      {
+        imageMetadata: imgClinicView3,
+        badge: "Clinical Heritage",
+        title: "Dedicated Personal Attention",
+        subtitle: "Over 20 years of medical practice and committed patient care",
+      },
+      {
+        imageMetadata: imgClinicView2,
+        badge: "Precision Care",
+        title: "High-Precision Examination Tools",
+        subtitle: "Comprehensive digital evaluation of visual acuity and retinal health",
+      },
+      {
+        imageMetadata: imgClinicView1,
         badge: "Clinic Space",
         title: "Modern Ophthalmology in Uzhhorod",
         subtitle: "European diagnostic standards and a welcoming clinical environment",
       },
     ],
   },
-
   sk: {
     sectionLabel: "Galéria priestorov kliniky",
     prevAria: "Predchádzajúci snímok",
@@ -111,38 +141,49 @@ const sliderTranslations: Record<
     slideAria: "Snímok",
     slides: [
       {
-        image: clinicImageAssets.doctorInCabinet.src,
+        imageMetadata: imgNewLogo,
         badge: "Med.uz.ua",
         title: "Oftalmologické centrum v Užhorode",
         subtitle: "Profesionálna diagnostika zraku, konzultácie a individuálny prístup",
       },
       {
-        image: clinicImageAssets.diagnosticConsultation.src,
-        badge: "Presná diagnostika",
-        title: "Špičkové prístrojové vybavenie",
-        subtitle: "Komplexné hodnotenie zrakových funkcií a očného pozadia",
-      },
-      {
-        image: clinicImageAssets.adultExamination.src,
+        imageMetadata: imgLogoOft1,
         badge: "Oftalmológia",
         title: "Starostlivosť o váš zrak",
         subtitle: "Moderný prístup k diagnostike, prevencii a korekcii zraku",
       },
       {
-        image: clinicImageAssets.pediatricExamination.src,
+        imageMetadata: imgLogoEyeGood,
         badge: "Zdravý zrak",
         title: "Pozornosť ku každému detailu",
         subtitle: "Komplexné vyšetrenie a profesionálna starostlivosť o zdravie očí",
       },
       {
-        image: siteImageAssets.clinicEditorial.src,
+        imageMetadata: imgGoodEyeFace,
+        badge: "Presná diagnostika",
+        title: "Zrak, na який sa можете spoľahnúť",
+        subtitle: "Individuálny prístup a moderná oftalmologická prax",
+      },
+      {
+        imageMetadata: imgClinicView3,
+        badge: "Klinická prax",
+        title: "Osobná starostlivosť o každého pacienta",
+        subtitle: "Viac ako 20 rokov skúseností a lekárskej praxe",
+      },
+      {
+        imageMetadata: imgClinicView2,
+        badge: "Presná diagnostika",
+        title: "Špičkové prístrojové vybavenie",
+        subtitle: "Komplexné hodnotenie zrakových funkcií a očného pozadia",
+      },
+      {
+        imageMetadata: imgClinicView1,
         badge: "Priestor kliniky",
         title: "Moderná oftalmológia v Užhorode",
         subtitle: "Európske vyšetrovacie štandardy a komfortné prostredie pre pacientov",
       },
     ],
   },
-
   hu: {
     sectionLabel: "Klinika galéria",
     prevAria: "Előző dia",
@@ -150,31 +191,43 @@ const sliderTranslations: Record<
     slideAria: "Dia",
     slides: [
       {
-        image: clinicImageAssets.doctorInCabinet.src,
+        imageMetadata: imgNewLogo,
         badge: "Med.uz.ua",
         title: "Szemészeti központ Ungváron",
         subtitle: "Professzionális látásvizsgálat, konzultáció és személyre szabott ellátás",
       },
       {
-        image: clinicImageAssets.diagnosticConsultation.src,
-        badge: "Precíziós vizsgálat",
-        title: "Nagy pontosságú orvosi berendezések",
-        subtitle: "A látásélesség és a szemfenék átfogó digitális értékelése",
-      },
-      {
-        image: clinicImageAssets.adultExamination.src,
+        imageMetadata: imgLogoOft1,
         badge: "Szemészet",
         title: "Gondoskodás a látásáról",
         subtitle: "Korszerű szemészeti diagnosztika, megelőzés és látáskorrekció",
       },
       {
-        image: clinicImageAssets.pediatricExamination.src,
+        imageMetadata: imgLogoEyeGood,
         badge: "Egészséges látás",
         title: "Figyelem minden részletre",
         subtitle: "Átfogó szemvizsgálat és professzionális gondoskodás",
       },
       {
-        image: siteImageAssets.clinicEditorial.src,
+        imageMetadata: imgGoodEyeFace,
+        badge: "Precíziós vizsgálat",
+        title: "Látás, amelyben megbízhat",
+        subtitle: "Személyre szabott figyelem és korszerű szemészeti gyakorlat",
+      },
+      {
+        imageMetadata: imgClinicView3,
+        badge: "Klinikai tapasztalat",
+        title: "Személyre szabott figyelem és gondoskodás",
+        subtitle: "Több mint 20 év szakorvosi gyakorlat és elhivatottság",
+      },
+      {
+        imageMetadata: imgClinicView2,
+        badge: "Precíziós vizsgálat",
+        title: "Nagy pontosságú orvosi berendezések",
+        subtitle: "A látásélesség és a szemfenék átfogó digitális értékelése",
+      },
+      {
+        imageMetadata: imgClinicView1,
         badge: "Klinikai környezet",
         title: "Korszerű szemészet Ungváron",
         subtitle: "Európai szintű vizsgálati protokollok és kényelmes környezet",
@@ -183,7 +236,23 @@ const sliderTranslations: Record<
   },
 };
 
-const localized = sliderTranslations[locale] ?? sliderTranslations.uk;
+const localized = rawSliderData[locale] ?? rawSliderData.uk;
+
+const processedSlides = await Promise.all(
+  localized.slides.map(async (slide) => {
+    const optimized = await getImage({
+      src: slide.imageMetadata,
+      format: "webp",
+      quality: 80,
+      width: 1440,
+    });
+    return {
+      ...slide,
+      src: optimized.src,
+      srcSet: optimized.srcSet.attribute,
+    };
+  })
+);
 ---
 
 <section
@@ -194,7 +263,7 @@ const localized = sliderTranslations[locale] ?? sliderTranslations.uk;
 >
   <div class="relative w-full h-[55vw] min-h-[400px] sm:h-[50vw] sm:min-h-[460px] lg:h-[70vh] lg:min-h-[600px] xl:min-h-[700px] 2xl:min-h-[760px]">
     {
-      localized.slides.map((slide, index) => (
+      processedSlides.map((slide, index) => (
         <article
           class={`absolute inset-0 transition-opacity duration-1000 ease-in-out ${
             index === 0
@@ -206,8 +275,11 @@ const localized = sliderTranslations[locale] ?? sliderTranslations.uk;
         >
           <img
             class="size-full scale-100 object-cover object-center transition-transform duration-[6000ms] ease-out"
-            src={index === 0 ? slide.image : undefined}
-            data-src={slide.image}
+            src={index === 0 ? slide.src : undefined}
+            srcset={index === 0 ? slide.srcSet : undefined}
+            data-src={slide.src}
+            data-srcset={slide.srcSet}
+            sizes="100vw"
             alt={`${slide.badge} — ${slide.title}`}
             loading={index === 0 ? "eager" : "lazy"}
             fetchpriority={index === 0 ? "high" : "auto"}
@@ -254,7 +326,7 @@ const localized = sliderTranslations[locale] ?? sliderTranslations.uk;
         data-slider-dots
       >
         {
-          localized.slides.map((_, index) => (
+          processedSlides.map((_, index) => (
             <button
               type="button"
               class="flex size-8 items-center justify-center rounded-full focus:outline-none focus-visible:ring-2 focus-visible:ring-accent"
@@ -357,8 +429,13 @@ const localized = sliderTranslations[locale] ?? sliderTranslations.uk;
         const slide = slides[index];
         if (!slide) return;
         const img = slide.querySelector<HTMLImageElement>("[data-slide-image]");
-        if (img && !img.hasAttribute("src") && img.dataset.src) {
-          img.src = img.dataset.src;
+        if (img && !img.hasAttribute("src")) {
+          if (img.dataset.srcset) {
+            img.srcset = img.dataset.srcset;
+          }
+          if (img.dataset.src) {
+            img.src = img.dataset.src;
+          }
         }
       }
 
@@ -463,7 +540,7 @@ const localized = sliderTranslations[locale] ?? sliderTranslations.uk;
       slider.addEventListener("mouseenter", stopAutoplay);
       slider.addEventListener("mouseleave", startAutoplay);
       slider.addEventListener("focusin", stopAutoplay);
-      slider.addEventListener("focusout", stopAutoplay);
+      slider.addEventListener("focusout", startAutoplay);
     });
   }
 

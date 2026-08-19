@@ -84,14 +84,6 @@ export const brandImageAssets = {
  * make treatment, outcome, licensing, or authorship claims.
  */
 export const clinicImageAssets = {
-  titleBrandUk: {
-    src: "/images/clinic/title-brand.jpg",
-    width: 2788,
-    height: 616,
-    mimeType: "image/png",
-    provenance: "owner-supplied",
-    visuallyVerified: true,
-  },
   doctorPortrait: {
     src: "/images/clinic/doctor-miroslava-portrait.jpg",
     width: 995,

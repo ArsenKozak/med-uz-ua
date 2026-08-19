@@ -1,5 +1,6 @@
 ---
-import { brandImageAssets } from "../../lib/assets";
+import { Image } from "astro:assets";
+import logoMarkImg from "../../assets/critical/logo-icon.jpeg";
 import { clinicContact } from "../../lib/clinic";
 import {
   defaultLocale,
@@ -92,12 +93,13 @@ const initialCartLabel = t(locale, "a11y.openCartMany").replace(
       aria-label={brandHomeLabel[locale]}
       data-logo-mark
     >
-      <img
-        src={brandImageAssets.legacyClinicMark.src}
+      <Image
+        src={logoMarkImg}
         alt=""
         aria-hidden="true"
-        width={brandImageAssets.legacyClinicMark.width}
-        height={brandImageAssets.legacyClinicMark.height}
+        width={80}
+        quality={85}
+        format="webp"
         loading="eager"
         decoding="async"
         class="h-9 w-auto shrink-0 object-contain sm:h-10"

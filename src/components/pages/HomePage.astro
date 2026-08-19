@@ -7,7 +7,10 @@ import Wayfinding from "../clinic/Wayfinding.astro";
 import SocialLinks from "../clinic/SocialLinks.astro";
 import Container from "../ui/Container.astro";
 import BaseLayout from "../../layouts/BaseLayout.astro";
+import { Image } from "astro:assets";
 import { siteImageAssets } from "../../lib/assets";
+import heroRefractionImg from "../../assets/critical/hero-refraction-light.jpg";
+import shopEditorialImg from "../../assets/critical/shop-editorial-eyewear.jpg";
 import {
   clinicContact,
   OPHTHALMOLOGY_SINCE,
@@ -98,14 +101,16 @@ const worldLabel = worldLabels[locale];
           data-focus-field
           data-soft-sharp
         >
-          <img
-            class="size-full object-cover"
-            src={siteImageAssets.heroRefraction.src}
-            width={siteImageAssets.heroRefraction.width}
-            height={siteImageAssets.heroRefraction.height}
+          <Image
+            src={heroRefractionImg}
+            widths={[480, 768, 1024, 1440]}
+            sizes="(min-width: 1024px) 45vw, 100vw"
+            format="webp"
+            quality={80}
             alt={t(locale, "home.heroImageAlt")}
             loading="lazy"
             decoding="async"
+            class="size-full object-cover"
           />
           <div class="absolute inset-0 bg-primary/15" aria-hidden="true"></div>
         </div>
@@ -195,14 +200,16 @@ const worldLabel = worldLabels[locale];
           class="relative flex min-h-[28rem] flex-col overflow-hidden bg-muted p-7 sm:p-10 lg:min-h-[34rem] lg:p-12"
           data-soft-sharp
         >
-          <img
-            class="absolute inset-0 size-full object-cover"
-            src={siteImageAssets.shopEditorial.src}
-            width={siteImageAssets.shopEditorial.width}
-            height={siteImageAssets.shopEditorial.height}
+          <Image
+            src={shopEditorialImg}
+            widths={[480, 768, 1024, 1440]}
+            sizes="(min-width: 1024px) 50vw, 100vw"
+            format="webp"
+            quality={80}
             alt=""
             loading="lazy"
             decoding="async"
+            class="absolute inset-0 size-full object-cover"
           />
           <div class="absolute inset-0 bg-foreground/60" aria-hidden="true"></div>
           <p class="relative text-xs font-semibold uppercase tracking-[0.24em] text-primary-foreground/80">
