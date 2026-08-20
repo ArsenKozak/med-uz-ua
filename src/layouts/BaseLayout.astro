@@ -30,7 +30,7 @@ const {
   canonical,
   locale: localeProp,
   robots = "index, follow",
-  image = "/images/hero-1.webp",
+  image = "/logo_oft1.png",
 } = Astro.props;
 
 const locale = localeProp ?? localeFromPath(Astro.url.pathname);
@@ -52,12 +52,80 @@ const defaultLocaleUrl = new URL(
 ).toString();
 
 const ogImageUrl = new URL(image, Astro.site ?? Astro.url).toString();
+
+const structuredData = {
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "MedicalClinic",
+      "@id": "https://med.uz.ua/#clinic",
+      "name": "Європейська офтальмологічна клініка",
+      "url": "https://med.uz.ua",
+      "logo": new URL("/logo_oft1.png", Astro.site ?? Astro.url).toString(),
+      "image": new URL("/logo_oft1.png", Astro.site ?? Astro.url).toString(),
+      "telephone": "+380997770758",
+      "priceRange": "$$",
+      "address": {
+        "@type": "PostalAddress",
+        "streetAddress": "вулиця Юрія Гойди, 10А",
+        "addressLocality": "Ужгород",
+        "addressRegion": "Закарпатська область",
+        "postalCode": "88000",
+        "addressCountry": "UA"
+      },
+      "geo": {
+        "@type": "GeoCoordinates",
+        "latitude": 48.6277,
+        "longitude": 22.2988
+      },
+      "openingHoursSpecification": [
+        {
+          "@type": "OpeningHoursSpecification",
+          "dayOfWeek": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"],
+          "opens": "09:00",
+          "closes": "18:00"
+        }
+      ],
+      "sameAs": [
+        "https://www.facebook.com/likarmiroslava/",
+        "https://www.instagram.com/oftalmolog_uzhgorod/",
+        "https://www.tiktok.com/@oftalmologuzhhorodclinic"
+      ],
+      "hasOfferCatalog": {
+        "@type": "OfferCatalog",
+        "name": "Офтальмологічні послуги та Оптика",
+        "url": new URL("/services/", Astro.site ?? Astro.url).toString()
+      }
+    },
+    {
+      "@type": "Optician",
+      "@id": "https://med.uz.ua/#optician",
+      "name": "Оптичний салон та магазин Європейської офтальмології",
+      "url": new URL("/shop/", Astro.site ?? Astro.url).toString(),
+      "telephone": "+380997770758",
+      "address": {
+        "@type": "PostalAddress",
+        "streetAddress": "вулиця Юрія Гойди, 10А",
+        "addressLocality": "Ужгород",
+        "postalCode": "88000",
+        "addressCountry": "UA"
+      }
+    }
+  ]
+};
 ---
 
 <!doctype html>
 <html lang={locale}>
   <head>
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <!-- Favicon & Brand Icons (Optimized for Google Favicon Bot & Apple) -->
+    <link rel="icon" href="/favicon.ico" sizes="any" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
+    <link rel="icon" type="image/png" sizes="48x48" href="/favicon-48x48.png" />
+    <link rel="icon" type="image/png" sizes="96x96" href="/favicon-96x96.png" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+    <link rel="manifest" href="/site.webmanifest" />
+
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
     <meta name="generator" content={Astro.generator} />
@@ -91,6 +159,9 @@ const ogImageUrl = new URL(image, Astro.site ?? Astro.url).toString();
     <meta name="twitter:title" content={title} />
     <meta name="twitter:description" content={description} />
     <meta name="twitter:image" content={ogImageUrl} />
+
+    <!-- Schema.org Knowledge Graph -->
+    <script type="application/ld+json" set:html={JSON.stringify(structuredData)} />
 
     <slot name="head" />
   </head>
