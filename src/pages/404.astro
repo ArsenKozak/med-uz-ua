@@ -1,0 +1,41 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import Container from "../components/ui/Container.astro";
+---
+
+<BaseLayout
+  title="404 — Сторінку не знайдено | Med.uz.ua"
+  description="Запитувану сторінку не знайдено на сервері Європейської Офтальмології."
+  locale="uk"
+>
+  <main class="flex min-h-[70vh] items-center justify-center py-20">
+    <Container>
+      <div class="mx-auto max-w-xl text-center">
+        <p class="text-sm font-semibold uppercase tracking-widest text-primary">
+          Помилка 404
+        </p>
+        <h1 class="mt-4 font-serif text-4xl font-medium tracking-tight text-foreground sm:text-5xl">
+          Сторінку не знайдено
+        </h1>
+        <p class="mt-4 text-base leading-relaxed text-muted-foreground">
+          Можливо, адресу було введено з помилкою або сторінку перенесено за новим посиланням.
+        </p>
+
+        <div class="mt-8 flex flex-wrap items-center justify-center gap-4">
+          <a
+            href="/"
+            class="inline-flex min-h-11 items-center justify-center rounded-xl bg-primary px-6 text-sm font-semibold text-primary-foreground shadow-sm transition-all duration-200 hover:bg-primary/90 active:scale-98"
+          >
+            На головну сторінку
+          </a>
+          <a
+            href="/#contacts"
+            class="inline-flex min-h-11 items-center justify-center rounded-xl border border-border bg-card px-6 text-sm font-semibold text-foreground transition-all duration-200 hover:bg-muted active:scale-98"
+          >
+            Контакти та запис
+          </a>
+        </div>
+      </div>
+    </Container>
+  </main>
+</BaseLayout>

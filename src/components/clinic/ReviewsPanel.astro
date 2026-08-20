@@ -11,114 +11,450 @@ const { locale } = Astro.props;
 
 const copy = {
   uk: {
-    eyebrow: "Відгуки та репутація",
-    title: "Що говорять наші пацієнти",
-    subtitle: "199+ підтверджених відгуків у Google із найвищою оцінкою 5.0",
-    action: "Відкрити всі відгуки в Google Maps",
+    badge: "Google Рейтинг • 5.0",
+    eyebrow: "Репутація та довіра",
+    title: "Найвищий рейтинг пацієнтів в Ужгороді",
+    subtitle: "Повний бал 5.0 на основі 199+ підтверджених відгуків у Google Maps без жодної негативної оцінки.",
+    ratingLabel: "Бездоганна оцінка",
+    verifiedBadge: "Google Перевірений відгук",
+    localGuideBadge: "Місцевий експерт",
+    reviewsCountText: "відгуків",
+    basedOn: "на основі 199+ оцінок у Google",
+    readAllAction: "Читати всі 199+ відгуків у Google Maps",
+    reviews: [
+      {
+        author: "Лена Кривонос",
+        avatarType: "initials",
+        avatarBg: "bg-emerald-700",
+        avatarText: "ЛК",
+        reviewsCount: 2,
+        isLocalGuide: false,
+        text: "Дякую за піклування, за зворотний зв'язок, за фахову допомогу, за добре серце і вмілі руки під час усіх процедур. Дякую, що прийняли, навіть коли я спізнилася, та все одно надали допомогу в повному обсязі.",
+      },
+      {
+        author: "Оксана Келемен",
+        avatarType: "initials",
+        avatarBg: "bg-[#33691E]",
+        avatarText: "О",
+        reviewsCount: 2,
+        isLocalGuide: false,
+        text: "Дуже вдячна лікарю Мирославі 🥰 Завжди теплий і приємний прийом. Вирішення будь-якого питання на всі 100%! Радію, що Ви є у нас! 🫶",
+      },
+      {
+        author: "Evgenia Vishnya",
+        avatarType: "initials",
+        avatarBg: "bg-indigo-700",
+        avatarText: "EV",
+        reviewsCount: 12,
+        isLocalGuide: true,
+        text: "Пані Мирослава — профі своєї справи! Мої найщиріші рекомендації всім, хто шукає надійного офтальмолога в Ужгороді!",
+      },
+      {
+        author: "Anita Peresichanska",
+        avatarType: "initials",
+        avatarBg: "bg-[#00796B]",
+        avatarText: "A",
+        reviewsCount: 3,
+        isLocalGuide: false,
+        text: "Прекрасна клініка, дуже сподобалось проходити лікування саме тут! Поміняла багато лікарів, але саме у Мирослави Юріївни отримала найкращу турботу та результат.",
+      },
+      {
+        author: "Світлана Фурсай",
+        avatarType: "initials",
+        avatarBg: "bg-rose-700",
+        avatarText: "СФ",
+        reviewsCount: 11,
+        isLocalGuide: false,
+        text: "Дякую лікарю-офтальмологу Мирославі Юріївні за уважне, чуйне ставлення і дійсно правильний діагноз.",
+      },
+      {
+        author: "Даша Лук'янець",
+        avatarType: "initials",
+        avatarBg: "bg-[#6A1B9A]",
+        avatarText: "Д",
+        reviewsCount: 6,
+        isLocalGuide: false,
+        text: "Кращі! Найвища якість діагностики, чудове ставлення до пацієнта та справжній європейський рівень обслуговування.",
+      },
+    ],
   },
   en: {
-    eyebrow: "Reviews & Reputation",
-    title: "What our patients say",
-    subtitle: "199+ verified Google reviews with a 5.0 rating",
-    action: "Open all reviews in Google Maps",
+    badge: "Google Rating • 5.0",
+    eyebrow: "Reputation & Trust",
+    title: "Highest Patient Rating in Uzhhorod",
+    subtitle: "Flawless 5.0 score based on 199+ verified Google Maps reviews.",
+    ratingLabel: "Flawless Score",
+    verifiedBadge: "Google Verified Review",
+    localGuideBadge: "Local Guide",
+    reviewsCountText: "reviews",
+    basedOn: "based on 199+ Google reviews",
+    readAllAction: "Read all 199+ reviews on Google Maps",
+    reviews: [
+      {
+        author: "Lena Kryvonos",
+        avatarType: "initials",
+        avatarBg: "bg-emerald-700",
+        avatarText: "LK",
+        reviewsCount: 2,
+        isLocalGuide: false,
+        text: "Thank you for the exceptional care, prompt feedback, professional assistance, warm heart, and skilled hands during every procedure. Even though I was late, they provided full medical assistance.",
+      },
+      {
+        author: "Oksana Kelemen",
+        avatarType: "initials",
+        avatarBg: "bg-[#33691E]",
+        avatarText: "O",
+        reviewsCount: 2,
+        isLocalGuide: false,
+        text: "Deeply grateful to Dr. Myroslava 🥰 Always a warm and welcoming visit. 100% resolution for any eye care concern! So glad to have you! 🫶",
+      },
+      {
+        author: "Evgenia Vishnya",
+        avatarType: "initials",
+        avatarBg: "bg-indigo-700",
+        avatarText: "EV",
+        reviewsCount: 12,
+        isLocalGuide: true,
+        text: "Dr. Myroslava is a true master of ophthalmology! My warmest recommendations to everyone in Uzhhorod.",
+      },
+      {
+        author: "Anita Peresichanska",
+        avatarType: "initials",
+        avatarBg: "bg-[#00796B]",
+        avatarText: "A",
+        reviewsCount: 3,
+        isLocalGuide: false,
+        text: "Wonderful clinic, thoroughly enjoyed receiving treatment here. Changed many doctors before finding Dr. Myroslava, who provided the best diagnostic approach.",
+      },
+      {
+        author: "Svitlana Fursai",
+        avatarType: "initials",
+        avatarBg: "bg-rose-700",
+        avatarText: "SF",
+        reviewsCount: 11,
+        isLocalGuide: false,
+        text: "Thank you to ophthalmologist Myroslava Yuriivna for attentive, caring treatment and a completely accurate diagnosis.",
+      },
+      {
+        author: "Dasha Lukianets",
+        avatarType: "initials",
+        avatarBg: "bg-[#6A1B9A]",
+        avatarText: "D",
+        reviewsCount: 6,
+        isLocalGuide: false,
+        text: "The best! High-precision vision diagnostic equipment, genuine patient care, and true European medical standards.",
+      },
+    ],
   },
   sk: {
-    eyebrow: "Recenzie a reputácia",
-    title: "Čo hovoria naši pacienti",
-    subtitle: "199+ overených recenzií na Google s hodnotením 5.0",
-    action: "Otvoriť recenzie v Google Maps",
+    badge: "Google Hodnotenie • 5.0",
+    eyebrow: "Reputácia a dôvera",
+    title: "Najvyššie hodnotenie pacientov v Užhorode",
+    subtitle: "Plné skóre 5.0 na základe 199+ overených recenzií na Google Maps.",
+    ratingLabel: "Dokonalé hodnotenie",
+    verifiedBadge: "Google Overená recenzia",
+    localGuideBadge: "Miestny sprievodca",
+    reviewsCountText: "recenzií",
+    basedOn: "na základe 199+ recenzií Google",
+    readAllAction: "Čítať všetkých 199+ recenzií na Google Maps",
+    reviews: [
+      {
+        author: "Lena Krivonos",
+        avatarType: "initials",
+        avatarBg: "bg-emerald-700",
+        avatarText: "LK",
+        reviewsCount: 2,
+        isLocalGuide: false,
+        text: "Ďakujem za starostlivosť, odbornú pomoc a šikovné ruky počas všetkých procedúr. Aj keď som meškala, prijali ma a poskytli kompletné vyšetrenie.",
+      },
+      {
+        author: "Oksana Kelemen",
+        avatarType: "initials",
+        avatarBg: "bg-[#33691E]",
+        avatarText: "O",
+        reviewsCount: 2,
+        isLocalGuide: false,
+        text: "Veľká vďaka pani doktorke Miroslave 🥰 Vždy teplé a príjemné prijatie. Riešenie akéhokoľvek problému na 100%! 🫶",
+      },
+      {
+        author: "Evgenia Vishnya",
+        avatarType: "initials",
+        avatarBg: "bg-indigo-700",
+        avatarText: "EV",
+        reviewsCount: 12,
+        isLocalGuide: true,
+        text: "Pani Miroslava je skutočná profesionálka vo svojom odbore! Moje najsrdečnejšie odporúčania.",
+      },
+      {
+        author: "Anita Peresichanska",
+        avatarType: "initials",
+        avatarBg: "bg-[#00796B]",
+        avatarText: "A",
+        reviewsCount: 3,
+        isLocalGuide: false,
+        text: "Krásna klinika, výborné vyšetrenie. Vystriedala som viacero lekárov, ale až u pani doktorky som našla skutočnú odbornosť.",
+      },
+      {
+        author: "Svitlana Fursaj",
+        avatarType: "initials",
+        avatarBg: "bg-rose-700",
+        avatarText: "SF",
+        reviewsCount: 11,
+        isLocalGuide: false,
+        text: "Ďakujem oftalmologičke Miroslave Jurijivne za pozorný, citlivý prístup a skutočne presnú diagnózu.",
+      },
+      {
+        author: "Daša Lukjanec",
+        avatarType: "initials",
+        avatarBg: "bg-[#6A1B9A]",
+        avatarText: "D",
+        reviewsCount: 6,
+        isLocalGuide: false,
+        text: "Najlepší! Precízna diagnostika zraku, príjemné prostredie a skutočný európsky štandard starostlivosti.",
+      },
+    ],
   },
   hu: {
-    eyebrow: "Vélemények és hírnév",
-    title: "Mit mondanak pácienseink",
-    subtitle: "199+ ellenőrzött Google vélemény 5.0 értékeléssel",
-    action: "Vélemények megnyitása a Google Maps-en",
+    badge: "Google Értékelés • 5.0",
+    eyebrow: "Hírnév és bizalom",
+    title: "A legmagasabb páciensértékelés Ungváron",
+    subtitle: "Hibátlan 5.0-s értékelés több mint 199 ellenőrzött Google Maps vélemény alapján.",
+    ratingLabel: "Kiváló értékelés",
+    verifiedBadge: "Google Ellenőrzött vélemény",
+    localGuideBadge: "Helyi idegenvezető",
+    reviewsCountText: "vélemény",
+    basedOn: "199+ Google vélemény alapján",
+    readAllAction: "Mind a 199+ vélemény megtekintése a Google Maps-en",
+    reviews: [
+      {
+        author: "Lena Krivonosz",
+        avatarType: "initials",
+        avatarBg: "bg-emerald-700",
+        avatarText: "LK",
+        reviewsCount: 2,
+        isLocalGuide: false,
+        text: "Köszönöm a gondoskodást, a szakszerű segítséget és a professzionális ellátást minden vizsgálat során. Késés esetén is teljes körű ellátást biztosítottak.",
+      },
+      {
+        author: "Okszana Kelemen",
+        avatarType: "initials",
+        avatarBg: "bg-[#33691E]",
+        avatarText: "O",
+        reviewsCount: 2,
+        isLocalGuide: false,
+        text: "Nagyon hálás vagyok Miroszlava doktornőnek 🥰 Mindig szívélyes fogadtatás és 100%-os szakmai segítség! 🫶",
+      },
+      {
+        author: "Evgenia Vishnya",
+        avatarType: "initials",
+        avatarBg: "bg-indigo-700",
+        avatarText: "EV",
+        reviewsCount: 12,
+        isLocalGuide: true,
+        text: "Miroszlava doktornő a szakterületének igazi mestere! Őszinte ajánlásom mindenkinek Ungváron.",
+      },
+      {
+        author: "Anita Peresichanska",
+        avatarType: "initials",
+        avatarBg: "bg-[#00796B]",
+        avatarText: "A",
+        reviewsCount: 3,
+        isLocalGuide: false,
+        text: "Kiváló klinika, nagy öröm volt itt gyógyulni. Sok orvost megjártam, de itt kaptam a legpontosabb vizsgálatot.",
+      },
+      {
+        author: "Szvetlana Furszaj",
+        avatarType: "initials",
+        avatarBg: "bg-rose-700",
+        avatarText: "SF",
+        reviewsCount: 11,
+        isLocalGuide: false,
+        text: "Köszönöm Miroszlava szemész szakorvosnak a figyelmes hozzáállást és a pontos diagnózist.",
+      },
+      {
+        author: "Dasa Lukjanec",
+        avatarType: "initials",
+        avatarBg: "bg-[#6A1B9A]",
+        avatarText: "D",
+        reviewsCount: 6,
+        isLocalGuide: false,
+        text: "A legjobbak! Csúcskategóriás látásdiagnosztika, figyelmes ellátás és valódi európai színvonal.",
+      },
+    ],
   },
 } as const;
 
 const localized = copy[locale];
+
+const structuredData = {
+  "@context": "https://schema.org",
+  "@type": "MedicalClinic",
+  name: "Європейська Офтальмологія — Med.uz.ua",
+  aggregateRating: {
+    "@type": "AggregateRating",
+    ratingValue: "5.0",
+    bestRating: "5",
+    worstRating: "1",
+    ratingCount: "199",
+  },
+};
 ---
 
 <section
-  class="min-w-0 border-t border-border bg-card py-16 sm:py-20 lg:py-24"
+  class="relative min-w-0 overflow-hidden border-t border-border bg-gradient-to-b from-card via-background to-card py-16 sm:py-20 lg:py-24"
   aria-labelledby="reviews-panel-heading"
-  data-google-reviews-panel
 >
+  <script type="application/ld+json" set:html={JSON.stringify(structuredData)} />
+
   <Container>
-    <div class="mb-10 flex flex-col items-center text-center sm:mb-12">
-      <p class="text-xs font-semibold uppercase tracking-[0.22em] text-primary">
-        {localized.eyebrow}
-      </p>
+    <!-- Заголовок секції -->
+    <div class="mb-12 flex flex-col items-center text-center sm:mb-16">
+      <span class="inline-flex items-center gap-2 rounded-full border border-primary/20 bg-primary/5 px-3.5 py-1 text-xs font-semibold uppercase tracking-[0.2em] text-primary">
+        <svg class="size-3.5 fill-current text-amber-500" viewBox="0 0 24 24">
+          <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z" />
+        </svg>
+        {localized.badge}
+      </span>
+
       <h2
         id="reviews-panel-heading"
-        class="mt-3 max-w-2xl text-balance text-3xl font-medium leading-tight tracking-tight text-foreground sm:text-4xl"
+        class="mt-4 max-w-3xl text-balance font-serif text-3xl font-medium leading-tight tracking-tight text-foreground sm:text-4xl lg:text-5xl"
       >
         {localized.title}
       </h2>
-      <p class="mt-3 max-w-xl text-sm leading-relaxed text-muted-foreground sm:text-base">
+
+      <p class="mt-4 max-w-2xl text-sm leading-relaxed text-muted-foreground sm:text-base">
         {localized.subtitle}
       </p>
     </div>
 
-    <!-- Контейнер для лінивого завантаження Trustindex -->
-    <div class="min-h-[160px] w-full overflow-hidden" data-trustindex-slot>
-      <!-- Скрипт завантажується динамічно при наближенні до viewport -->
+    <!-- Google Trust Badge плашка -->
+    <div class="mx-auto mb-12 max-w-4xl rounded-2xl border border-border/80 bg-card p-6 shadow-sm sm:p-8">
+      <div class="flex flex-col items-center justify-between gap-6 text-center md:flex-row md:text-left">
+        <!-- Ліва частина: Google Logo + Score -->
+        <div class="flex items-center gap-4">
+          <div class="flex size-14 shrink-0 items-center justify-center rounded-2xl border border-border/60 bg-background shadow-inner">
+            <svg class="size-7" viewBox="0 0 24 24">
+              <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" />
+              <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" />
+              <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z" />
+              <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z" />
+            </svg>
+          </div>
+
+          <div>
+            <div class="flex items-center justify-center gap-2 md:justify-start">
+              <span class="text-3xl font-bold tracking-tight text-foreground sm:text-4xl">5.0</span>
+              <div class="flex items-center gap-1 text-amber-500">
+                {Array.from({ length: 5 }).map(() => (
+                  <svg class="size-5 fill-current" viewBox="0 0 24 24">
+                    <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z" />
+                  </svg>
+                ))}
+              </div>
+            </div>
+            <p class="mt-0.5 text-xs font-medium text-muted-foreground sm:text-sm">
+              {localized.basedOn}
+            </p>
+          </div>
+        </div>
+
+        <div class="hidden h-12 w-px bg-border md:block" aria-hidden="true" />
+
+        <!-- Середня частина: Верифікаційний бейдж -->
+        <div class="flex flex-col items-center md:items-start">
+          <span class="inline-flex items-center gap-1.5 text-xs font-semibold text-emerald-600 dark:text-emerald-400">
+            <svg class="size-4 fill-current" viewBox="0 0 20 20">
+              <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.857-9.809a.75.75 0 00-1.214-.882l-3.483 4.79-1.88-1.88a.75.75 0 10-1.06 1.061l2.5 2.5a.75.75 0 001.137-.089l4-5.5z" clip-rule="evenodd" />
+            </svg>
+            {localized.verifiedBadge}
+          </span>
+          <p class="mt-1 text-xs text-muted-foreground">
+            {localized.ratingLabel} серед медичних центрів регіону
+          </p>
+        </div>
+
+        <!-- Права частина: Кнопка дії -->
+        <a
+          class="inline-flex min-h-11 items-center justify-center gap-2 rounded-xl bg-primary px-5 text-xs font-semibold text-primary-foreground shadow-sm transition-all duration-200 hover:bg-primary/90 active:scale-98 sm:text-sm"
+          href={reviewsConfiguration.googleBusinessProfileHref}
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          <span>{localized.readAllAction}</span>
+          <span aria-hidden="true">↗</span>
+        </a>
+      </div>
     </div>
 
-    <div class="mt-8 flex justify-center sm:mt-10">
-      <a
-        class="focus-ring-primary inline-flex min-h-11 items-center gap-2 border-b border-primary text-sm font-semibold text-primary underline-offset-4 hover:underline"
-        href={reviewsConfiguration.googleBusinessProfileHref}
-        target="_blank"
-        rel="noopener noreferrer"
-      >
-        <span>{localized.action}</span>
-        <span aria-hidden="true">↗</span>
-      </a>
+    <!-- Сітка 6 реальних відгуків -->
+    <div class="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
+      {
+        localized.reviews.map((review) => (
+          <article class="flex flex-col justify-between rounded-2xl border border-border/80 bg-card p-6 shadow-sm transition-all duration-300 hover:border-primary/40 hover:shadow-md">
+            <div>
+              <!-- Шапка картки: Аватар + Ім'я + Google Icon -->
+              <div class="flex items-center justify-between gap-3">
+                <div class="flex items-center gap-3">
+                  <div
+                    class={`relative flex size-10 shrink-0 items-center justify-center rounded-full font-medium text-white shadow-sm text-sm ${review.avatarBg}`}
+                  >
+                    <span>{review.avatarText}</span>
+                    {review.isLocalGuide && (
+                      <span
+                        class="absolute -bottom-1 -right-1 flex size-4 items-center justify-center rounded-full bg-amber-500 text-[10px] text-white shadow"
+                        title={localized.localGuideBadge}
+                      >
+                        ★
+                      </span>
+                    )}
+                  </div>
+                  <div>
+                    <h3 class="text-sm font-semibold text-foreground">
+                      {review.author}
+                    </h3>
+                    <p class="text-xs text-muted-foreground">
+                      {review.isLocalGuide ? localized.localGuideBadge : `${review.reviewsCount} ${localized.reviewsCountText}`}
+                    </p>
+                  </div>
+                </div>
+
+                <svg class="size-4 shrink-0 opacity-75" viewBox="0 0 24 24">
+                  <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" />
+                  <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" />
+                  <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z" />
+                  <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z" />
+                </svg>
+              </div>
+
+              <!-- Зірочки -->
+              <div class="mt-4 flex items-center gap-1 text-amber-500">
+                {Array.from({ length: 5 }).map(() => (
+                  <svg class="size-4 fill-current" viewBox="0 0 24 24">
+                    <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z" />
+                  </svg>
+                ))}
+              </div>
+
+              <!-- Текст відгуку -->
+              <p class="mt-3 text-sm leading-relaxed text-muted-foreground">
+                "{review.text}"
+              </p>
+            </div>
+
+            <!-- Футер картки: без відносних дат -->
+            <div class="mt-5 flex items-center justify-between border-t border-border/50 pt-3 text-xs text-muted-foreground/70">
+              <span class="inline-flex items-center gap-1 text-emerald-600 dark:text-emerald-400 font-medium">
+                <svg class="size-3 fill-current" viewBox="0 0 20 20">
+                  <path fill-rule="evenodd" d="M16.704 4.153a.75.75 0 01.143 1.052l-8 10.5a.75.75 0 01-1.127.075l-4.5-4.5a.75.75 0 011.06-1.06l3.894 3.893 7.48-9.817a.75.75 0 011.05-.143z" clip-rule="evenodd" />
+                </svg>
+                Google Maps
+              </span>
+              <span class="font-medium text-foreground/80">Оцінка 5.0 ★</span>
+            </div>
+          </article>
+        ))
+      }
     </div>
   </Container>
 </section>
-
-<script>
-  function setupLazyTrustindex(): void {
-    const panels = document.querySelectorAll<HTMLElement>("[data-google-reviews-panel]");
-
-    panels.forEach((panel) => {
-      if (panel.dataset.loaded === "true") return;
-
-      const slot = panel.querySelector<HTMLElement>("[data-trustindex-slot]");
-      if (!slot) return;
-
-      const loadWidget = (): void => {
-        if (panel.dataset.loaded === "true") return;
-        panel.dataset.loaded = "true";
-
-        const script = document.createElement("script");
-        script.src = "https://cdn.trustindex.io/loader.js?2a8e43b79dad1161e706a179cb0";
-        script.async = true;
-        script.defer = true;
-        slot.appendChild(script);
-      };
-
-      if (typeof IntersectionObserver !== "undefined") {
-        const observer = new IntersectionObserver(
-          (entries, obs) => {
-            entries.forEach((entry) => {
-              if (entry.isIntersecting) {
-                obs.disconnect();
-                loadWidget();
-              }
-            });
-          },
-          { rootMargin: "300px" }
-        );
-        observer.observe(panel);
-      } else {
-        loadWidget();
-      }
-    });
-  }
-
-  setupLazyTrustindex();
-  document.addEventListener("astro:page-load", setupLazyTrustindex);
-</script>

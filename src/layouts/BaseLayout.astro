@@ -21,6 +21,7 @@ interface Props {
   canonical?: string | URL;
   locale?: Locale;
   robots?: string;
+  image?: string | URL;
 }
 
 const {
@@ -29,7 +30,9 @@ const {
   canonical,
   locale: localeProp,
   robots = "index, follow",
+  image = "/images/hero-1.webp",
 } = Astro.props;
+
 const locale = localeProp ?? localeFromPath(Astro.url.pathname);
 const canonicalUrl = new URL(
   canonical ?? Astro.url.pathname,
@@ -47,6 +50,8 @@ const defaultLocaleUrl = new URL(
   localizePath(canonicalRoutePath, "uk"),
   Astro.site ?? Astro.url,
 ).toString();
+
+const ogImageUrl = new URL(image, Astro.site ?? Astro.url).toString();
 ---
 
 <!doctype html>
@@ -54,7 +59,7 @@ const defaultLocaleUrl = new URL(
   <head>
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
     <meta name="generator" content={Astro.generator} />
     <meta name="description" content={description} />
     <meta name="robots" content={robots} />
@@ -74,10 +79,18 @@ const defaultLocaleUrl = new URL(
     }
     <link rel="alternate" hreflang="x-default" href={defaultLocaleUrl} />
 
+    <!-- Open Graph / Facebook -->
     <meta property="og:type" content="website" />
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
     <meta property="og:url" content={canonicalUrl} />
+    <meta property="og:image" content={ogImageUrl} />
+
+    <!-- Twitter Cards -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={ogImageUrl} />
 
     <slot name="head" />
   </head>
@@ -95,7 +108,7 @@ const defaultLocaleUrl = new URL(
     <SiteFooter locale={locale} />
     <MobileActionBar locale={locale} />
     <CartDrawer locale={locale} />
-    <AnalyticsConsent locale={locale} />
     <InteractionController />
+    <AnalyticsConsent locale={locale} />
   </body>
 </html>
