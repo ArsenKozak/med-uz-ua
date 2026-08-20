@@ -59,29 +59,28 @@ function getFilterCount(filter: CatalogFilter): number {
   description={t(locale, "seo.shop.description")}
   locale={locale}
 >
-  <section class="border-b border-primary-foreground/15 bg-primary py-16 text-primary-foreground sm:py-20 lg:py-28" aria-labelledby="shop-heading">
-    <Container
-      class="grid gap-10 lg:grid-cols-12 lg:items-end"
-      data-reveal
-    >
-      <div class="min-w-0 lg:col-span-8">
-        <p class="text-xs font-semibold uppercase tracking-[0.24em] text-accent">
+  <header class="border-b border-primary-foreground/15 bg-primary text-primary-foreground" aria-labelledby="shop-heading">
+    <Container class="grid gap-10 py-16 sm:py-20 lg:grid-cols-12 lg:gap-16 lg:py-24" data-reveal>
+      <div class="lg:col-span-7">
+        <span class="inline-flex items-center gap-2 rounded-full border border-accent/25 bg-accent/10 px-3.5 py-1 text-xs font-semibold uppercase tracking-[0.22em] text-accent">
+          <span class="size-1.5 rounded-full bg-accent animate-pulse" aria-hidden="true"></span>
           {t(locale, "shop.heroEyebrow")}
-        </p>
+        </span>
         <h1
           id="shop-heading"
-          class="mt-6 max-w-[13ch] min-w-0 break-words text-balance text-[clamp(2.5rem,12vw,4.5rem)] font-medium leading-[0.98] tracking-[-0.035em] text-primary-foreground"
+          class="mt-6 text-balance font-serif text-4xl font-medium leading-[1.08] tracking-tight sm:text-5xl lg:text-6xl"
         >
           {t(locale, "shop.heroTitle")}
         </h1>
       </div>
-      <div class="lg:col-span-4">
-        <p class="max-w-lg text-base leading-7 text-primary-foreground/80">
+
+      <div class="flex flex-col justify-end border-t border-primary-foreground/20 pt-7 lg:col-span-5 lg:border-t-0 lg:border-l lg:border-primary-foreground/15 lg:pl-10 lg:pt-0">
+        <p class="font-serif text-xl leading-relaxed text-primary-foreground/90 sm:text-2xl">
           {t(locale, "shop.heroIntro")}
         </p>
       </div>
     </Container>
-  </section>
+  </header>
 
   <section
     class="bg-background py-16 sm:py-20 lg:py-28"
